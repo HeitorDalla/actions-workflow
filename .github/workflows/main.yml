@@ -6,9 +6,9 @@ name: Build Workflow
 # Representa como o workflow é ativado para acionar uma trigger para desencadear essa pipeline
 on:
   # Aciona uma trigger em eventos de 'push' e 'pull_request', mas apenas para a branch 'main'
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
   pull_request:
     branches:
       - main
@@ -26,6 +26,11 @@ jobs:
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
       - uses: actions/checkout@v4
+
+        # Passar parâmetros de entrada para a ação
+        with:
+          # Permite obter todo o histórico de commits (útil para checagem de branches)
+          fetch-depth: 0
 
       # Buildar o projeto
       - name: Build Maven
@@ -47,6 +52,11 @@ jobs:
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
       - uses: actions/checkout@v4
+
+        # Passar parâmetros de entrada
+        with:
+          # Permite obter todo o histórico de commits (útil para checagem de branches)
+          fetch-depth: 0
 
       # Executar os testes do projeto
       - name: Rodar os testes

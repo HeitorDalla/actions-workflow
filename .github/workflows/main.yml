@@ -1,0 +1,57 @@
+# Workflow básico do github Actions
+
+# Nome do workflow
+name: Build Workflow
+
+# Representa como o workflow é ativado para acionar uma trigger para desencadear essa pipeline
+on:
+  # Aciona uma trigger em eventos de 'push' e 'pull_request', mas apenas para a branch 'main'
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+  # Permite rodar o workflow manualmente
+  workflow_dispatch:
+
+# Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
+jobs:
+  # Esse workflow tem apenas um job, chamado 'build'
+  build:
+    runs-on: ubuntu-latest
+
+    # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
+    steps:
+      # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
+      - uses: actions/checkout@v4
+
+      # Buildar o projeto
+      - name: Build Maven
+        run: mvn install
+
+      # Executa múltiplos comandos no shell do ambiente (Ubuntu)
+      - name: Executar multiplos comandos shell
+        run: |
+          echo "Bem vindo ao meu projeto,
+          echo "e Hello World"
+
+  testing:
+    runs-on: ubuntu-latest
+
+    # Necessário caso queira executar uma tarefa antes da outra (impedindo que as tarefas iniciem paralelamente)
+    needs: build
+
+    # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
+    steps:
+      # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
+      - uses: actions/checkout@v4
+
+      # Executar os testes do projeto
+      - name: Rodar os testes
+        run: mvn test
+
+      # Vai analisar o código fonte para garantir regras de formatação
+      - name: Checkstyle
+        run: mvn checkstyle:checkstyle

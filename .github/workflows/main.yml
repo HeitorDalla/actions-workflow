@@ -34,7 +34,7 @@ jobs:
       # Executa múltiplos comandos no shell do ambiente (Ubuntu)
       - name: Executar multiplos comandos shell
         run: |
-          echo "Bem vindo ao meu projeto,
+          echo "Bem vindo ao meu projeto"
           echo "e Hello World"
 
   testing:

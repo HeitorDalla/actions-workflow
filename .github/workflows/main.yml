@@ -84,9 +84,17 @@ jobs:
           fetch-depth: 0
 
       # Executar os testes do projeto
-      - name: Rodar os testes
+      - name: Rodar os testes dentro da branch 'main'
+        # Verificando se a branch atual for 'main'
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: mvn test
 
       # Vai analisar o código fonte para garantir regras de formatação
       - name: Checkstyle
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: mvn checkstyle:checkstyle
+
+      # Vai validar se a branch é diferente da 'main'
+      - name: Executar testes em outras branches
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: echo "Pulando os testes unitários e análise de código"

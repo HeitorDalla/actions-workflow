@@ -5,10 +5,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Usuario {
+    /**
+     * Referência para a aplicação
+     */
     @Autowired
-    Aplicacao aplicacao;
+    private Aplicacao aplicacao;
 
-    public void code () {
+    /**
+     * Método de teste de aplicação
+     */
+    public void code() {
         aplicacao.teste();
+    }
+
+    /* Métodos Getters e Setters */
+
+    public Aplicacao getAplicacao() {
+        return aplicacao;
+    }
+
+    public void setAplicacao(Aplicacao aplicacao) {
+        this.aplicacao = aplicacao;
     }
 }

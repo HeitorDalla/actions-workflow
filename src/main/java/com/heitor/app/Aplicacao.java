@@ -4,7 +4,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Aplicacao {
-    public void teste () {
+    /**
+     * Executa o processo de teste da aplicação
+     */
+
+    public void teste() {
         System.out.println("teste spring");
     }
 }

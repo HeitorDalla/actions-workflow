@@ -5,10 +5,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public class SpringDemoApplication {
+public final class SpringDemoApplication {
+    /**
+     * Ponto de entrada da aplicação Spring Boot
+     * @param args argumentos da linha de comando
+     */
 
-	public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(SpringDemoApplication.class, args);
+	public static void main(final String[] args) {
+        ApplicationContext context = SpringApplication.run(
+                SpringDemoApplication.class,
+                args);
 
 //        Usuario usuario = context.getBean(Usuario.class);
 //        usuario.code();

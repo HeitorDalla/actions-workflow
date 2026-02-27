@@ -18,7 +18,7 @@ on:
 
   # Permite agendar a execução do pipeline
   schedule:
-    # Vai rodar toda noite as duas horas da manhã (minuto, hora, dia do mês, mês e dia da semana)
+    # Vai rodar todo dias as 15:00 horas (minuto, hora, dia do mês, mês e dia da semana)
     - cron: "0 15 * * *"
 
 # Mudando as permissões para só ter permissão de ler dentro do repositório (pois esta dentro da branch 'main')
@@ -45,14 +45,18 @@ jobs:
       - name: Executar multiplos comandos shell
         run: |
           echo "Bem vindo ao meu projeto"
-          echo "e Hello World"
+          echo "e Hello World!"
+
+      # Falha o job se houver violações
+      - name: Checkstyle (violations)
+        run: mvn -B checkstyle:check
 
       # Buildar o projeto
       - name: Build Maven
-        run: mvn install
+        run: mvn -B install
 
-      # Serve para enviar arquivos gerados pelo build para a seção  de Artifacts da execução
-      - name: Upload Build Artifact (WAR)
+      # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
+      - name: Upload do Build Artifact (WAR)
         uses: actions/upload-artifact@v4
         with:
           name: app-war
@@ -71,6 +75,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Necessário caso queira executar uma tarefa antes da outra (impedindo que as tarefas iniciem paralelamente)
+    # Ele depende do build, ou seja, se falhar, ele da skip automaticamente
     needs: build
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
@@ -83,16 +88,26 @@ jobs:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
           fetch-depth: 0
 
-      # Executar os testes do projeto
+      # Executar os testes do projeto apenas quanto o ref = refs/heads/main (PORQUE EU QUERO RODAR TESTES APENAS NA BRANCH 'main')
       - name: Rodar os testes dentro da branch 'main'
         # Verificando se a branch atual for 'main'
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: mvn test
+        run: mvn -B test
 
-      # Vai analisar o código fonte para garantir regras de formatação
+      # Vai analisar o código fonte para garantir regras de formatação e gerar um relatório HTML
       - name: Checkstyle
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: mvn checkstyle:checkstyle
+        run: mvn -B checkstyle:checkstyle
+
+      # Vai disponibilizar o relatório como um Artifacts
+      - name: Disponibilizando artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-report
+          path: |
+            target/site/checkstyle.html
+            target/checkstyle-result.xml
 
       # Vai validar se a branch é diferente da 'main'
       - name: Executar testes em outras branches

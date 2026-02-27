@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Usuario {
     /**
-     * Referência para a aplicação
+     * Referência para a aplicação.
      */
     @Autowired
     private Aplicacao aplicacao;

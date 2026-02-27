@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     /**
-     * Retorna saudação simples
+     * Retorna saudação simples.
      * @return mensagem de boas-vindas
      */
 

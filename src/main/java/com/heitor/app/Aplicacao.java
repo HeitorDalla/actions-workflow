@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Aplicacao {
     /**
-     * Executa o processo de teste da aplicação
+     * Executa o processo de teste da aplicação.
      */
 
     public void teste() {

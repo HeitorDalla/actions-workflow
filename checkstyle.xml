@@ -3,9 +3,15 @@
         "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <module name="Checker">
+    <module name="NewlineAtEndOfFile"/>
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+    <module name="SuppressionCommentFilter"/>
+
     <module name="TreeWalker">
 
-        <!-- Javadoc: exigência básica -->
+        <!-- Javadoc -->
         <module name="JavadocType"/>
         <module name="JavadocMethod">
             <property name="accessModifiers" value="public"/>
@@ -14,41 +20,34 @@
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
         </module>
+
         <module name="JavadocStyle">
             <property name="checkFirstSentence" value="true"/>
         </module>
 
-        <!-- Desativa exigência de 'final' em parâmetros -->
+        <!-- Regras de design -->
         <module name="FinalParameters">
             <property name="tokens" value=""/>
         </module>
 
-        <!-- Evita acusar setters/constructors por 'this.campo = campo' -->
         <module name="HiddenField">
             <property name="ignoreSetter" value="true"/>
             <property name="ignoreConstructorParameter" value="true"/>
         </module>
 
-        <!-- Não exije doc de extensão -->
         <module name="DesignForExtension">
             <property name="ignoredAnnotations"
                       value="Component, Service, Repository, RestController, Controller, Configuration, SpringBootApplication"/>
         </module>
 
-        <!-- Formatação/whitespace -->
+        <!-- Whitespace -->
         <module name="MethodParamPad"/>
-        <module name="LineLength">
-            <property name="max" value="120"/>
-            <property name="ignorePattern" value="^package|^import"/>
-        </module>
-        <module name="FileTabCharacter">
-            <property name="eachLine" value="true"/>
-        </module>
+
     </module>
 
-    <!-- Newline ao final de arquivo -->
-    <module name="NewlineAtEndOfFile"/>
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^package|^import"/>
+    </module>
 
-    <!-- Permitir supressões por comentário // CHECKSTYLE:OFF/ON (se quiser) -->
-    <module name="SuppressionCommentFilter"/>
 </module>

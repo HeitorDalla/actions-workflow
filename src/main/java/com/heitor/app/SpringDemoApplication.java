@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public final class SpringDemoApplication {
+public class SpringDemoApplication {
     /**
-     * Ponto de entrada da aplicação Spring Boot
+     * Ponto de entrada da aplicação Spring Boot.
      * @param args argumentos da linha de comando
      */
 
@@ -16,7 +16,7 @@ public final class SpringDemoApplication {
                 SpringDemoApplication.class,
                 args);
 
-//        Usuario usuario = context.getBean(Usuario.class);
-//        usuario.code();
+//      Usuario usuario = context.getBean(Usuario.class);
+//      usuario.code();
 	}
 }

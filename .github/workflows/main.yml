@@ -36,7 +36,6 @@ jobs:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
       - name: Checar o código
         uses: actions/checkout@v4
-
         # Passar parâmetros de entrada para a ação
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
@@ -84,7 +83,6 @@ jobs:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
       - name: Checar o código
         uses: actions/checkout@v4
-
         # Passar parâmetros de entrada
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
@@ -125,30 +123,23 @@ jobs:
     steps:
       - name: Checar o código
         uses: actions/checkout@v4
-
         with:
           fetch-depth: 0
 
-      - name: Rodar o trivy para escaneamento
-        uses: aquasecurity/trivy-action@0.33.1
-
+      # Instalar o Trivy
+      - name: Setup Trivy
+        uses: aquasecurity/setup-trivy@v1
         with:
-          # (file system)
-          scan-type: 'fs'
-          # referência para escaneamento (diretório atual)
-          scan-ref: .
-          format: 'json'
-          # significa que é para continuar para o próximo passo mesmo que encontre vulnerabilidades
-          exit-code: '0'
-          vuln-type: 'os,library'
-          # armazenar porque assim que uma ação finaliza, a saída também desaparece
-          output: 'trivy-results.json'
-          version: 'v0.64.0'
-
+          trivy-version: 'v0.64.0'
         env:
-          GITHUB_TOKEN: ${{ secrets.GTIHUB_TOKEN }} # evitar rate limit no download do release
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # evitar rate limit no download do release
 
-        # Vamos armazenar a saída como um artefato
+      # Executar o scan de filesystem no repositório
+      - name: Rodar Trivy (file system)
+        run: |
+          trivy fs --format json \
+                   --output trivy-results.json \
+                   .
 
       # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
       - name: Upload do escaneamento (trivy) como um artefato

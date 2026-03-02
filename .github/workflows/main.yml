@@ -145,7 +145,10 @@ jobs:
           output: 'trivy-results.json'
           version: 'v0.64.0'
 
-          # Vamos armazenar a saída como um artefato
+        env:
+          GITHUB_TOKEN: ${{ secrets.GTIHUB_TOKEN }} # evitar rate limit no download do release
+
+        # Vamos armazenar a saída como um artefato
 
       # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
       - name: Upload do escaneamento (trivy) como um artefato

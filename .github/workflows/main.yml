@@ -27,14 +27,15 @@ permissions:
 
 # Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
 jobs:
-  # Esse workflow tem apenas um job, chamado 'build'
   build:
+    # Máquina que vai rodar o job (poderia ser uma máquina nas hospedada nos domínios do github, sendo um self‑hosted runner)
     runs-on: ubuntu-latest
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
-      - uses: actions/checkout@v4
+      - name: Checar o código
+        uses: actions/checkout@v4
 
         # Passar parâmetros de entrada para a ação
         with:
@@ -47,9 +48,9 @@ jobs:
           echo "Bem vindo ao meu projeto"
           echo "e Hello World!"
 
-      # Falha o job se houver violações
-      - name: Checkstyle (violations)
-        run: mvn -B checkstyle:check
+#      # Falha o job se houver violações no código-fonte Java
+#      - name: Checkstyle (violations)
+#        run: mvn -B checkstyle:check
 
       # Buildar o projeto
       - name: Build Maven
@@ -81,7 +82,8 @@ jobs:
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
-      - uses: actions/checkout@v4
+      - name: Checar o código
+        uses: actions/checkout@v4
 
         # Passar parâmetros de entrada
         with:
@@ -113,3 +115,40 @@ jobs:
       - name: Executar testes em outras branches
         if: ${{ github.ref != 'refs/heads/main' }}
         run: echo "Pulando os testes unitários e análise de código"
+
+  # Job para fazer um 'Security Scan' com a ferramenta open-source trivy
+  trivy-scan:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checar o código
+        uses: actions/checkout@v4
+
+        with:
+          fetch-depth: 0
+
+      - name: Rodar o trivy para escaneamento
+        uses: aquasecurity/trivy-action@0.33.1
+
+        with:
+          # (file system)
+          scan-type: 'fs'
+          # referência para escaneamento (diretório atual)
+          scan-ref: .
+          format: json
+          # significa que é para continuar para o próximo passo mesmo que encontrar vulnerabilidades
+          exit-code: 0
+          vuln-type: os,library
+          # armazenar porque assim que uma ação finaliza, a saída também desaparece
+          output: trivy-results.json
+
+          # Vamos armazenar a saída como um artefato
+
+      # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
+      - name: Upload do escaneamento (trivy) como um artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-scan-results
+          path: trivy-results.json

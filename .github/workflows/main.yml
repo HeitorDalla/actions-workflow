@@ -25,6 +25,7 @@ on:
 permissions:
   contents: read
   actions: read
+  security-events: write
 
 # Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
 jobs:
@@ -138,7 +139,7 @@ jobs:
       # Executar o scan de filesystem no repositório
       - name: Rodar Trivy (file system)
         run: |
-          trivy fs --format json \
+          trivy fs --format sarif \
                    --output trivy-results.json \
                    .
 
@@ -148,3 +149,9 @@ jobs:
         with:
           name: trivy-scan-results
           path: trivy-results.json
+
+      # Serve para enviar a analise para a aba de segurança
+      - name: Upload do Trivy scan na aba Security
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'

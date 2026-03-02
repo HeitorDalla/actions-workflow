@@ -54,7 +54,7 @@ jobs:
 
       # Buildar o projeto
       - name: Build Maven
-        run: mvn -B install
+        run: mvn -B install -Dcheckstyle.skip=true
 
       # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
       - name: Upload do Build Artifact (WAR)

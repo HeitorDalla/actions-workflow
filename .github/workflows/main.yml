@@ -143,7 +143,7 @@ jobs:
           vuln-type: 'os,library'
           # armazenar porque assim que uma ação finaliza, a saída também desaparece
           output: 'trivy-results.json'
-          trivy-version: 'v0.64.0'
+          version: 'v0.64.0'
 
           # Vamos armazenar a saída como um artefato
 

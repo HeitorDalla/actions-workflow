@@ -130,7 +130,7 @@ jobs:
           fetch-depth: 0
 
       - name: Rodar o trivy para escaneamento
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.34.0
 
         with:
           # (file system)

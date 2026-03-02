@@ -24,6 +24,7 @@ on:
 # Mudando as permissões para só ter permissão de ler dentro do repositório (pois esta dentro da branch 'main')
 permissions:
   contents: read
+  actions: read
 
 # Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
 jobs:

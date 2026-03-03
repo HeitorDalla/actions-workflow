@@ -12,6 +12,7 @@ public class SpringDemoApplication {
      */
 
     public static void main(final String[] args) {
+        // Responsavel por cuidar do container que gerencia os objetos criados pelo Spring
         ApplicationContext context = SpringApplication.run(
                 SpringDemoApplication.class,
                 args);

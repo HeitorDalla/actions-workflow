@@ -140,7 +140,7 @@ jobs:
       - name: Rodar Trivy (file system)
         run: |
           trivy fs --format sarif \
-                   --output trivy-results.json \
+                   --output trivy-results.sarif \
                    .
 
       # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
@@ -148,7 +148,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: trivy-scan-results
-          path: trivy-results.json
+          path: trivy-results.sarif
 
       # Serve para enviar a analise para a aba de segurança
       - name: Upload do Trivy scan na aba Security

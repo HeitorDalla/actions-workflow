@@ -25,7 +25,7 @@ permissions:
 
 # Variáveis para a pipeline (pode ter diferentes scopos - pipeline, job, step)
 env:
-  SCRIPT_HELLO: "../scripts/hello.sh"
+  SCRIPT_HELLO: "./.github/scripts/hello.sh"
 
 # Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
 jobs:

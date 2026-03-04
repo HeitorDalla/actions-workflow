@@ -1,11 +1,7 @@
-# Workflow básico do github Actions
-
 # Nome do workflow
-name: Build Workflow
+name: Workflow
 
-# Representa como o workflow é ativado para acionar uma trigger para desencadear essa pipeline
 on:
-  # Aciona uma trigger em eventos de 'push' e 'pull_request', mas apenas para a branch 'main'
   push:
     branches:
       - main
@@ -27,11 +23,21 @@ permissions:
   actions: read
   security-events: write
 
+# Variáveis para a pipeline (pode ter diferentes scopos - pipeline, job, step)
+env:
+  SCRIPT_HELLO: "./hello.sh"
+
 # Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
 jobs:
   build:
+    # Nome do build para aparecer em logs
+    name: Build
+
     # Máquina que vai rodar o job (poderia ser uma máquina nas hospedada nos domínios do github, sendo um self‑hosted runner)
     runs-on: ubuntu-latest
+
+    # Conteinerizar o meu pipeline
+    container: "maven:3.9.6-eclipse-temurin-17"
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
@@ -45,9 +51,7 @@ jobs:
 
       # Executa múltiplos comandos no shell do ambiente (Ubuntu)
       - name: Executar multiplos comandos shell
-        run: |
-          echo "Bem vindo ao meu projeto"
-          echo "e Hello World!"
+        run: $SCRIPT_HELLO
 
 #      # Falha o job se houver violações no código-fonte Java
 #      - name: Checkstyle (violations)
@@ -58,11 +62,11 @@ jobs:
         run: mvn -B install -Dcheckstyle.skip=true
 
       # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: Upload do Build Artifact (WAR)
+      - name: Upload do Build Artifact (JAR)
         uses: actions/upload-artifact@v4
         with:
-          name: app-war
-          path: target/*.war
+          name: app-jar
+          path: target/*.jar
 
       # Se qualquer dos passos anteriores falhou, o valor será verdadeiro
       - name: Notificar se o build falhar
@@ -74,7 +78,13 @@ jobs:
         run: echo "O Build do job falhou! Favor checar os logs."
 
   testing:
+    # Nome para logs
+    name: Test
+
+    # Máquina que vai ser utilizada para rodar o job
     runs-on: ubuntu-latest
+
+    container: "maven:3.9.6-eclipse-temurin-17"
 
     # Necessário caso queira executar uma tarefa antes da outra (impedindo que as tarefas iniciem paralelamente)
     # Ele depende do build, ou seja, se falhar, ele da skip automaticamente
@@ -118,7 +128,11 @@ jobs:
 
   # Job para fazer um 'Security Scan' com a ferramenta open-source trivy
   trivy-scan:
+    name: Trivy-scan
+
     runs-on: ubuntu-latest
+
+    container: "maven:3.9.6-eclipse-temurin-17"
 
     needs: build
 

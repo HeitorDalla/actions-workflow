@@ -53,13 +53,22 @@ jobs:
       - name: Executar multiplos comandos shell
         run: $SCRIPT_HELLO
 
+      # Colocar cache nas dependências do Maven
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
 #      # Falha o job se houver violações no código-fonte Java
 #      - name: Checkstyle (violations)
 #        run: mvn -B checkstyle:check
 
       # Buildar o projeto
       - name: Build Maven
-        run: mvn -B install -Dcheckstyle.skip=true
+        run: mvn -B install -Dcheckstyle.skip=true # tirar '-Dcheckstyle.skip=true' em produção
 
       # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
       - name: Upload do Build Artifact (JAR)
@@ -99,6 +108,15 @@ jobs:
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
           fetch-depth: 0
+
+      # Colocar cache nas dependências do Maven
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       # Executar os testes do projeto apenas quanto o ref = refs/heads/main (PORQUE EU QUERO RODAR TESTES APENAS NA BRANCH 'main')
       - name: Rodar os testes dentro da branch 'main'

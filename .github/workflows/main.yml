@@ -237,7 +237,8 @@ jobs:
         run: 'gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet'
 
       - name: 'Build da imagem do Docker localmente'
-        run: 'docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .'
+        # registry/project/repository/image:tag
+        run: 'docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }} .'
 
       - name: 'Push da imagem Docker para o Artifact Registry'
         run: 'docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'

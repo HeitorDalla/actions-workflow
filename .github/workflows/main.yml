@@ -1,5 +1,4 @@
-# Nome do workflow
-name: Workflow
+name: Workflow CI
 
 on:
   push:
@@ -12,7 +11,7 @@ on:
   # Permite rodar o workflow manualmente
   workflow_dispatch:
 
-  # Permite agendar a execução do pipeline
+  # Agenda a execução do pipeline
   schedule:
     # Vai rodar todo dias as 15:00 horas (minuto, hora, dia do mês, mês e dia da semana)
     - cron: "0 15 * * *"
@@ -25,36 +24,33 @@ permissions:
 
 # Variáveis de ambiente para a pipeline/runner (pode ter diferentes scopos - pipeline, job, step)
 env:
-  SCRIPT_HELLO: "./.github/scripts/hello.sh"
+  SCRIPT_HELLO: ./.github/scripts/hello.sh
 
 # Dentro do workflow existe 'jobs' (tarefas), e dentro de cada job, há 'steps' (passos) que serão executados em sequência (OS jobs PODEM RODAR EM PARALELO)
 jobs:
   build:
-    # Nome do build para aparecer em logs
-    name: 'Build Maven'
+    name: Build Maven
 
     # Máquina que vai rodar o job (poderia ser uma máquina nas hospedada nos domínios do github, sendo um self‑hosted runner)
     runs-on: ubuntu-latest
 
     # Conteinerizar o meu job
-    container: "maven:3.9.6-eclipse-temurin-17"
+    container: maven:3.9.6-eclipse-temurin-17
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
-      # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
-      - name: 'Checar o código'
+      - name: Check the code
         uses: actions/checkout@v4
-        # Passar parâmetros de entrada para a ação
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
           fetch-depth: 0
 
       # Executa múltiplos comandos no shell do ambiente (Ubuntu)
-      - name: 'Executar multiplos comandos shell'
+      - name: Execute multiple shell commands
         run: $SCRIPT_HELLO
 
       # Colocar cache nas dependências do Maven
-      - name: 'Cache Maven dependencies'
+      - name: Caching Maven dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -66,51 +62,47 @@ jobs:
 #      - name: Checkstyle (violations)
 #        run: mvn -B checkstyle:check
 
-      # Buildar o projeto
-      - name: 'Build Maven'
+      # Build do projeto
+      - name: Build Maven
         run: mvn -B install -Dcheckstyle.skip=true # tirar '-Dcheckstyle.skip=true' em produção
 
-      # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: 'Upload do Build Artifact (JAR)'
+      # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
+      - name: Upload Build Artifact (JAR)
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
           path: target/*.jar
 
       # Se qualquer dos passos anteriores falhou, o valor será verdadeiro
-      - name: Notificar se o build falhar
+      - name: Notifies if the build verifies
         # sucess() - executa o 'step' se TODOS os processos anteriores tiverem sido bem-sucedidos (PADRÃO)
         # always() - faz com que o job seja executado SEMPRE, independentemente do status anterior
         # failure() - executa o 'step' apenas se o passo anterior falhar
         # cancelled() - executa o 'step' se o workflow for cancelado
         if: failure()
-        run: echo "O Build do job falhou! Favor checar os logs."
+        run: echo "The build job failed! Please, check the logs."
 
   testing:
-    # Nome para logs
-    name: 'Test Maven'
+    name: Test Maven
 
-    # Máquina que vai ser utilizada para rodar o job
     runs-on: ubuntu-latest
 
-    container: "maven:3.9.6-eclipse-temurin-17"
+    container: maven:3.9.6-eclipse-temurin-17
 
-    # Necessário caso queira executar uma tarefa antes da outra (impedindo que as tarefas iniciem paralelamente)
-    # Ele depende do build, ou seja, se falhar, ele da skip automaticamente
+    # Depende do build
     needs: build
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
-      - name: 'Checar o código'
+      - name: Check the code
         uses: actions/checkout@v4
-        # Passar parâmetros de entrada
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
           fetch-depth: 0
 
       # Colocar cache nas dependências do Maven
-      - name: 'Cache Maven dependencies'
+      - name: Caching Maven dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -118,19 +110,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Executar os testes do projeto apenas quanto o ref = refs/heads/main (PORQUE EU QUERO RODAR TESTES APENAS NA BRANCH 'main')
-      - name: 'Rodar os testes dentro da branch "main"'
-        # Verificando se a branch atual for 'main'
+      # Executar os testes do projeto apenas quando a branch for `main` (github.ref == 'refs/heads/main)
+      - name: Run tests within the main branch
         if: ${{ github.ref == 'refs/heads/main' }}
         run: mvn -B test
 
       # Vai analisar o código fonte para garantir regras de formatação e gerar um relatório HTML
-      - name: 'Checkstyle'
+      - name: Checkstyle
         if: ${{ github.ref == 'refs/heads/main' }}
         run: mvn -B checkstyle:checkstyle
 
-      # Vai disponibilizar o relatório como um Artifacts
-      - name: 'Disponibilizando artefato'
+      # Vai disponibilizar o relatório como um Artefato
+      - name: Making the artifact available
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -140,68 +131,63 @@ jobs:
             target/checkstyle-result.xml
 
       # Vai validar se a branch é diferente da 'main'
-      - name: 'Executar testes em outras branches'
+      - name: Running tests on other branchs
         if: ${{ github.ref != 'refs/heads/main' }}
-        run: echo "Pulando os testes unitários e análise de código"
+        run: echo "Skipping unit testing and the code analysis."
 
   # Job para fazer um 'Security Scan' com a ferramenta open-source trivy
   trivy-scan:
-    name: 'Trivy-scan'
+    name: Trivy-scan
 
     runs-on: ubuntu-latest
 
-    container: "maven:3.9.6-eclipse-temurin-17"
+    container: maven:3.9.6-eclipse-temurin-17
 
     needs: build
 
     steps:
-      - name: 'Checar o código'
+      - name: Check the code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Instalar o Trivy
-      - name: 'Baixar Trivy'
+      - name: Download Trivy
         uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
         with:
-          trivy-version: 'v0.68.2'
+          trivy-version: v0.68.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # evitar rate limit no download do release
 
-      # Executar o scan de filesystem no repositório
-      - name: 'Rodar Trivy (file system)'
+      # Executa o scan de filesystem no repositório
+      - name: Run Trivy (file system)
         run: |
           trivy fs --format sarif \
                    --output trivy-results.sarif \
                    .
 
-      # Serve para enviar arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: 'Upload do escaneamento (trivy) como um artefato'
+      # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
+      - name: Upload the scan (trivy) as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: trivy-scan-results
           path: trivy-results.sarif
 
-      # Serve para enviar a analise para a aba de segurança
-      - name: 'Upload do escaneamento do trivy na aba de Seguranca do Githbu'
+      # Envia a analise para a aba de segurança
+      - name: Upload the scan (trivy-results.sarif) in the security tab of Github
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: trivy-results.sarif
 
   # Job para build do Dockerfile e subir para o Artifact Registry
   build-push-artifact:
-    name: 'Build, Test and Push Docker image'
+    name: Build, Test and Push Docker image
 
-    # Todo o job vai rodar nessa maquina
     runs-on: ubuntu-latest
 
-    # Especificando o ambiente em que vai rodar
     environment: production
 
-    # Vai rodar apenas depois do buil, test e code scanning
     needs: [build, testing, trivy-scan]
 
-    # Verificar se esta na branch main
     if: ${{ github.ref == 'refs/heads/main' }}
 
     env:
@@ -212,33 +198,30 @@ jobs:
       TAG_NAME: ${{ github.sha }}
 
     steps:
-      # Checar o codigo
-      - name: 'Checar o codigo'
+      - name: Check the code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-    # Autenticando o Github usando as credencias da Conta de Servico (Service Account) do GCP
-      - name: 'Authenticate Github using GCP credentials'
-        uses: 'google-github-actions/auth@v3'
+      - name: Authenticate Github using GCP Service Account credentials
+        uses: google-github-actions/auth@v3
         with:
-          credentials_json: '${{ secrets.GCP_ACCESS_KEY_ID }}'
+          credentials_json: ${{ secrets.GCP_ACCESS_KEY_ID }}
 
-    # Baixar SDK do GCP
-      - name: 'Baixar Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v3'
+      - name: Download Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
         with:
           version: '>= 363.0.0'
 
-      - name: 'Usando Cloud CLI'
-        run: 'gcloud info'
+      - name: Using Cloud CLI
+        run: gcloud info
 
-      - name: 'Autenticando o cliente Docker com a API do Artifact Registry'
-        run: 'gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet'
+      - name: Authenticate the Docker client with the API in the Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: 'Build da imagem do Docker localmente'
+      - name: Build the image locally in Docker
         # registry/project/repository/image:tag
-        run: 'docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }} .'
+        run: docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }} .
 
-      - name: 'Push da imagem Docker para o Artifact Registry'
-        run: 'docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}'
+      - name: Push the Docker image to the Artifact Registry
+        run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}

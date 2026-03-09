@@ -26,6 +26,7 @@ permissions:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
+
     with:
       os_version: 'ubuntu-latest'
       container_name: 'maven:3.9.6-eclipse-temurin-17'
@@ -33,14 +34,18 @@ jobs:
       artifact_name: 'app-jar'
 
   test:
+    needs: [ build ]
     uses: ./.github/workflows/test.yml
+
     with:
       os_version: 'ubuntu-latest'
       container_name: 'maven:3.9.6-eclipse-temurin-17'
       artifact_name: 'checkstyle-report'
 
   trivy-scan:
+    needs: [ build ]
     uses: ./.github/workflows/trivy-scan.yml
+
     with:
       os_version: 'ubuntu-latest'
       container_name: 'maven:3.9.6-eclipse-temurin-17'
@@ -50,7 +55,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-push-artifact:
+    needs: [ build, test, trivy-scan ]
     uses: ./.github/workflows/build-push-artifact.yml
+
+    if: ${{ github.ref == 'refs/heads/main' }}
+
     with:
       os_version: 'ubuntu-latest'
       environment_name: 'production'

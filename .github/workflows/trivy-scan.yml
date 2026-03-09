@@ -36,8 +36,6 @@ jobs:
 
     container: ${{ inputs.container_name }}
 
-    needs: build
-
     steps:
       - name: Check the code
         uses: actions/checkout@v4

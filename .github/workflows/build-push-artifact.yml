@@ -57,10 +57,6 @@ jobs:
 
     environment: ${{ inputs.environment_name }}
 
-    needs: [ build, testing, trivy-scan ]
-
-    if: ${{ github.ref == 'refs/heads/main' }}
-
     steps:
       - name: Check the code
         uses: actions/checkout@v4
@@ -70,7 +66,7 @@ jobs:
       - name: Authenticate Github using GCP Service Account credentials
         uses: google-github-actions/auth@v3
         with:
-          CREDENTIALS_JSON: ${{ secrets.GCP_ACCESS_KEY_ID }}
+          credentials_json: ${{ secrets.CREDENTIALS_JSON }}
 
       - name: Download Cloud SDK
         uses: google-github-actions/setup-gcloud@v3

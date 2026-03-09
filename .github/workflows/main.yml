@@ -51,8 +51,6 @@ jobs:
       container_name: 'maven:3.9.6-eclipse-temurin-17'
       trivy_version: 'v0.68.2'
       artifact_name: 'trivy-scan-results'
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-push-artifact:
     needs: [ build, test, trivy-scan ]

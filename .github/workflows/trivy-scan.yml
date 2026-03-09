@@ -24,10 +24,6 @@ on:
         required: false
         type: string
 
-    secrets:
-      GITHUB_TOKEN:
-        required: true
-
 jobs:
   trivy-scan:
     name: Trivy-scan
@@ -47,7 +43,7 @@ jobs:
         with:
           trivy-version: ${{ inputs.trivy_version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       # Executa o scan de filesystem no repositório
       - name: Run Trivy (file system)

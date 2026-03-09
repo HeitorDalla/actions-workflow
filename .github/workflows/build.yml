@@ -53,7 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      #      # Falha o job se houver violações no código-fonte Java
+      #      # O job falha se houver violações no código-fonte Java
       #      - name: Checkstyle (violations)
       #        run: mvn -B checkstyle:check
 

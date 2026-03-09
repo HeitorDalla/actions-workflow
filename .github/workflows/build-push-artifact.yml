@@ -1,0 +1,91 @@
+name: Build and Push Artifact
+
+on:
+  workflow_call:
+    inputs:
+      os_version:
+        description: 'Runner que vai rodar o job'
+        default: 'ubuntu-latest'
+        required: false
+        type: string
+      environment_name:
+        description: 'Nome do ambiente que vai rodar o job'
+        default: 'production'
+        required: false
+        type: string
+      sdk_version:
+        description: 'Versão do SDK do GCP'
+        default: '>= 363.0.0'
+        required: false
+        type: string
+
+      REGION:
+        description: 'Nome da região meu Artifact Registry'
+        default: 'us-west4'
+        required: false
+        type: string
+      PROJECT_ID:
+        description: 'Id do projeto'
+        default: 'meta-coral-473420-b8'
+        required: false
+        type: string
+      REPOSITORY:
+        description: 'Nome do repositório do Artifact Registry'
+        default: 'actions-workflow'
+        required: false
+        type: string
+      IMAGE_NAME:
+        description: 'Nome da Imagem Docker'
+        default: 'my-app'
+        required: false
+        type: string
+      TAG_NAME:
+        description: 'Nome da tag da Imagem Docker'
+        default: ${{ github.sha }}
+        required: false
+        type: string
+
+    secrets:
+      CREDENTIALS_JSON:
+        required: true
+
+jobs:
+  build-push-artifact:
+    name: Build, Test and Push Docker image
+
+    runs-on: ${{ inputs.os_version }}
+
+    environment: ${{ inputs.environment_name }}
+
+    needs: [ build, testing, trivy-scan ]
+
+    if: ${{ github.ref == 'refs/heads/main' }}
+
+    steps:
+      - name: Check the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Authenticate Github using GCP Service Account credentials
+        uses: google-github-actions/auth@v3
+        with:
+          CREDENTIALS_JSON: ${{ secrets.GCP_ACCESS_KEY_ID }}
+
+      - name: Download Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: ${{ inputs.sdk_version }}
+
+      - name: Using Cloud CLI
+        run: gcloud info
+
+      - name: Authenticate the Docker client with the API in the Artifact Registry
+        run: gcloud auth configure-docker ${{ inputs.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build the image locally in Docker
+        # registry/project/repository/image:tag
+        run: docker build -t ${{ inputs.REGION }}-docker.pkg.dev/${{ inputs.PROJECT_ID }}/${{ inputs.REPOSITORY }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG_NAME }} .
+
+      - name: Push the Docker image to the Artifact Registry
+        run: docker push ${{ inputs.REGION }}-docker.pkg.dev/${{ inputs.PROJECT_ID }}/${{ inputs.REPOSITORY }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG_NAME }}

@@ -1,0 +1,73 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      os_version:
+        description: 'Runner que vai rodar o job'
+        default: 'ubuntu-latest'
+        required: false
+        type: string
+      container_name:
+        description: 'Container que vai rodar o job'
+        default: 'maven:3.9.6-eclipse-temurin-17'
+        required: false
+        type: string
+      artifact_name:
+        description: 'Nome do artefato gerado para upload'
+        default: 'checkstyle-report'
+        required: false
+        type: string
+
+jobs:
+  testing:
+    name: Test Maven
+
+    runs-on: ${{ inputs.os_version }}
+
+    container: ${{ inputs.container_name }}
+
+    needs: build
+
+    # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
+    steps:
+      # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
+      - name: Check the code
+        uses: actions/checkout@v4
+        with:
+          # Permite obter todo o histórico de commits (útil para checagem de branches)
+          fetch-depth: 0
+
+      # Colocar cache nas dependências do Maven
+      - name: Caching Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Executar os testes do projeto apenas quando a branch for `main` (github.ref == 'refs/heads/main)
+      - name: Run tests within the main branch
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: mvn -B test
+
+      # Vai analisar o código fonte para garantir regras de formatação e gerar um relatório HTML
+      - name: Checkstyle
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: mvn -B checkstyle:checkstyle
+
+      # Vai disponibilizar o relatório como um Artefato
+      - name: Making the artifact available
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: |
+            target/site/checkstyle.html
+            target/checkstyle-result.xml
+
+      # Vai validar se a branch é diferente da 'main'
+      - name: Running tests on other branchs
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: echo "Skipping unit testing and the code analysis."

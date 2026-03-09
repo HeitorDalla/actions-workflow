@@ -48,7 +48,7 @@ jobs:
       artifact_name: trivy-scan-results
 
   build_push_artifact:
-    needs: [ build, test, trivy-scan ]
+    needs: [ build, test, trivy_scan ]
     uses: ./.github/workflows/reusable/docker-publish.yml
 
     if: ${{ github.ref == 'refs/heads/main' }}

@@ -4,23 +4,23 @@ on:
   workflow_call:
     inputs:
       os_version:
-        description: 'Runner que vai rodar o job'
-        default: 'ubuntu-latest'
+        description: Runner que vai rodar o job
+        default: ubuntu-latest
         required: false
         type: string
       container_name:
-        description: 'Container que vai rodar o job'
-        default: 'maven:3.9.6-eclipse-temurin-17'
+        description: Container que vai rodar o job
+        default: maven:3.9.6-eclipse-temurin-17
         required: false
         type: string
       script_hello_path:
-        description: 'Caminho do script Hello World'
-        default: './.github/scripts/hello.sh'
+        description: Caminho do script Hello World
+        default: ./.github/scripts/hello.sh
         required: false
         type: string
       artifact_name:
-        description: 'Nome do artifact para upload'
-        default: 'app-jar'
+        description: Nome do artifact para upload
+        default: app-jar
         required: false
         type: string
 
@@ -29,23 +29,22 @@ jobs:
     name: Build Maven
 
     runs-on: ${{ inputs.os_version }}
-
     container: ${{ inputs.container_name }}
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
-      - name: Check the code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
           fetch-depth: 0
 
       # Executa múltiplos comandos no shell do ambiente (Ubuntu)
-      - name: Execute multiple shell commands
+      - name: Run Startup Script
         run: ${{ inputs.script_hello_path }}
 
       # Colocar cache nas dependências do Maven
-      - name: Caching Maven dependencies
+      - name: Cache Maven Dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -58,18 +57,18 @@ jobs:
       #        run: mvn -B checkstyle:check
 
       # Build do projeto
-      - name: Build Maven
-        run: mvn -B install -Dcheckstyle.skip=true # tirar '-Dcheckstyle.skip=true' em produção
+      - name: Build Project
+        run: mvn -B install -Dcheckstyle.skip=true # remover skip em produção
 
       # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: Upload Build Artifact (JAR)
+      - name: Upload Artifact (JAR)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact_name }}
           path: target/*.jar
 
       # Se qualquer dos passos anteriores falhou, o valor será verdadeiro
-      - name: Notifies if the build verifies
+      - name: Notifies on Failure
         # sucess() - executa o 'step' se TODOS os processos anteriores tiverem sido bem-sucedidos (PADRÃO)
         # always() - faz com que o job seja executado SEMPRE, independentemente do status anterior
         # failure() - executa o 'step' apenas se o passo anterior falhar

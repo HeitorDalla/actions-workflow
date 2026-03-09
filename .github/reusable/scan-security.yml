@@ -4,23 +4,23 @@ on:
   workflow_call:
     inputs:
       os_version:
-        description: 'Runner que vai rodar o job'
-        default: 'ubuntu-latest'
+        description: Runner que vai rodar o job
+        default: ubuntu-latest
         required: false
         type: string
       container_name:
-        description: 'Container que vai rodar o job'
-        default: 'maven:3.9.6-eclipse-temurin-17'
+        description: Container que vai rodar o job
+        default: maven:3.9.6-eclipse-temurin-17
         required: false
         type: string
       trivy_version:
-        description: 'Versão do trivy'
-        default: 'v0.68.2'
+        description: Versão do trivy
+        default: v0.68.2
         required: false
         type: string
       artifact_name:
-        description: 'Nome do artefato gerado para upload'
-        default: 'trivy-scan-results'
+        description: Nome do artefato gerado para upload
+        default: trivy-scan-results
         required: false
         type: string
 
@@ -29,16 +29,15 @@ jobs:
     name: Trivy-scan
 
     runs-on: ${{ inputs.os_version }}
-
     container: ${{ inputs.container_name }}
 
     steps:
-      - name: Check the code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Download Trivy
+      - name: Install Trivy
         uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
         with:
           trivy-version: ${{ inputs.trivy_version }}
@@ -46,21 +45,21 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       # Executa o scan de filesystem no repositório
-      - name: Run Trivy (file system)
+      - name: Run File System Scan
         run: |
           trivy fs --format sarif \
                    --output trivy-results.sarif \
                    .
 
       # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: Upload the scan (trivy) as an artifact
+      - name: Upload Trivy Report
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact_name }}
           path: trivy-results.sarif
 
       # Envia a analise para a aba de segurança
-      - name: Upload the scan (trivy-results.sarif) in the security tab of Github
+      - name: Publish Report to Security Tab
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-results.sarif

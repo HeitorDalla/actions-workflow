@@ -4,18 +4,18 @@ on:
   workflow_call:
     inputs:
       os_version:
-        description: 'Runner que vai rodar o job'
-        default: 'ubuntu-latest'
+        description: Runner que vai rodar o job
+        default: ubuntu-latest
         required: false
         type: string
       container_name:
-        description: 'Container que vai rodar o job'
-        default: 'maven:3.9.6-eclipse-temurin-17'
+        description: Container que vai rodar o job
+        default: maven:3.9.6-eclipse-temurin-17
         required: false
         type: string
       artifact_name:
-        description: 'Nome do artefato gerado para upload'
-        default: 'checkstyle-report'
+        description: Nome do artefato gerado para upload
+        default: checkstyle-report
         required: false
         type: string
 
@@ -24,20 +24,19 @@ jobs:
     name: Test Maven
 
     runs-on: ${{ inputs.os_version }}
-
     container: ${{ inputs.container_name }}
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
-      - name: Check the code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           # Permite obter todo o histórico de commits (útil para checagem de branches)
           fetch-depth: 0
 
       # Colocar cache nas dependências do Maven
-      - name: Caching Maven dependencies
+      - name: Cache Maven Dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -46,17 +45,17 @@ jobs:
             ${{ runner.os }}-maven-
 
       # Executar os testes do projeto apenas quando a branch for `main` (github.ref == 'refs/heads/main)
-      - name: Run tests within the main branch
+      - name: Run Unit Tests
         if: ${{ github.ref == 'refs/heads/main' }}
         run: mvn -B test
 
       # Vai analisar o código fonte para garantir regras de formatação e gerar um relatório HTML
-      - name: Checkstyle
+      - name: Run Checkstyle
         if: ${{ github.ref == 'refs/heads/main' }}
         run: mvn -B checkstyle:checkstyle
 
       # Vai disponibilizar o relatório como um Artefato
-      - name: Making the artifact available
+      - name: Upload Checkstyle Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -66,6 +65,6 @@ jobs:
             target/checkstyle-result.xml
 
       # Vai validar se a branch é diferente da 'main'
-      - name: Running tests on other branchs
+      - name: Skip Tests on Non-Main Branches
         if: ${{ github.ref != 'refs/heads/main' }}
-        run: echo "Skipping unit testing and the code analysis."
+        run: echo "Skipping unit tests and code analysis on non-main branches."

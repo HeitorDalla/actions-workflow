@@ -7,14 +7,13 @@ e esse projeto segue o [Versionamento Semântico](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Adicionado
-- Criado um artefato Docker dentro do Artifact Registry do GCP para armazenar imagem Docker do projeto
+### Added
+### Changed
+### Removed
 
-### Modificado
-### Removido
-
-## [0.1.0] - 2026-02-26
+## [0.1.0] - 2026-03-09
 
 ### Added
 
-- Projeto iniciado
+- Implementada pipeline CI/CD no GitHub Actions com deploy automático no GCP.
+- Configurada infraestrutura inicial (Artifact Registry).

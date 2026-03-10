@@ -1,6 +1,6 @@
 package com.heitor.app.entity;
 
-import com.heitor.enumerate.StatusReserva;
+import com.heitor.app.enumerate.StatusReserva;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

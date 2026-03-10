@@ -1,6 +1,6 @@
 package com.heitor.app.entity;
 
-import com.heitor.enumerate.StatusEmprestimo;
+import com.heitor.app.enumerate.StatusEmprestimo;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

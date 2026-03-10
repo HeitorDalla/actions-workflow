@@ -1,6 +1,6 @@
 package com.heitor.app.entity;
 
-import com.heitor.enumerate.StatusExemplar;
+import com.heitor.app.enumerate.StatusExemplar;
 import jakarta.persistence.*;
 
 @Entity

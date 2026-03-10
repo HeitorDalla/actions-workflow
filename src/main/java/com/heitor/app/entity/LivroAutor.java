@@ -1,13 +1,14 @@
-package com.heitor.model;
+package com.heitor.app.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "livro_categoria")
-public class LivroCategoria{
+@Table(name = "livro_autor")
+public class LivroAutor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -15,17 +16,17 @@ public class LivroCategoria{
     private Livro livro;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_categoria", nullable = false)
-    private Categoria categoria;
+    @JoinColumn(name = "id_autor", nullable = false)
+    private Autor autor;
 
-    public LivroCategoria() {}
+    public LivroAutor() {}
 
-    public LivroCategoria(Long id,
-                          Livro livro,
-                          Categoria categoria) {
+    public LivroAutor(Long id,
+                      Livro livro,
+                      Autor autor) {
         this.id = id;
         this.livro = livro;
-        this.categoria = categoria;
+        this.autor = autor;
     }
 
     public Long getId() {
@@ -44,20 +45,20 @@ public class LivroCategoria{
         this.livro = livro;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public Autor getAutor() {
+        return autor;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setAutor(Autor autor) {
+        this.autor = autor;
     }
 
     @Override
     public String toString() {
-        return "LivroCategoria{" +
+        return "LivroAutor{" +
                 "id=" + id +
                 ", livro=" + livro +
-                ", categoria=" + categoria +
+                ", autor=" + autor +
                 '}';
     }
 }

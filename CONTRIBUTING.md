@@ -5,7 +5,7 @@ Siga estas orientações para mantermos um fluxo organizado e eficiente.
 
 ---
 
-## 📌 Como começar
+## Como começar
 
 1. Faça um fork do repositório.
 2. Clone seu fork:
@@ -19,7 +19,7 @@ Siga estas orientações para mantermos um fluxo organizado e eficiente.
 
 ---
 
-## 🧩 Criando uma branch
+## Criando uma branch
 
 Sempre crie uma branch nova para sua contribuição:
 
@@ -35,7 +35,7 @@ git checkout -b fix/descricao-do-bug
 
 ---
 
-## 🐛 Reportando bugs
+## Reportando bugs
 
 Abra uma issue com:
 - Descrição do erro
@@ -45,7 +45,7 @@ Abra uma issue com:
 
 ---
 
-## 🚀 Criando um Pull Request
+## Criando um Pull Request
 
 1. Faça commit seguindo boas práticas:
    ```
@@ -62,7 +62,7 @@ Abra uma issue com:
 
 ---
 
-## ✔️ Checklist antes do PR
+## Checklist antes do PR
 
 - [ ] Código formatado
 - [ ] Testes rodando
@@ -71,7 +71,7 @@ Abra uma issue com:
 
 ---
 
-## 💬 Dúvidas?
+## Dúvidas?
 
 Abra uma issue com a tag **question**.
 

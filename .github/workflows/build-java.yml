@@ -19,8 +19,13 @@ on:
         required: false
         type: string
       artifact_name:
-        description: Nome do artifact para upload
+        description: Nome do artefato
         default: app-jar
+        required: false
+        type: string
+      artifact_path:
+        description: Caminho do artefato
+        default: target/*.jar
         required: false
         type: string
 
@@ -33,24 +38,14 @@ jobs:
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # Permite obter todo o histórico de commits (útil para checagem de branches)
-          fetch-depth: 0
+      - uses: ./.github/actions/checkout
 
       # Executa múltiplos comandos no shell do ambiente (Ubuntu)
       - name: Run Startup Script
         run: ${{ inputs.script_hello_path }}
 
       # Colocar cache nas dependências do Maven
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - uses: ./.github/actions/cache-maven
 
       #      # O job falha se houver violações no código-fonte Java
       #      - name: Checkstyle (violations)
@@ -61,11 +56,10 @@ jobs:
         run: mvn -B install -Dcheckstyle.skip=true # remover skip em produção
 
       # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: Upload Artifact (JAR)
-        uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/upload-artifact
         with:
-          name: ${{ inputs.artifact_name }}
-          path: target/*.jar
+          artifact_name: ${{ inputs.artifact_name }}
+          artifact_path: ${{ inputs.artifact_path }}
 
       # Se qualquer dos passos anteriores falhou, o valor será verdadeiro
       - name: Notifies on Failure

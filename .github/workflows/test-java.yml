@@ -14,8 +14,15 @@ on:
         required: false
         type: string
       artifact_name:
-        description: Nome do artefato gerado para upload
+        description: Nome do artefato gerado
         default: checkstyle-report
+        required: false
+        type: string
+      artifact_path:
+        description: Caminho do artefato gerado
+        default: |
+          target/site/checkstyle.html
+          target/checkstyle-result.xml
         required: false
         type: string
 
@@ -29,20 +36,10 @@ jobs:
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
       # Esse passo faz o checkout do repositório no runner, colocando o código em $GITHUB_WORKSPACE (sem isso os proximos passos nao teriam acesso ao código do repositório) (vai clonar o codigo fonte para dentro do runner)
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # Permite obter todo o histórico de commits (útil para checagem de branches)
-          fetch-depth: 0
+      - uses: ./.github/actions/checkout
 
       # Colocar cache nas dependências do Maven
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - uses: ./.github/actions/cache-maven
 
       # Executar os testes do projeto apenas quando a branch for `main` (github.ref == 'refs/heads/main)
       - name: Run Unit Tests
@@ -57,12 +54,10 @@ jobs:
       # Vai disponibilizar o relatório como um Artefato
       - name: Upload Checkstyle Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-artifact
         with:
-          name: ${{ inputs.artifact_name }}
-          path: |
-            target/site/checkstyle.html
-            target/checkstyle-result.xml
+          artifact_name: ${{ inputs.artifact_name }}
+          artifact_path: ${{ inputs.artifact_path }}
 
       # Vai validar se a branch é diferente da 'main'
       - name: Skip Tests on Non-Main Branches

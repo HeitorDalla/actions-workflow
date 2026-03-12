@@ -29,6 +29,7 @@ jobs:
       container_name: maven:3.9.6-eclipse-temurin-17
       script_hello_path: ./.github/scripts/hello.sh
       artifact_name: app-jar
+      artifact_path: target/*.jar
 
   test:
     needs: [ build ]
@@ -37,6 +38,9 @@ jobs:
       os_version: ubuntu-latest
       container_name: maven:3.9.6-eclipse-temurin-17
       artifact_name: checkstyle-report
+      artifact_path: |
+        target/site/checkstyle.html
+        target/checkstyle-result.xml
 
   trivy_scan:
     needs: [ build ]
@@ -46,6 +50,7 @@ jobs:
       container_name: maven:3.9.6-eclipse-temurin-17
       trivy_version: v0.68.2
       artifact_name: trivy-scan-results
+      artifact_path: trivy-results.sarif
 
   build_push_artifact:
     needs: [ build, test, trivy_scan ]

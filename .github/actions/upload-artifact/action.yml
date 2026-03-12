@@ -1,0 +1,21 @@
+author: Heitor Giussani Dalla Villa
+name: Upload Artifact
+description: Publica artefatos na aba 'Artifacts' da execução
+
+inputs:
+  artifact_name:
+    description: Nome do artefato
+    required: true
+  artifact_path:
+    description: Caminho do artefato
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: Upload Artifact (JAR)
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: ${{ inputs.artifact_path }}

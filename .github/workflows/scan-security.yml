@@ -23,6 +23,11 @@ on:
         default: trivy-scan-results
         required: false
         type: string
+      artifact_path:
+        description: Caminho do artefato gerado para upload
+        default: trivy-results.sarif
+        required: false
+        type: string
 
 jobs:
   trivy-scan:
@@ -32,10 +37,7 @@ jobs:
     container: ${{ inputs.container_name }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: ./.github/actions/checkout
 
       - name: Install Trivy
         uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
@@ -52,11 +54,10 @@ jobs:
                    .
 
       # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
-      - name: Upload Trivy Report
-        uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/upload-artifact
         with:
-          name: ${{ inputs.artifact_name }}
-          path: trivy-results.sarif
+          artifact_name: ${{ inputs.artifact_name }}
+          artifact_path: ${{ inputs.artifact_path }}
 
       # Envia a analise para a aba de segurança
       - name: Publish Report to Security Tab

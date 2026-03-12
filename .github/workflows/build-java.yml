@@ -38,7 +38,10 @@ jobs:
 
     # Lista de passo a passo do job (todos os passos compartilham o mesmo workspace e variaveis de ambiente
     steps:
-      - uses: ./.github/actions/checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.fetch-depth }}
 
       # Executa múltiplos comandos no shell do ambiente (Ubuntu)
       - name: Run Startup Script

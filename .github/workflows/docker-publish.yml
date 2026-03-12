@@ -58,7 +58,10 @@ jobs:
     environment: ${{ inputs.environment_name }}
 
     steps:
-      - uses: ./.github/actions/checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.fetch-depth }}
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v3

@@ -26,7 +26,7 @@ public class Book {
     private String isbn;
 
     @Column(name = "book_publication_year", nullable = false)
-    private int publicationYear;
+    private Long publicationYear;
 
     @Column(name = "book_language", nullable = false)
     private String language;
@@ -52,7 +52,7 @@ public class Book {
                 String title,
                 String author,
                 String isbn,
-                int publicationYear,
+                Long publicationYear,
                 String language,
                 Integer totalQuantity,
                 Integer availableQuantity,
@@ -104,11 +104,11 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public int getPublicationYear() {
+    public Long getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(int publicationYear) {
+    public void setPublicationYear(Long publicationYear) {
         this.publicationYear = publicationYear;
     }
 

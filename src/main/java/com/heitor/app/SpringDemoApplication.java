@@ -16,8 +16,5 @@ public class SpringDemoApplication {
         ApplicationContext context = SpringApplication.run(
                 SpringDemoApplication.class,
                 args);
-
-//      Usuario usuario = context.getBean(Usuario.class);
-//      usuario.code();
     }
 }

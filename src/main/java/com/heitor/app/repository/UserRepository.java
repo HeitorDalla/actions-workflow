@@ -1,7 +1,7 @@
 package com.heitor.app.repository;
 
-import com.heitor.app.entity.Usuario;
-import com.heitor.app.enumerate.StatusUsuario;
+import com.heitor.app.entity.User;
+import com.heitor.app.enumerate.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,20 +11,20 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<Usuario, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     @Query("""
     SELECT u
-    FROM Usuario u
-    WHERE (:nome IS NULL OR LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-      AND (:telefone IS NULL OR u.telefone = :telefone)
+    FROM User u
+    WHERE (:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')))
+      AND (:number IS NULL OR u.number = :number)
       AND (:email IS NULL OR u.email = LOWER(:email))
-      AND (:dataCadastro IS NULL OR u.dataCadastro = :dataCadastro)
-      AND (:statusUsuario IS NULL OR u.statusUsuario = :statusUsuario)
+      AND (:registrationDate IS NULL OR u.registrationDate = :registrationDate)
+      AND (:userStatus IS NULL OR u.userStatus = :userStatus)
     """)
-    List<Usuario> searchWithFilters(
-            @Param("nome") String nome,
-            @Param("telefone") String telefone,
+    List<User> getAllUsers(
+            @Param("name") String name,
+            @Param("number") String number,
             @Param("email") String email,
-            @Param("dataCadastro") LocalDate dataCadastro,
-            @Param("statusUsuario") StatusUsuario statusUsuario);
+            @Param("registrationDate") LocalDate registrationDate,
+            @Param("userStatus") UserStatus userStatus);
 }

@@ -1,15 +1,24 @@
 package com.heitor.app.service;
 
-import com.heitor.app.entity.Usuario;
-import com.heitor.app.enumerate.StatusUsuario;
+import com.heitor.app.entity.User;
+import com.heitor.app.enumerate.UserStatus;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface UserService {
-    List<Usuario> getAllUsers(String nome, String telefone, String email, LocalDate dataCadastro, StatusUsuario statusUsuario);
+    List<User> getAllUsers(String name,
+                           String number,
+                           String email,
+                           LocalDate registrationDate,
+                           UserStatus userStatus
+    );
 
-    Usuario getUserById(Long id);
+    User getUserById(Long id);
 
-    Usuario createUser(Usuario endereco);
+    User createUser(User user);
+
+    User updateUser(User newUser, Long id);
+
+    void deleteUser(Long id);
 }

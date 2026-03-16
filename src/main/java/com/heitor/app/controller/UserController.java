@@ -1,8 +1,9 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.entity.Usuario;
-import com.heitor.app.enumerate.StatusUsuario;
+import com.heitor.app.entity.User;
+import com.heitor.app.enumerate.UserStatus;
 import com.heitor.app.service.UserService;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -21,35 +23,57 @@ public class UserController {
     }
 
     @GetMapping
-    public List<Usuario> getAllUsers(
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false) String telefone,
+    public List<User> getAllUsers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String number,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) LocalDate dataCadastro,
-            @RequestParam(required = false) StatusUsuario statusUsuario) {
+            @RequestParam(required = false) LocalDate registrationDate,
+            @RequestParam(required = false) UserStatus userStatus) {
 
-        List<Usuario> users = userService.getAllUsers(nome, telefone, email, dataCadastro, statusUsuario);
+        List<User> users = userService.getAllUsers(
+                name,
+                number,
+                email,
+                registrationDate,
+                userStatus
+        );
 
-        LOGGER.info("Usuarios buscados com sucesso: {}", users);
+        LOGGER.info("Users successfully fetched: {}", users);
 
         return users;
     }
 
     @GetMapping("/{id}")
-    public Usuario getById(@PathVariable Long id) { // pega a variavel da URL (/users/10)
-        Usuario usuario = userService.getUserById(id);
+    public User getUserById(@PathVariable Long id) { // pega a variavel da URL (/users/10)
+        User user = userService.getUserById(id);
 
-        LOGGER.info("Usuario buscado com sucesso: {}", usuario);
+        LOGGER.info("User successfully fetched: {}", user);
 
-        return usuario;
+        return user;
     }
 
     @PostMapping
-    public Usuario createUser(@RequestBody Usuario usuario) { // pega o BODY da requisicao
-        Usuario saldo = userService.createUser(usuario);
+    public User createUser(@RequestBody User user) { // pega o BODY da requisicao
+        User savedUser = userService.createUser(user);
 
-        LOGGER.info("Usuario salvo com sucesso: {}", saldo);
+        LOGGER.info("User successfully created: {}", savedUser);
 
-        return saldo;
+        return savedUser;
+    }
+
+    @PatchMapping("/{id}")
+    public User updateUser(@RequestBody User newUser, @PathVariable Long id) {
+        User updatedUser = userService.updateUser(newUser, id);
+
+        LOGGER.info("User successfully updated: {}", updatedUser);
+
+        return updatedUser;
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+
+        LOGGER.info("User successfully deleted: {}", id);
     }
 }

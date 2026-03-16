@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.heitor.app.enumerate.StatusEmprestimo;
 import jakarta.persistence.*;
 
@@ -20,14 +21,16 @@ public class Emprestimo {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data_emprestimo", nullable = false)
     private LocalDate dataEmprestimo;
 
-    @Column(name = "data_devolucao_emprestimo", nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "data_devolucao_emprestimo")
     private LocalDate dataDevolucao;
 
-    @Transient // anotacao para fazer o JPA ignorar a persistencia no banco de dados, mas util para regras de negoico
-    private long diasAtraso;
+//    @Transient // anotacao para fazer o JPA ignorar a persistencia no banco de dados, mas util para regras de negoico
+//    private long diasAtraso;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_emprestimo", nullable = false)
@@ -35,6 +38,9 @@ public class Emprestimo {
 
     @OneToMany(mappedBy = "emprestimo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemEmprestimo> itens = new ArrayList<>();
+
+    @OneToOne(mappedBy = "emprestimo", fetch = FetchType.LAZY)
+    private Multa multa;
 
     public Emprestimo() {}
 
@@ -44,14 +50,15 @@ public class Emprestimo {
                       LocalDate dataDevolucao,
                       long diasAtraso,
                       StatusEmprestimo statusEmprestimo,
-                      List<ItemEmprestimo> itens) {
+                      List<ItemEmprestimo> itens,
+                      Multa multa) {
         this.id = id;
         this.usuario = usuario;
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucao = dataDevolucao;
-        this.diasAtraso = diasAtraso;
         this.statusEmprestimo = statusEmprestimo;
         this.itens = itens;
+        this.multa = multa;
     }
 
     public Long getId() {
@@ -86,14 +93,6 @@ public class Emprestimo {
         this.dataDevolucao = dataDevolucao;
     }
 
-    public long getDiasAtraso() {
-        return diasAtraso;
-    }
-
-    public void setDiasAtraso(long diasAtraso) {
-        this.diasAtraso = diasAtraso;
-    }
-
     public StatusEmprestimo getStatusEmprestimo() {
         return statusEmprestimo;
     }
@@ -102,24 +101,19 @@ public class Emprestimo {
         this.statusEmprestimo = statusEmprestimo;
     }
 
-    public List<ItemEmprestimo> getItemEmprestimo() {
+    public List<ItemEmprestimo> getItens() {
         return itens;
     }
 
-    public void setItemEmprestimo(List<ItemEmprestimo> itemEmprestimo) {
+    public void setItens(List<ItemEmprestimo> itens) {
         this.itens = itens;
     }
 
-    @Override
-    public String toString() {
-        return "Emprestimo{" +
-                "id=" + id +
-                ", usuario=" + usuario +
-                ", dataEmprestimo=" + dataEmprestimo +
-                ", dataDevolucao=" + dataDevolucao +
-                ", diasAtraso=" + diasAtraso +
-                ", statusEmprestimo=" + statusEmprestimo +
-                ", itemEmprestimo=" + itens +
-                '}';
+    public Multa getMulta() {
+        return multa;
+    }
+
+    public void setMulta(Multa multa) {
+        this.multa = multa;
     }
 }

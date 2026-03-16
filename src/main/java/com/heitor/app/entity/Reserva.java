@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.heitor.app.enumerate.StatusReserva;
 import jakarta.persistence.*;
 
@@ -19,11 +20,12 @@ public class Reserva {
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_exemplar", nullable = false)
-    private Exemplar exemplar;
+    @JoinColumn(name = "id_livro", nullable = false)
+    private Livro livro;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data_reserva", nullable = false)
-    private LocalDate data;
+    private LocalDate dataReserva;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_reserva", nullable = false)
@@ -33,13 +35,13 @@ public class Reserva {
 
     public Reserva(Long id,
                    Usuario usuario,
-                   Exemplar exemplar,
-                   LocalDate data,
+                   Livro livro,
+                   LocalDate dataReserva,
                    StatusReserva statusReserva) {
         this.id = id;
         this.usuario = usuario;
-        this.exemplar = exemplar;
-        this.data = data;
+        this.livro = livro;
+        this.dataReserva = dataReserva;
         this.statusReserva = statusReserva;
     }
 
@@ -59,20 +61,20 @@ public class Reserva {
         this.usuario = usuario;
     }
 
-    public Exemplar getExemplar() {
-        return exemplar;
+    public Livro getLivro() {
+        return livro;
     }
 
-    public void setExemplar(Exemplar exemplar) {
-        this.exemplar = exemplar;
+    public void setLivro(Livro livro) {
+        this.livro = livro;
     }
 
-    public LocalDate getData() {
-        return data;
+    public LocalDate getDataReserva() {
+        return dataReserva;
     }
 
-    public void setData(LocalDate data) {
-        this.data = data;
+    public void setDataReserva(LocalDate dataReserva) {
+        this.dataReserva = dataReserva;
     }
 
     public StatusReserva getStatusReserva() {
@@ -81,16 +83,5 @@ public class Reserva {
 
     public void setStatusReserva(StatusReserva statusReserva) {
         this.statusReserva = statusReserva;
-    }
-
-    @Override
-    public String toString() {
-        return "Reserva{" +
-                "id=" + id +
-                ", usuario=" + usuario +
-                ", exemplar=" + exemplar +
-                ", data=" + data +
-                ", statusReserva=" + statusReserva +
-                '}';
     }
 }

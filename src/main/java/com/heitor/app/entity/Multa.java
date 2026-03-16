@@ -1,8 +1,10 @@
 package com.heitor.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.heitor.app.enumerate.StatusMulta;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -14,28 +16,30 @@ public class Multa {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_emprestimo", nullable = false)
     private Emprestimo emprestimo;
 
     @Column(name = "valor_multa", nullable = false)
-    private float valor;
+    private BigDecimal valor;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_multa", nullable = false)
     private StatusMulta status;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data_geracao_multa", nullable = false)
     private LocalDate dataGeracao;
 
-    @Column(name = "data_pagamento_multa", nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "data_pagamento_multa")
     private LocalDate dataPagamento;
 
     public Multa() {}
 
     public Multa(Long id,
                  Emprestimo emprestimo,
-                 float valor,
+                 BigDecimal valor,
                  StatusMulta status,
                  LocalDate dataGeracao,
                  LocalDate dataPagamento) {
@@ -63,11 +67,11 @@ public class Multa {
         this.emprestimo = emprestimo;
     }
 
-    public float getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(float valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
@@ -93,17 +97,5 @@ public class Multa {
 
     public void setDataPagamento(LocalDate dataPagamento) {
         this.dataPagamento = dataPagamento;
-    }
-
-    @Override
-    public String toString() {
-        return "Multa{" +
-                "id=" + id +
-                ", emprestimo=" + emprestimo +
-                ", valor=" + valor +
-                ", status=" + status +
-                ", dataGeracao=" + dataGeracao +
-                ", dataPagamento=" + dataPagamento +
-                '}';
     }
 }

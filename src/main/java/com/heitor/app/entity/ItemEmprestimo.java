@@ -1,11 +1,12 @@
 package com.heitor.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "itemEmprestimo")
+@Table(name = "item_emprestimo")
 public class ItemEmprestimo {
 
     @Id
@@ -18,21 +19,19 @@ public class ItemEmprestimo {
     private Emprestimo emprestimo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_exemplar", nullable = false)
-    private Exemplar exemplar;
+    @JoinColumn(name = "id_livro", nullable = false)
+    private Livro livro;
 
-    @Column(name = "data_devolucao_item_emprestimo", nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "data_devolucao_item_emprestimo")
     private LocalDate dataDevolucao;
 
     public ItemEmprestimo() {}
 
-    public ItemEmprestimo(Long id,
-                          Emprestimo emprestimo,
-                          Exemplar exemplar,
-                          LocalDate dataDevolucao) {
+    public ItemEmprestimo(Long id, Emprestimo emprestimo, Livro livro, LocalDate dataDevolucao) {
         this.id = id;
         this.emprestimo = emprestimo;
-        this.exemplar = exemplar;
+        this.livro = livro;
         this.dataDevolucao = dataDevolucao;
     }
 
@@ -52,12 +51,12 @@ public class ItemEmprestimo {
         this.emprestimo = emprestimo;
     }
 
-    public Exemplar getExemplar() {
-        return exemplar;
+    public Livro getLivro() {
+        return livro;
     }
 
-    public void setExemplar(Exemplar exemplar) {
-        this.exemplar = exemplar;
+    public void setLivro(Livro livro) {
+        this.livro = livro;
     }
 
     public LocalDate getDataDevolucao() {
@@ -66,15 +65,5 @@ public class ItemEmprestimo {
 
     public void setDataDevolucao(LocalDate dataDevolucao) {
         this.dataDevolucao = dataDevolucao;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemEmprestimo{" +
-                "id=" + id +
-                ", emprestimo=" + emprestimo +
-                ", exemplar=" + exemplar +
-                ", dataDevolucao=" + dataDevolucao +
-                '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.heitor.app.enumerate.StatusUsuario;
 import jakarta.persistence.*;
 
@@ -23,24 +24,21 @@ public class Usuario {
     @Column(name = "telefone_usuario", nullable = false)
     private String telefone;
 
-    @Column(name = "email_usuario", nullable = false)
+    @Column(name = "email_usuario", nullable = false, unique = true)
     private String email;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data_cadastro_usuario", nullable = false)
     private LocalDate dataCadastro;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_usuario", nullable = false)
-    private StatusUsuario status_usuario;
+    private StatusUsuario statusUsuario;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_endereco", nullable = false, unique = true)
-    private Endereco endereco;
-
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Emprestimo> emprestimos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Reserva> reservas = new ArrayList<>();
 
     public Usuario() {}
@@ -49,8 +47,7 @@ public class Usuario {
                    String nome,
                    String telefone,
                    String email,
-                   StatusUsuario status_usuario,
-                   Endereco endereco,
+                   StatusUsuario statusUsuario,
                    LocalDate dataCadastro,
                    List<Emprestimo> emprestimos,
                    List<Reserva> reservas) {
@@ -58,8 +55,7 @@ public class Usuario {
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;
-        this.status_usuario = status_usuario;
-        this.endereco = endereco;
+        this.statusUsuario = statusUsuario;
         this.dataCadastro = dataCadastro;
         this.emprestimos = emprestimos;
         this.reservas = reservas;
@@ -97,20 +93,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public StatusUsuario getStatus() {
-        return status_usuario;
+    public StatusUsuario getStatusUsuario() {
+        return statusUsuario;
     }
 
-    public void setStatus(StatusUsuario status_usuario) {
-        this.status_usuario = status_usuario;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
+    public void setStatusUsuario(StatusUsuario statusUsuario) {
+        this.statusUsuario = statusUsuario;
     }
 
     public LocalDate getDataCadastro() {
@@ -135,20 +123,5 @@ public class Usuario {
 
     public void setReservas(List<Reserva> reservas) {
         this.reservas = reservas;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", email='" + email + '\'' +
-                ", status=" + status_usuario +
-                ", endereco=" + endereco +
-                ", dataCadastro=" + dataCadastro +
-                ", emprestimos=" + emprestimos +
-                ", reservas=" + reservas +
-                '}';
     }
 }

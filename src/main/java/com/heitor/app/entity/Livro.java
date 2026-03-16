@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -18,43 +19,58 @@ public class Livro {
     @Column(name = "titulo_livro", nullable = false)
     private String titulo;
 
+    @Column(name = "autor_livro", nullable = false, length = 150)
+    private String autor;
+
+    @Column(name = "isbn_livro", nullable = false, unique = true, length = 20)
+    private String isbn;
+
     @Column(name = "ano_publicacao_livro", nullable = false)
     private int anoPublicacao;
 
     @Column(name = "idioma_livro", nullable = false)
     private String idioma;
 
+    @Column(name = "quantidade_total_livro", nullable = false)
+    private Integer quantidadeTotal;
+
+    @Column(name = "quantidade_disponivel_livro", nullable = false)
+    private Integer quantidadeDisponivel;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data_cadastro_livro", nullable = false)
     private LocalDate dataCadastro;
 
-    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LivroCategoria> categorias = new ArrayList<>();
+    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY)
+    private List<ItemEmprestimo> itensEmprestimo = new ArrayList<>();
 
-    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LivroAutor> autores = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_editora", nullable = false)
-    private Editora editora;
+    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY)
+    private List<Reserva> reservas = new ArrayList<>();
 
     public Livro() {}
 
     public Livro(Long id,
                  String titulo,
+                 String autor,
+                 String isbn,
                  int anoPublicacao,
                  String idioma,
+                 Integer quantidadeTotal,
+                 Integer quantidadeDisponivel,
                  LocalDate dataCadastro,
-                 List<LivroCategoria> categorias,
-                 List<LivroAutor> autores,
-                 Editora editora) {
+                 List<ItemEmprestimo> itensEmprestimo,
+                 List<Reserva> reservas) {
         this.id = id;
         this.titulo = titulo;
+        this.autor = autor;
+        this.isbn = isbn;
         this.anoPublicacao = anoPublicacao;
         this.idioma = idioma;
+        this.quantidadeTotal = quantidadeTotal;
+        this.quantidadeDisponivel = quantidadeDisponivel;
         this.dataCadastro = dataCadastro;
-        this.categorias = categorias;
-        this.autores = autores;
-        this.editora = editora;
+        this.itensEmprestimo = itensEmprestimo;
+        this.reservas = reservas;
     }
 
     public Long getId() {
@@ -73,6 +89,22 @@ public class Livro {
         this.titulo = titulo;
     }
 
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     public int getAnoPublicacao() {
         return anoPublicacao;
     }
@@ -89,6 +121,22 @@ public class Livro {
         this.idioma = idioma;
     }
 
+    public Integer getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
+
+    public void setQuantidadeTotal(Integer quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
+    }
+
+    public Integer getQuantidadeDisponivel() {
+        return quantidadeDisponivel;
+    }
+
+    public void setQuantidadeDisponivel(Integer quantidadeDisponivel) {
+        this.quantidadeDisponivel = quantidadeDisponivel;
+    }
+
     public LocalDate getDataCadastro() {
         return dataCadastro;
     }
@@ -97,41 +145,19 @@ public class Livro {
         this.dataCadastro = dataCadastro;
     }
 
-    public List<LivroCategoria> getCategorias() {
-        return categorias;
+    public List<ItemEmprestimo> getItensEmprestimo() {
+        return itensEmprestimo;
     }
 
-    public void setCategorias(List<LivroCategoria> categorias) {
-        this.categorias = categorias;
+    public void setItensEmprestimo(List<ItemEmprestimo> itensEmprestimo) {
+        this.itensEmprestimo = itensEmprestimo;
     }
 
-    public List<LivroAutor> getAutores() {
-        return autores;
+    public List<Reserva> getReservas() {
+        return reservas;
     }
 
-    public void setAutores(List<LivroAutor> autores) {
-        this.autores = autores;
-    }
-
-    public Editora getEditora() {
-        return editora;
-    }
-
-    public void setEditora(Editora editora) {
-        this.editora = editora;
-    }
-
-    @Override
-    public String toString() {
-        return "Livro{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", anoPublicacao=" + anoPublicacao +
-                ", idioma='" + idioma + '\'' +
-                ", dataCadastro=" + dataCadastro +
-                ", categorias=" + categorias +
-                ", autores=" + autores +
-                ", editora=" + editora +
-                '}';
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
     }
 }

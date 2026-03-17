@@ -14,4 +14,8 @@ public interface FineService {
             LocalDate createdDate,
             LocalDate paymentDate
     );
+
+    Fine getFineByID(Long id);
+
+    Fine createFine(Fine fine);
 }

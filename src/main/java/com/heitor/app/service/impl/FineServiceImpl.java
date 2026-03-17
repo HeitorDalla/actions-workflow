@@ -2,6 +2,7 @@ package com.heitor.app.service.impl;
 
 import com.heitor.app.entity.Fine;
 import com.heitor.app.enumerate.FineStatus;
+import com.heitor.app.exception.FineNotFoundException;
 import com.heitor.app.repository.FineRepository;
 import com.heitor.app.service.FineService;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,16 @@ public class FineServiceImpl implements FineService {
                 createdDate,
                 paymentDate
         );
+    }
+
+    @Override
+    public Fine getFineByID(Long id) {
+        return fineRepository.findById(id)
+                .orElseThrow(() -> new FineNotFoundException(id));
+    }
+
+    @Override
+    public Fine createFine(Fine fine) {
+        return fineRepository.save(fine);
     }
 }

@@ -5,10 +5,7 @@ import com.heitor.app.enumerate.FineStatus;
 import com.heitor.app.service.FineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,5 +39,23 @@ public class FineController {
         LOGGER.info("Fines successfully fetched: {}", fines);
 
         return fines;
+    }
+
+    @GetMapping("/{id}")
+    public Fine getFineById(@PathVariable Long id) {
+        Fine fine = fineService.getFineByID(id);
+
+        LOGGER.info("Fine successfully fetched: {}", fine);
+
+        return fine;
+    }
+
+    @PostMapping
+    public Fine createFine(@RequestBody Fine fine) {
+        Fine createdFine = fineService.createFine(fine);
+
+        LOGGER.info("Fine successfully created: {}", createdFine);
+
+        return createdFine;
     }
 }

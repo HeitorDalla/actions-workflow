@@ -1,7 +1,7 @@
 package com.heitor.app.exception;
 
-public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(Long id) {
-        super("The user could not be found: " + id);
+public class FineNotFoundException extends RuntimeException {
+    public FineNotFoundException(Long id) {
+        super("The fine could not be found: " + id);
     }
 }

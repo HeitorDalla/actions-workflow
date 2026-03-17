@@ -1,6 +1,5 @@
 package com.heitor.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.heitor.app.enumerate.FineStatus;
 import jakarta.persistence.*;
 
@@ -16,10 +15,6 @@ public class Fine {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "loan_id", nullable = false)
-    private Loan loan;
-
     @Column(name = "fine_amount", nullable = false)
     private BigDecimal amount;
 
@@ -32,6 +27,10 @@ public class Fine {
 
     @Column(name = "fine_payment_date")
     private LocalDate paymentDate;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "loan_id", nullable = false)
+    private Loan loan;
 
     public Fine() {}
 

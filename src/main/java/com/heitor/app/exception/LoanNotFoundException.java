@@ -2,6 +2,6 @@ package com.heitor.app.exception;
 
 public class LoanNotFoundException extends RuntimeException {
     public LoanNotFoundException(Long id) {
-        super("Não foi possível encontrar o emprestimo " + id);
+        super("The loan could not be found: " + id);
     }
 }

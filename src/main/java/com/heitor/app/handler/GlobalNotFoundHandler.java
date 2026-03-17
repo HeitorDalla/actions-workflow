@@ -18,7 +18,7 @@ public class GlobalNotFoundHandler {
 
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String bootNotFoundHandler(BookNotFoundException book) {
+    public String bookNotFoundHandler(BookNotFoundException book) {
         return book.getMessage();
     }
 }

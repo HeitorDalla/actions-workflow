@@ -1,6 +1,5 @@
 package com.heitor.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.heitor.app.enumerate.UserStatus;
 import jakarta.persistence.*;
 

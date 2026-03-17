@@ -74,5 +74,10 @@ public class BookController {
         return updatedBook;
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteBook(@PathVariable Long id) {
+        bookService.deleteBook(id);
 
+        LOGGER.info("Book successfully");
+    }
 }

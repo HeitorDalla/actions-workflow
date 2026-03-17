@@ -89,4 +89,12 @@ public class BookServiceImpl implements BookService {
 
         return bookRepository.save(book);
     }
+
+    @Override
+    public void deleteBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        bookRepository.delete(book);
+    }
 }

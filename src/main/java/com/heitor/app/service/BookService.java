@@ -16,4 +16,10 @@ public interface BookService {
             Integer availableQuantity,
             LocalDate registrationDate
     );
+
+    Book getBookById(Long id);
+
+    Book createBook(Book newBook);
+
+    Book updatedBook(Book newBook, Long id);
 }

@@ -31,5 +31,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("language") String language,
             @Param("totalQuantity") Integer totalQuantity,
             @Param("availableQuantity") Integer availableQuantity,
-            @Param("registrationDate") LocalDate registrationDate);
-    }
+            @Param("registrationDate") LocalDate registrationDate
+    );
+}

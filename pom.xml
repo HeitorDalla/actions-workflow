@@ -35,6 +35,14 @@
             <scope>runtime</scope>
         </dependency>
 
+<!--        &lt;!&ndash; JDBC &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-jdbc</artifactId>-->
+<!--            <version>7.0.5</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+
         <!-- Web MVC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

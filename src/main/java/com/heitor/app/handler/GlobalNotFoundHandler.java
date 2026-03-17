@@ -1,5 +1,6 @@
 package com.heitor.app.handler;
 
+import com.heitor.app.exception.BookNotFoundException;
 import com.heitor.app.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,5 +16,9 @@ public class GlobalNotFoundHandler {
         return user.getMessage();
     }
 
-
+    @ExceptionHandler(BookNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String bootNotFoundHandler(BookNotFoundException book) {
+        return book.getMessage();
+    }
 }

@@ -80,6 +80,6 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        userRepository.deleteById(id);
+        userRepository.delete(existingUser);
     }
 }

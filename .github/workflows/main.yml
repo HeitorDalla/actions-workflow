@@ -20,6 +20,7 @@ permissions:
   contents: read
   actions: read
   security-events: write
+  id-token: write # permite que o job busque um token do Github
 
 jobs:
   build:

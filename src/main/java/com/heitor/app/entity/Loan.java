@@ -16,10 +16,6 @@ public class Loan {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(name = "loan_date", nullable = false)
     private LocalDate loanDate;
 
@@ -33,11 +29,15 @@ public class Loan {
     @Column(name = "loan_status", nullable = false)
     private LoanStatus loanStatus;
 
-    @OneToMany(mappedBy = "loan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LoanItem> items = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToOne(mappedBy = "loan", fetch = FetchType.LAZY)
     private Fine fine;
+
+    @OneToMany(mappedBy = "loan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LoanItem> items = new ArrayList<>();
 
     public Loan() {}
 

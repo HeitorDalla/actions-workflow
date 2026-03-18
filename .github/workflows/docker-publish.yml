@@ -46,7 +46,9 @@ on:
         type: string
 
     secrets:
-      CREDENTIALS_JSON:
+      WIF_PROVIDER:
+        required: true
+      WIF_SERVICE_ACCOUNT:
         required: true
 
 jobs:

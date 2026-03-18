@@ -69,4 +69,5 @@ jobs:
       IMAGE_NAME: my-app
       TAG_NAME: ${{ github.sha }}
     secrets:
-      CREDENTIALS_JSON: ${{ secrets.GCP_ACCESS_KEY_ID }}
+      WIF_PROVIDER: ${{ secrets.WIF_PROVIDER }}
+      WIF_SERVICE_ACCOUNT: ${{ secrets.WIF_SERVICE_ACCOUNT }}

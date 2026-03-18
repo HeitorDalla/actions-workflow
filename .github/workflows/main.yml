@@ -28,7 +28,6 @@ jobs:
     with:
       os_version: ubuntu-latest
       container_name: maven:3.9.6-eclipse-temurin-17
-      script_hello_path: ./.github/scripts/hello.sh
       artifact_name: app-jar
       artifact_path: target/*.jar
 

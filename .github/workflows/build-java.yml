@@ -13,11 +13,6 @@ on:
         default: maven:3.9.6-eclipse-temurin-17
         required: false
         type: string
-      script_hello_path:
-        description: Caminho do script Hello World
-        default: ./.github/scripts/hello.sh
-        required: false
-        type: string
       artifact_name:
         description: Nome do artefato
         default: app-jar
@@ -42,10 +37,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: ${{ inputs.fetch-depth }}
-
-      # Executa múltiplos comandos no shell do ambiente (Ubuntu)
-      - name: Run Startup Script
-        run: ${{ inputs.script_hello_path }}
 
       # Colocar cache nas dependências do Maven
       - uses: ./.github/actions/cache-maven

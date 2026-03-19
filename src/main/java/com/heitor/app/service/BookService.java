@@ -21,7 +21,9 @@ public interface BookService {
 
     Book createBook(Book newBook);
 
-    Book updatedBook(Book newBook, Long id);
+    Book updateBook(Book book, Long id);
+
+    Book partiallyUpdateBook(Book newBook, Long id);
 
     void deleteBook(Long id);
 }

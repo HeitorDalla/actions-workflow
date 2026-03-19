@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book updatedBook(Book newBook, Long id) {
+    public Book partiallyUpdateBook(Book newBook, Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
@@ -86,6 +86,23 @@ public class BookServiceImpl implements BookService {
         if (newBook.getRegistrationDate() != null) {
             book.setRegistrationDate(newBook.getRegistrationDate());
         }
+
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book updateBook(Book newBook, Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        book.setTitle(newBook.getTitle());
+        book.setAuthor(newBook.getAuthor());
+        book.setIsbn(newBook.getIsbn());
+        book.setPublicationYear(newBook.getPublicationYear());
+        book.setLanguage(newBook.getLanguage());
+        book.setTotalQuantity(newBook.getTotalQuantity());
+        book.setAvailableQuantity(newBook.getAvailableQuantity());
+        book.setRegistrationDate(newBook.getRegistrationDate());
 
         return bookRepository.save(book);
     }

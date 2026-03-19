@@ -66,10 +66,19 @@ public class BookController {
     }
 
     @PatchMapping("/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
-        Book updatedBook = bookService.updatedBook(book, id);
+    public Book partiallyUpdateBook(@RequestBody Book book, @PathVariable Long id) {
+        Book updatedBook = bookService.partiallyUpdateBook(book, id);
 
-        LOGGER.info("Book successfully deleted: {}", id);
+        LOGGER.info("Book partially updated successfully: {}", id);
+
+        return updatedBook;
+    }
+
+    @PutMapping("/{id}")
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
+        Book updatedBook = bookService.updateBook(book, id);
+
+        LOGGER.info("Full Book successfully updated: {}", id);
 
         return updatedBook;
     }

@@ -25,7 +25,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             AND (:fine IS NULL OR l.fine = :fine)
     """)
     List<Loan> getAllLoans(
-            @Param("localDate") LocalDate loanDate,
+            @Param("loanDate") LocalDate loanDate,
             @Param("returnDate") LocalDate returnDate,
             @Param("loanStatus") LoanStatus loanStatus,
             @Param("user") User user,

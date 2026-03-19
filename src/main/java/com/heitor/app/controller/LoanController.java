@@ -31,6 +31,7 @@ public class LoanController {
             @RequestParam(required = false) User user,
             @RequestParam(required = false) Fine fine
     ) {
+
         List<Loan> loans = loanService.getAllLoans(
                 loanDate,
                 returnDate,

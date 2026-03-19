@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User newUser, Long id) {
+    public User partiallyUpdateUser(User newUser, Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
@@ -71,6 +71,20 @@ public class UserServiceImpl implements UserService {
         if (newUser.getUserStatus() != null) {
             user.setUserStatus(newUser.getUserStatus());
         }
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(User newUser, Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.setName(newUser.getName());
+        user.setNumber(newUser.getNumber());
+        user.setEmail(newUser.getEmail());
+        user.setRegistrationDate(newUser.getRegistrationDate());
+        user.setUserStatus(newUser.getUserStatus());
 
         return userRepository.save(user);
     }

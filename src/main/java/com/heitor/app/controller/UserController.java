@@ -3,7 +3,6 @@ package com.heitor.app.controller;
 import com.heitor.app.entity.User;
 import com.heitor.app.enumerate.UserStatus;
 import com.heitor.app.service.UserService;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -62,10 +61,19 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
+    public User partiallyUpdateUser(@RequestBody User newUser, @PathVariable Long id) {
+        User updatedUser = userService.partiallyUpdateUser(newUser, id);
+
+        LOGGER.info("User partially updated successfully: {}", updatedUser);
+
+        return updatedUser;
+    }
+
+    @PutMapping("/{id}")
     public User updateUser(@RequestBody User newUser, @PathVariable Long id) {
         User updatedUser = userService.updateUser(newUser, id);
 
-        LOGGER.info("User successfully updated: {}", updatedUser);
+        LOGGER.info("Full User successfully updated: {}", updatedUser);
 
         return updatedUser;
     }

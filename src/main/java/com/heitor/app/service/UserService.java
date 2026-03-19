@@ -18,6 +18,8 @@ public interface UserService {
 
     User createUser(User user);
 
+    User partiallyUpdateUser(User newUser, Long id);
+
     User updateUser(User newUser, Long id);
 
     void deleteUser(Long id);

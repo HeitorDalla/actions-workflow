@@ -63,7 +63,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ inputs.fetch-depth }}
+          fetch-depth: 0
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v3
@@ -88,3 +88,11 @@ jobs:
 
       - name: Push Docker Image
         run: docker push ${{ inputs.REGION }}-docker.pkg.dev/${{ inputs.PROJECT_ID }}/${{ inputs.REPOSITORY }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG_NAME }}
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v3
+        with:
+          service: ${{ inputs.IMAGE_NAME }}
+          region: ${{ inputs.REGION }}
+          image: ${{ inputs.REGION }}-docker.pkg.dev/${{ inputs.PROJECT_ID }}/${{ inputs.REPOSITORY }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG_NAME }}
+          flags: '--allow-unauthenticated'

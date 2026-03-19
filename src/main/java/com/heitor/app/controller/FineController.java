@@ -58,4 +58,13 @@ public class FineController {
 
         return createdFine;
     }
+
+    @PatchMapping("/{id}")
+    public Fine updateFine(@PathVariable Long id, @RequestBody Fine newFine) {
+        Fine fine = fineService.updateFine(newFine,id);
+
+        LOGGER.info("Fine successfully updated: {}", fine);
+
+        return fine;
+    }
 }

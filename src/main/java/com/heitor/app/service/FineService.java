@@ -18,4 +18,6 @@ public interface FineService {
     Fine getFineByID(Long id);
 
     Fine createFine(Fine fine);
+
+    Fine updateFine(Fine newFine, Long id);
 }

@@ -44,4 +44,28 @@ public class FineServiceImpl implements FineService {
     public Fine createFine(Fine fine) {
         return fineRepository.save(fine);
     }
+
+    @Override
+    public Fine updateFine(Fine newFine, Long id) {
+        Fine fine = fineRepository.findById(id)
+                .orElseThrow(() -> new FineNotFoundException(id));
+
+        if (newFine.getAmount() != null) {
+            fine.setAmount(newFine.getAmount());
+        }
+
+        if (newFine.getFineStatus() != null) {
+            fine.setFineStatus(newFine.getFineStatus());
+        }
+
+        if (newFine.getCreatedDate() != null) {
+            fine.setCreatedDate(newFine.getCreatedDate());
+        }
+
+        if (newFine.getPaymentDate() != null) {
+            fine.setPaymentDate(newFine.getPaymentDate());
+        }
+
+        return fineRepository.save(fine);
+    }
 }

@@ -1,11 +1,15 @@
 package com.heitor.app.controller;
 
+import com.heitor.app.entity.Fine;
 import com.heitor.app.entity.Loan;
+import com.heitor.app.entity.User;
+import com.heitor.app.enumerate.LoanStatus;
 import com.heitor.app.service.LoanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,8 +24,20 @@ public class LoanController {
     }
 
     @GetMapping
-    public List<Loan> getAllLoans() {
-        List<Loan> loans = loanService.getAllLoans();
+    public List<Loan> getAllLoans(
+            @RequestParam(required = false) LocalDate loanDate,
+            @RequestParam(required = false) LocalDate returnDate,
+            @RequestParam(required = false) LoanStatus loanStatus,
+            @RequestParam(required = false) User user,
+            @RequestParam(required = false) Fine fine
+    ) {
+        List<Loan> loans = loanService.getAllLoans(
+                loanDate,
+                returnDate,
+                loanStatus,
+                user,
+                fine
+        );
 
         LOGGER.info("Loans successfully fetched: {}", loans);
 

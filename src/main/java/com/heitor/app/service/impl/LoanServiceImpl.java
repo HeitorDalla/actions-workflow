@@ -1,11 +1,15 @@
 package com.heitor.app.service.impl;
 
+import com.heitor.app.entity.Fine;
 import com.heitor.app.entity.Loan;
+import com.heitor.app.entity.User;
+import com.heitor.app.enumerate.LoanStatus;
 import com.heitor.app.exception.LoanNotFoundException;
 import com.heitor.app.repository.LoanRepository;
 import com.heitor.app.service.LoanService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -17,8 +21,21 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<Loan> getAllLoans() {
-        return loanRepository.findAll();
+    public List<Loan> getAllLoans(
+            LocalDate loanDate,
+            LocalDate returnDate,
+            LoanStatus loanStatus,
+            User user,
+            Fine fine
+    ) {
+
+        return loanRepository.getAllLoans(
+                loanDate,
+                returnDate,
+                loanStatus,
+                user,
+                fine
+        );
     }
 
     @Override

@@ -1,10 +1,14 @@
 package com.heitor.app.service.impl;
 
+import com.heitor.app.dto.request.UserRequestDTO;
+import com.heitor.app.dto.response.UserResponseDTO;
 import com.heitor.app.entity.User;
 import com.heitor.app.enumerate.UserStatus;
 import com.heitor.app.exception.UserNotFoundException;
+import com.heitor.app.dto.mapper.UserMapper;
 import com.heitor.app.repository.UserRepository;
 import com.heitor.app.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,79 +18,67 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserMapper mapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper mapper) {
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
     @Override
-    public List<User> getAllUsers(String name,
-                                  String number,
-                                  String email,
-                                  LocalDate registrationDate,
-                                  UserStatus userStatus) {
+    public List<UserResponseDTO> getAllUsers(String name,
+                                             String number,
+                                             String email,
+                                             LocalDate registrationDate,
+                                             UserStatus userStatus) {
 
-        return userRepository.getAllUsers(
-                name,
-                number,
-                email,
-                registrationDate,
-                userStatus
-        );
+        List<User> users = userRepository.getAllUsers(name, number, email, registrationDate, userStatus);
+
+        return mapper.toDtoList(users);
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User partiallyUpdateUser(User newUser, Long id) {
+    public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        if (newUser.getName() != null) {
-            user.setName(newUser.getName());
-        }
-
-        if (newUser.getNumber() != null) {
-            user.setNumber(newUser.getNumber());
-        }
-
-        if (newUser.getEmail() != null) {
-            user.setEmail(newUser.getEmail());
-        }
-
-        if (newUser.getRegistrationDate() != null) {
-            user.setRegistrationDate(newUser.getRegistrationDate());
-        }
-
-        if (newUser.getUserStatus() != null) {
-            user.setUserStatus(newUser.getUserStatus());
-        }
-
-        return userRepository.save(user);
+        return mapper.toDto(user);
     }
 
     @Override
-    public User updateUser(User newUser, Long id) {
+    public UserResponseDTO createUser(UserRequestDTO dto) {
+        User user = mapper.toEntity(dto);
+
+        User savedUser = userRepository.save(user);
+
+        return mapper.toDto(savedUser);
+    }
+
+    @Override
+    public UserResponseDTO partiallyUpdateUser(UserRequestDTO dto, Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        user.setName(newUser.getName());
-        user.setNumber(newUser.getNumber());
-        user.setEmail(newUser.getEmail());
-        user.setRegistrationDate(newUser.getRegistrationDate());
-        user.setUserStatus(newUser.getUserStatus());
+        mapper.updateEntityFromDto(dto, user);
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        return mapper.toDto(user);
+    }
+
+    @Override
+    public UserResponseDTO updateUser(UserRequestDTO dto, Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        // Copiar tudo do DTO
+        User newState = mapper.toEntity(dto);
+        newState.setId(user.getId());
+
+        user = userRepository.save(newState);
+
+        return mapper.toDto(user);
     }
 
     @Override

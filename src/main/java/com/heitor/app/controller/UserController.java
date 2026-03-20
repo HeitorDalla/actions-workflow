@@ -1,10 +1,12 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.entity.User;
+import com.heitor.app.dto.request.UserRequestDTO;
+import com.heitor.app.dto.response.UserResponseDTO;
 import com.heitor.app.enumerate.UserStatus;
 import com.heitor.app.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,14 +24,14 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers(
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String number,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) LocalDate registrationDate,
             @RequestParam(required = false) UserStatus userStatus) {
 
-        List<User> users = userService.getAllUsers(
+        List<UserResponseDTO> users = userService.getAllUsers(
                 name,
                 number,
                 email,
@@ -37,51 +39,35 @@ public class UserController {
                 userStatus
         );
 
-        LOGGER.info("Users successfully fetched: {}", users);
+        LOGGER.info("Users successfully fetched: {}", users.size());
 
-        return users;
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) { // pega a variavel da URL (/users/10)
-        User user = userService.getUserById(id);
-
-        LOGGER.info("User successfully fetched: {}", user);
-
-        return user;
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) { // pega o BODY da requisicao
-        User savedUser = userService.createUser(user);
-
-        LOGGER.info("User successfully created: {}", savedUser);
-
-        return savedUser;
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO dto) {
+        return ResponseEntity.ok(userService.createUser(dto));
     }
 
     @PatchMapping("/{id}")
-    public User partiallyUpdateUser(@RequestBody User newUser, @PathVariable Long id) {
-        User updatedUser = userService.partiallyUpdateUser(newUser, id);
-
-        LOGGER.info("User partially updated successfully: {}", updatedUser);
-
-        return updatedUser;
+    public ResponseEntity<UserResponseDTO> partiallyUpdateUser(@RequestBody UserRequestDTO dto, @PathVariable Long id) {
+        return ResponseEntity.ok(userService.partiallyUpdateUser(dto, id));
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestBody User newUser, @PathVariable Long id) {
-        User updatedUser = userService.updateUser(newUser, id);
-
-        LOGGER.info("Full User successfully updated: {}", updatedUser);
-
-        return updatedUser;
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UserRequestDTO dto, @PathVariable Long id) {
+        return ResponseEntity.ok(userService.updateUser(dto, id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
 
-        LOGGER.info("User successfully deleted: {}", id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -31,17 +31,13 @@ public class UserController {
             @RequestParam(required = false) LocalDate registrationDate,
             @RequestParam(required = false) UserStatus userStatus) {
 
-        List<UserResponseDTO> users = userService.getAllUsers(
+        return ResponseEntity.ok(userService.getAllUsers(
                 name,
                 number,
                 email,
                 registrationDate,
                 userStatus
-        );
-
-        LOGGER.info("Users successfully fetched: {}", users.size());
-
-        return ResponseEntity.ok(users);
+        ));
     }
 
     @GetMapping("/{id}")

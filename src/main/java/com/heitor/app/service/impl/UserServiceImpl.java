@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
         mapper.updateEntityFromDto(dto, user);
 
-        user = userRepository.save(user);
+        userRepository.save(user);
 
         return mapper.toDto(user);
     }
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         User newState = mapper.toEntity(dto);
         newState.setId(user.getId());
 
-        user = userRepository.save(newState);
+        userRepository.save(newState);
 
         return mapper.toDto(user);
     }

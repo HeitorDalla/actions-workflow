@@ -58,6 +58,24 @@ public class UserMapper {
             return;
         }
 
-        
+        if (dto.getName() != null) {
+            user.setName(dto.getName());
+        }
+
+        if (dto.getNumber() != null) {
+            user.setNumber(dto.getNumber());
+        }
+
+        if (dto.getEmail() != null) {
+            user.setEmail(dto.getEmail());
+        }
+
+        if (dto.getRegistrationDate() != null) {
+            user.setRegistrationDate(dto.getRegistrationDate());
+        }
+
+        if (dto.getUserStatus() != null) {
+            user.setUserStatus(dto.getUserStatus());
+        }
     }
 }

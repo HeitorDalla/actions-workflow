@@ -1,7 +1,7 @@
 package com.heitor.app.controller;
 
 import com.heitor.app.entity.Fine;
-import com.heitor.app.enumerate.FineStatus;
+import com.heitor.app.enums.FineStatus;
 import com.heitor.app.service.FineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

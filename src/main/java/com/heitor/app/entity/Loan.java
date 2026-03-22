@@ -1,6 +1,6 @@
 package com.heitor.app.entity;
 
-import com.heitor.app.enumerate.LoanStatus;
+import com.heitor.app.enums.LoanStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

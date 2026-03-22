@@ -1,6 +1,6 @@
 package com.heitor.app.entity;
 
-import com.heitor.app.enumerate.FineStatus;
+import com.heitor.app.enums.FineStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

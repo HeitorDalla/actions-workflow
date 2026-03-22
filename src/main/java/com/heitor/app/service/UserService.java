@@ -2,7 +2,7 @@ package com.heitor.app.service;
 
 import com.heitor.app.dto.request.UserRequestDTO;
 import com.heitor.app.dto.response.UserResponseDTO;
-import com.heitor.app.enumerate.UserStatus;
+import com.heitor.app.enums.UserStatus;
 
 import java.time.LocalDate;
 import java.util.List;

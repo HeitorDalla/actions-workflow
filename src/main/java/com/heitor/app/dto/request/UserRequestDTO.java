@@ -1,5 +1,5 @@
 package com.heitor.app.dto.request;
-import com.heitor.app.enumerate.UserStatus;
+import com.heitor.app.enums.UserStatus;
 import lombok.Builder;
 
 import java.time.LocalDate;

@@ -2,7 +2,7 @@ package com.heitor.app.controller;
 
 import com.heitor.app.dto.request.UserRequestDTO;
 import com.heitor.app.dto.response.UserResponseDTO;
-import com.heitor.app.enumerate.UserStatus;
+import com.heitor.app.enums.UserStatus;
 import com.heitor.app.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

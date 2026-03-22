@@ -3,7 +3,7 @@ package com.heitor.app.service.impl;
 import com.heitor.app.entity.Fine;
 import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.User;
-import com.heitor.app.enumerate.LoanStatus;
+import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.exception.LoanNotFoundException;
 import com.heitor.app.repository.LoanRepository;
 import com.heitor.app.service.LoanService;

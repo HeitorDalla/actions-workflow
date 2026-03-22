@@ -1,7 +1,7 @@
 package com.heitor.app.service.impl;
 
 import com.heitor.app.entity.Fine;
-import com.heitor.app.enumerate.FineStatus;
+import com.heitor.app.enums.FineStatus;
 import com.heitor.app.exception.FineNotFoundException;
 import com.heitor.app.repository.FineRepository;
 import com.heitor.app.service.FineService;

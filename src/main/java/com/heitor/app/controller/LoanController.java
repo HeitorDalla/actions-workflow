@@ -3,7 +3,7 @@ package com.heitor.app.controller;
 import com.heitor.app.entity.Fine;
 import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.User;
-import com.heitor.app.enumerate.LoanStatus;
+import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.service.LoanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

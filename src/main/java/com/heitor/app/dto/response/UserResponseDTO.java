@@ -1,6 +1,6 @@
 package com.heitor.app.dto.response;
 
-import com.heitor.app.enumerate.UserStatus;
+import com.heitor.app.enums.UserStatus;
 
 import java.time.LocalDate;
 

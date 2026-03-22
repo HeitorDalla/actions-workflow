@@ -1,7 +1,7 @@
 package com.heitor.app.service;
 
 import com.heitor.app.entity.Fine;
-import com.heitor.app.enumerate.FineStatus;
+import com.heitor.app.enums.FineStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

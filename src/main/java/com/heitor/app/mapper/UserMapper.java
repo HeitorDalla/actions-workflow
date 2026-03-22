@@ -1,4 +1,4 @@
-package com.heitor.app.dto.mapper;
+package com.heitor.app.mapper;
 
 import com.heitor.app.dto.request.UserRequestDTO;
 import com.heitor.app.dto.response.UserResponseDTO;

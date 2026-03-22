@@ -1,4 +1,4 @@
-package com.heitor.app.enumerate;
+package com.heitor.app.enums;
 
 public enum ReservationStatus {
     PENDING,

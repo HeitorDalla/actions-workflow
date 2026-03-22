@@ -1,7 +1,7 @@
 package com.heitor.app.repository;
 
 import com.heitor.app.entity.User;
-import com.heitor.app.enumerate.UserStatus;
+import com.heitor.app.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

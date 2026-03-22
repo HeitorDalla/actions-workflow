@@ -1,12 +1,13 @@
 package com.heitor.app.service;
 
-import com.heitor.app.entity.Book;
+import com.heitor.app.dto.request.BookRequestDTO;
+import com.heitor.app.dto.response.BookResponseDTO;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface BookService {
 
-    List<Book> getAllBooks(
+    List<BookResponseDTO> getAllBooks(
             String title,
             String author,
             String isbn,
@@ -17,13 +18,13 @@ public interface BookService {
             LocalDate registrationDate
     );
 
-    Book getBookById(Long id);
+    BookResponseDTO getBookById(Long id);
 
-    Book createBook(Book newBook);
+    BookResponseDTO createBook(BookRequestDTO newBook);
 
-    Book updateBook(Book book, Long id);
+    BookResponseDTO partiallyUpdateBook(BookRequestDTO newBook, Long id);
 
-    Book partiallyUpdateBook(Book newBook, Long id);
+    BookResponseDTO updateBook(BookRequestDTO book, Long id);
 
     void deleteBook(Long id);
 }

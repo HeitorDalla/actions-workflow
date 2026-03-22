@@ -1,7 +1,10 @@
 package com.heitor.app.service.impl;
 
+import com.heitor.app.dto.request.BookRequestDTO;
+import com.heitor.app.dto.response.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import com.heitor.app.exception.BookNotFoundException;
+import com.heitor.app.mapper.BookMapper;
 import com.heitor.app.repository.BookRepository;
 import com.heitor.app.service.BookService;
 import org.springframework.stereotype.Service;
@@ -12,22 +15,24 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
+    private BookMapper mapper;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, BookMapper mapper) {
         this.bookRepository = bookRepository;
+        this.mapper = mapper;
     }
 
     @Override
-    public List<Book> getAllBooks(String title,
-                                  String author,
-                                  String isbn,
-                                  Long publicationYear,
-                                  String language,
-                                  Integer totalQuantity,
-                                  Integer availableQuantity,
-                                  LocalDate registrationDate) {
+    public List<BookResponseDTO> getAllBooks(String title,
+                                             String author,
+                                             String isbn,
+                                             Long publicationYear,
+                                             String language,
+                                             Integer totalQuantity,
+                                             Integer availableQuantity,
+                                             LocalDate registrationDate) {
 
-        return bookRepository.getAllBooks(
+        List<Book> books = bookRepository.getAllBooks(
                 title,
                 author,
                 isbn,
@@ -37,74 +42,50 @@ public class BookServiceImpl implements BookService {
                 availableQuantity,
                 registrationDate
         );
+
+        return mapper.toDtoList(books);
     }
 
     @Override
-    public Book getBookById(Long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
-    }
-
-    @Override
-    public Book createBook(Book newBook){
-        return bookRepository.save(newBook);
-    }
-
-    @Override
-    public Book partiallyUpdateBook(Book newBook, Long id) {
+    public BookResponseDTO getBookById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        if (newBook.getTitle() != null) {
-            book.setTitle(newBook.getTitle());
-        }
-
-        if (newBook.getAuthor() != null) {
-            book.setAuthor(newBook.getAuthor());
-        }
-
-        if (newBook.getIsbn() != null) {
-            book.setIsbn(newBook.getIsbn());
-        }
-
-        if (newBook.getPublicationYear() != null) {
-            book.setPublicationYear(newBook.getPublicationYear());
-        }
-
-        if (newBook.getLanguage() != null) {
-            book.setLanguage(newBook.getLanguage());
-        }
-
-        if (newBook.getTotalQuantity() != null) {
-            book.setTotalQuantity(newBook.getTotalQuantity());
-        }
-
-        if (newBook.getAvailableQuantity() != null) {
-            book.setAvailableQuantity(newBook.getAvailableQuantity());
-        }
-
-        if (newBook.getRegistrationDate() != null) {
-            book.setRegistrationDate(newBook.getRegistrationDate());
-        }
-
-        return bookRepository.save(book);
+        return mapper.toDto(book);
     }
 
     @Override
-    public Book updateBook(Book newBook, Long id) {
+    public BookResponseDTO createBook(BookRequestDTO dto){
+        Book book = mapper.toEntity(dto);
+
+        Book savedBook = bookRepository.save(book);
+
+        return mapper.toDto(savedBook);
+    }
+
+    @Override
+    public BookResponseDTO partiallyUpdateBook(BookRequestDTO dto, Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        book.setTitle(newBook.getTitle());
-        book.setAuthor(newBook.getAuthor());
-        book.setIsbn(newBook.getIsbn());
-        book.setPublicationYear(newBook.getPublicationYear());
-        book.setLanguage(newBook.getLanguage());
-        book.setTotalQuantity(newBook.getTotalQuantity());
-        book.setAvailableQuantity(newBook.getAvailableQuantity());
-        book.setRegistrationDate(newBook.getRegistrationDate());
+        mapper.updateEntityFromDto(dto, book);
 
-        return bookRepository.save(book);
+        book = bookRepository.save(book);
+
+        return mapper.toDto(book);
+    }
+
+    @Override
+    public BookResponseDTO updateBook(BookRequestDTO dto, Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        Book newBook = mapper.toEntity(dto);
+        newBook.setId(book.getId());
+
+        bookRepository.save(newBook);
+
+        return mapper.toDto(newBook);
     }
 
     @Override

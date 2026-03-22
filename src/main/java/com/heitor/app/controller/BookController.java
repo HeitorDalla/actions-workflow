@@ -1,9 +1,11 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.entity.Book;
+import com.heitor.app.dto.request.BookRequestDTO;
+import com.heitor.app.dto.response.BookResponseDTO;
 import com.heitor.app.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -21,7 +23,7 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getAllBooks(
+    public ResponseEntity<List<BookResponseDTO>> getAllBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String isbn,
@@ -31,7 +33,7 @@ public class BookController {
             @RequestParam(required = false) Integer availableQuantity,
             @RequestParam(required = false) LocalDate registrationDate) {
 
-        List<Book> books = bookService.getAllBooks(
+        return ResponseEntity.ok(bookService.getAllBooks(
                 title,
                 author,
                 isbn,
@@ -40,53 +42,33 @@ public class BookController {
                 totalQuantity,
                 availableQuantity,
                 registrationDate
-        );
-
-        LOGGER.info("Books successfully fetched: {}", books);
-
-        return books;
+        ));
     }
 
     @GetMapping("/{id}")
-    public Book getBookById(@PathVariable Long id) {
-        Book book = bookService.getBookById(id);
-
-        LOGGER.info("Book successfully fetched: {}", book);
-
-        return book;
+    public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
+        return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @PostMapping()
-    public Book createBook(@RequestBody Book newBook) {
-        Book savedBook = bookService.createBook(newBook);
-
-        LOGGER.info("Book successfully created: {}", savedBook);
-
-        return savedBook;
+    public ResponseEntity<BookResponseDTO> createBook(@RequestBody BookRequestDTO dto) {
+        return ResponseEntity.ok(bookService.createBook(dto));
     }
 
     @PatchMapping("/{id}")
-    public Book partiallyUpdateBook(@RequestBody Book book, @PathVariable Long id) {
-        Book updatedBook = bookService.partiallyUpdateBook(book, id);
-
-        LOGGER.info("Book partially updated successfully: {}", id);
-
-        return updatedBook;
+    public ResponseEntity<BookResponseDTO> partiallyUpdateBook(@RequestBody BookRequestDTO dto, @PathVariable Long id) {
+        return ResponseEntity.ok(bookService.partiallyUpdateBook(dto, id));
     }
 
     @PutMapping("/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
-        Book updatedBook = bookService.updateBook(book, id);
-
-        LOGGER.info("Full Book successfully updated: {}", id);
-
-        return updatedBook;
+    public ResponseEntity<BookResponseDTO> updateBook(@RequestBody BookRequestDTO dto, @PathVariable Long id) {
+        return ResponseEntity.ok(bookService.updateBook(dto, id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
 
-        LOGGER.info("Book successfully");
+        return ResponseEntity.noContent().build();
     }
 }

@@ -20,6 +20,7 @@ public class UserResponseDTO {
                            String email,
                            LocalDate registrationDate,
                            UserStatus userStatus) {
+        this.id = id;
         this.name = name;
         this.number = number;
         this.email = email;

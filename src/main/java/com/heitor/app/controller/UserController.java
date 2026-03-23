@@ -2,14 +2,14 @@ package com.heitor.app.controller;
 
 import com.heitor.app.dto.request.UserRequestDTO;
 import com.heitor.app.dto.response.UserResponseDTO;
-import com.heitor.app.enums.UserStatus;
 import com.heitor.app.service.UserService;
+
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,16 +27,12 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String number,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) LocalDate registrationDate,
-            @RequestParam(required = false) UserStatus userStatus) {
+            @RequestParam(required = false) String email) {
 
         return ResponseEntity.ok(userService.getAllUsers(
                 name,
                 number,
-                email,
-                registrationDate,
-                userStatus
+                email
         ));
     }
 
@@ -46,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
@@ -56,7 +52,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UserRequestDTO dto, @PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> updateUser(@Valid @RequestBody UserRequestDTO dto, @PathVariable Long id) {
         return ResponseEntity.ok(userService.updateUser(dto, id));
     }
 

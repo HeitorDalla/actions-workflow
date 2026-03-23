@@ -11,7 +11,7 @@ import java.util.List;
 public class UserMapper {
     public List<UserResponseDTO> toDtoList(List<User> entities) {
         if (entities.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         return entities.stream()
@@ -46,8 +46,6 @@ public class UserMapper {
         user.setName(dto.getName());
         user.setNumber(dto.getNumber());
         user.setEmail(dto.getEmail());
-        user.setRegistrationDate(dto.getRegistrationDate());
-        user.setUserStatus(dto.getUserStatus());
 
         return user;
     }
@@ -68,14 +66,6 @@ public class UserMapper {
 
         if (dto.getEmail() != null) {
             user.setEmail(dto.getEmail());
-        }
-
-        if (dto.getRegistrationDate() != null) {
-            user.setRegistrationDate(dto.getRegistrationDate());
-        }
-
-        if (dto.getUserStatus() != null) {
-            user.setUserStatus(dto.getUserStatus());
         }
     }
 }

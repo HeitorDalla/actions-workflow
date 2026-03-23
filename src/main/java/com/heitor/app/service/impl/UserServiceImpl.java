@@ -9,6 +9,7 @@ import com.heitor.app.mapper.UserMapper;
 import com.heitor.app.repository.UserRepository;
 import com.heitor.app.service.UserService;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper mapper;
@@ -29,11 +31,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDTO> getAllUsers(String name,
                                              String number,
-                                             String email,
-                                             LocalDate registrationDate,
-                                             UserStatus userStatus) {
+                                             String email) {
 
-        List<User> users = userRepository.getAllUsers(name, number, email, registrationDate, userStatus);
+        List<User> users = userRepository.getAllUsers(name, number, email);
 
         return mapper.toDtoList(users);
     }
@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO createUser(UserRequestDTO dto) {
         User user = mapper.toEntity(dto);
+
+        user.setRegistrationDate(LocalDate.now());
+        user.setUserStatus(UserStatus.ACTIVE);
 
         User savedUser = userRepository.save(user);
 
@@ -69,16 +72,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO updateUser(UserRequestDTO dto, Long id) {
-        User user = userRepository.findById(id)
+        User current = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         // Copiar tudo do DTO
         User newState = mapper.toEntity(dto);
-        newState.setId(user.getId());
+        newState.setId(current.getId());
 
-        userRepository.save(newState);
+        // Regras de negócio
+        newState.setRegistrationDate(current.getRegistrationDate());
+        newState.setUserStatus(current.getUserStatus());
 
-        return mapper.toDto(user);
+        User saved = userRepository.save(newState);
+
+        return mapper.toDto(saved);
     }
 
     @Override

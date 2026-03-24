@@ -1,6 +1,7 @@
 package com.heitor.app.mapper;
 
 import com.heitor.app.dto.input.BookCreateDTO;
+import com.heitor.app.dto.input.BookPatchDTO;
 import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
@@ -12,7 +13,7 @@ import java.util.List;
 public class BookMapper {
     public List<BookResponseDTO> toDtoList(List<Book> entities) {
         if (entities.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         return entities.stream()
@@ -55,7 +56,7 @@ public class BookMapper {
         return book;
     }
 
-    public void updateEntityFromDto(BookUpdateDTO dto, Book entity) {
+    public void patchEntity(BookPatchDTO dto, Book entity) {
         if (dto == null || entity == null) {
             return;
         }
@@ -79,5 +80,17 @@ public class BookMapper {
         if (dto.getLanguage() != null) {
             entity.setLanguage(dto.getLanguage());
         }
+    }
+
+    public void updateEntity(BookUpdateDTO dto, Book entity) {
+        if (dto == null || entity == null) {
+            return;
+        }
+
+        entity.setTitle(dto.getTitle());
+        entity.setAuthor(dto.getAuthor());
+        entity.setIsbn(dto.getIsbn());
+        entity.setPublicationYear(dto.getPublicationYear());
+        entity.setLanguage(dto.getLanguage());
     }
 }

@@ -2,9 +2,11 @@ package com.heitor.app.controller;
 
 import com.heitor.app.dto.common.StockDTO;
 import com.heitor.app.dto.input.BookCreateDTO;
+import com.heitor.app.dto.input.BookPatchDTO;
 import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.service.BookService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -48,18 +50,18 @@ public class BookController {
     }
 
     @PostMapping()
-    public ResponseEntity<BookResponseDTO> createBook(@RequestBody BookCreateDTO dto) {
+    public ResponseEntity<BookResponseDTO> createBook(@Valid @RequestBody BookCreateDTO dto) {
         return ResponseEntity.ok(bookService.createBook(dto));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> partiallyUpdateBook(@RequestBody BookUpdateDTO dto,
+    public ResponseEntity<BookResponseDTO> partiallyUpdateBook(@RequestBody BookPatchDTO dto,
                                                                @PathVariable Long id) {
         return ResponseEntity.ok(bookService.partiallyUpdateBook(dto, id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> updateBook(@RequestBody BookUpdateDTO dto,
+    public ResponseEntity<BookResponseDTO> updateBook(@Valid @RequestBody BookUpdateDTO dto,
                                                       @PathVariable Long id) {
         return ResponseEntity.ok(bookService.updateBook(dto, id));
     }

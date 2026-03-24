@@ -1,32 +1,19 @@
 package com.heitor.app.dto.input;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-public class BookUpdateDTO {
-    @NotBlank
+public class BookPatchDTO {
     private String title;
-
-    @NotBlank
     private String author;
-
-    @NotBlank
     private String isbn;
-
-    @NotNull
     private Long publicationYear;
-
-    @NotBlank
     private String language;
 
-    public BookUpdateDTO() {
-    }
+    public BookPatchDTO() {}
 
-    public BookUpdateDTO(String title,
-                         String author,
-                         String isbn,
-                         Long publicationYear,
-                         String language) {
+    public BookPatchDTO(String title,
+                        String author,
+                        String isbn,
+                        Long publicationYear,
+                        String language) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;

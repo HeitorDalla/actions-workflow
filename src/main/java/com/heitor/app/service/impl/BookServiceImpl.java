@@ -2,6 +2,7 @@ package com.heitor.app.service.impl;
 
 import com.heitor.app.dto.common.StockDTO;
 import com.heitor.app.dto.input.BookCreateDTO;
+import com.heitor.app.dto.input.BookPatchDTO;
 import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
@@ -68,11 +69,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponseDTO partiallyUpdateBook(BookUpdateDTO dto, Long id) {
+    public BookResponseDTO partiallyUpdateBook(BookPatchDTO dto, Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        mapper.updateEntityFromDto(dto, book);
+        mapper.patchEntity(dto, book);
 
         book = bookRepository.save(book);
 
@@ -84,7 +85,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        mapper.updateEntityFromDto(dto, book);
+        mapper.updateEntity(dto, book);
 
         bookRepository.save(book);
 

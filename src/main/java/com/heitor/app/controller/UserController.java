@@ -1,7 +1,7 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.dto.request.UserRequestDTO;
-import com.heitor.app.dto.response.UserResponseDTO;
+import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.output.UserResponseDTO;
 import com.heitor.app.service.UserService;
 
 import jakarta.validation.Valid;

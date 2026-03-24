@@ -1,4 +1,4 @@
-package com.heitor.app.dto;
+package com.heitor.app.dto.input;
 
 public class BookUpdateDTO {
     private String title;

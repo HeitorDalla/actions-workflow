@@ -1,4 +1,4 @@
-package com.heitor.app.dto;
+package com.heitor.app.dto.common;
 
 public class StockDTO {
     private Integer quantity;

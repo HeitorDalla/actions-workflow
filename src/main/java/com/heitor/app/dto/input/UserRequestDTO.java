@@ -1,4 +1,4 @@
-package com.heitor.app.dto.request;
+package com.heitor.app.dto.input;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

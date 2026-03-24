@@ -1,7 +1,7 @@
 package com.heitor.app.service.impl;
 
-import com.heitor.app.dto.request.UserRequestDTO;
-import com.heitor.app.dto.response.UserResponseDTO;
+import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.output.UserResponseDTO;
 import com.heitor.app.entity.User;
 import com.heitor.app.enums.UserStatus;
 import com.heitor.app.exception.UserNotFoundException;

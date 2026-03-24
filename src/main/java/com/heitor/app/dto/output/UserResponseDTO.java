@@ -1,4 +1,4 @@
-package com.heitor.app.dto.response;
+package com.heitor.app.dto.output;
 
 import com.heitor.app.enums.UserStatus;
 

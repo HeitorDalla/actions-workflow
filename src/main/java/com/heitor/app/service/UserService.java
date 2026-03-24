@@ -1,7 +1,7 @@
 package com.heitor.app.service;
 
-import com.heitor.app.dto.request.UserRequestDTO;
-import com.heitor.app.dto.response.UserResponseDTO;
+import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.output.UserResponseDTO;
 
 import java.util.List;
 

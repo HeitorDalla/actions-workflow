@@ -1,8 +1,8 @@
 package com.heitor.app.mapper;
 
-import com.heitor.app.dto.BookCreateDTO;
-import com.heitor.app.dto.BookUpdateDTO;
-import com.heitor.app.dto.response.BookResponseDTO;
+import com.heitor.app.dto.input.BookCreateDTO;
+import com.heitor.app.dto.input.BookUpdateDTO;
+import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import org.springframework.stereotype.Component;
 

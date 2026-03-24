@@ -1,9 +1,9 @@
 package com.heitor.app.service;
 
-import com.heitor.app.dto.BookCreateDTO;
-import com.heitor.app.dto.BookUpdateDTO;
-import com.heitor.app.dto.StockDTO;
-import com.heitor.app.dto.response.BookResponseDTO;
+import com.heitor.app.dto.common.StockDTO;
+import com.heitor.app.dto.input.BookCreateDTO;
+import com.heitor.app.dto.input.BookUpdateDTO;
+import com.heitor.app.dto.output.BookResponseDTO;
 import java.util.List;
 
 public interface BookService {

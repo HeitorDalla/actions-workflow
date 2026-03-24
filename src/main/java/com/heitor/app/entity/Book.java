@@ -30,7 +30,7 @@ public class Book {
     @Column(name = "book_language", nullable = false)
     private String language;
 
-    @Column(name = "book_total_quantity", nullable = false)
+    @Column(name = "book_total_quantity")
     private Integer totalQuantity;
 
     @Column(name = "book_available_quantity", nullable = false)

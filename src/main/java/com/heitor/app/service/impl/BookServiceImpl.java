@@ -1,6 +1,8 @@
 package com.heitor.app.service.impl;
 
-import com.heitor.app.dto.request.BookRequestDTO;
+import com.heitor.app.dto.BookCreateDTO;
+import com.heitor.app.dto.BookUpdateDTO;
+import com.heitor.app.dto.StockDTO;
 import com.heitor.app.dto.response.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import com.heitor.app.exception.BookNotFoundException;
@@ -28,9 +30,7 @@ public class BookServiceImpl implements BookService {
                                              String isbn,
                                              Long publicationYear,
                                              String language,
-                                             Integer totalQuantity,
-                                             Integer availableQuantity,
-                                             LocalDate registrationDate) {
+                                             Integer totalQuantity) {
 
         List<Book> books = bookRepository.getAllBooks(
                 title,
@@ -38,9 +38,7 @@ public class BookServiceImpl implements BookService {
                 isbn,
                 publicationYear,
                 language,
-                totalQuantity,
-                availableQuantity,
-                registrationDate
+                totalQuantity
         );
 
         return mapper.toDtoList(books);
@@ -55,8 +53,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponseDTO createBook(BookRequestDTO dto){
-        Book book = mapper.toEntity(dto);
+    public BookResponseDTO createBook(BookCreateDTO dto){
+        Book book = mapper.fromCreateDTO(dto);
+
+        // Regras de Negócio
+        book.setRegistrationDate(LocalDate.now());
+
+        Integer incoming = dto.getTotalQuantity();
+        book.setAvailableQuantity(incoming);
 
         Book savedBook = bookRepository.save(book);
 
@@ -64,7 +68,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponseDTO partiallyUpdateBook(BookRequestDTO dto, Long id) {
+    public BookResponseDTO partiallyUpdateBook(BookUpdateDTO dto, Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
@@ -76,16 +80,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponseDTO updateBook(BookRequestDTO dto, Long id) {
+    public BookResponseDTO updateBook(BookUpdateDTO dto, Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        Book newBook = mapper.toEntity(dto);
-        newBook.setId(book.getId());
+        mapper.updateEntityFromDto(dto, book);
 
-        bookRepository.save(newBook);
+        bookRepository.save(book);
 
-        return mapper.toDto(newBook);
+        return mapper.toDto(book);
     }
 
     @Override
@@ -94,5 +97,35 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new BookNotFoundException(id));
 
         bookRepository.delete(book);
+    }
+
+    @Override
+    public BookResponseDTO addStock(StockDTO dto, Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        book.setTotalQuantity(book.getTotalQuantity() + dto.getQuantity());
+        book.setAvailableQuantity(book.getAvailableQuantity() + dto.getQuantity());
+
+        bookRepository.save(book);
+
+        return mapper.toDto(book);
+    }
+
+    @Override
+    public BookResponseDTO removeStock(StockDTO dto, Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        if (book.getAvailableQuantity() < dto.getQuantity()) {
+            throw new IllegalArgumentException("Não há estoque disponível.");
+        }
+
+        book.setTotalQuantity(book.getTotalQuantity() - dto.getQuantity());
+        book.setAvailableQuantity(book.getAvailableQuantity() - dto.getQuantity());
+
+        bookRepository.save(book);
+
+        return mapper.toDto(book);
     }
 }

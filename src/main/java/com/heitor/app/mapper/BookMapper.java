@@ -1,6 +1,7 @@
 package com.heitor.app.mapper;
 
-import com.heitor.app.dto.request.BookRequestDTO;
+import com.heitor.app.dto.BookCreateDTO;
+import com.heitor.app.dto.BookUpdateDTO;
 import com.heitor.app.dto.response.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import org.springframework.stereotype.Component;
@@ -32,13 +33,13 @@ public class BookMapper {
         dto.setPublicationYear(entity.getPublicationYear());
         dto.setLanguage(entity.getLanguage());
         dto.setTotalQuantity(entity.getTotalQuantity());
-        dto.setAvailableQuantity(entity.getAvailableQuantity());
         dto.setRegistrationDate(entity.getRegistrationDate());
+        dto.setAvailableQuantity(entity.getAvailableQuantity());
 
         return dto;
     }
 
-    public Book toEntity(BookRequestDTO dto) {
+    public Book fromCreateDTO(BookCreateDTO dto) { // create
         if (dto == null) {
             return null;
         }
@@ -50,13 +51,11 @@ public class BookMapper {
         book.setPublicationYear(dto.getPublicationYear());
         book.setLanguage(dto.getLanguage());
         book.setTotalQuantity(dto.getTotalQuantity());
-        book.setAvailableQuantity(dto.getAvailableQuantity());
-        book.setRegistrationDate(dto.getRegistrationDate());
 
         return book;
     }
 
-    public void updateEntityFromDto(BookRequestDTO dto, Book entity) {
+    public void updateEntityFromDto(BookUpdateDTO dto, Book entity) {
         if (dto == null || entity == null) {
             return;
         }
@@ -79,18 +78,6 @@ public class BookMapper {
 
         if (dto.getLanguage() != null) {
             entity.setLanguage(dto.getLanguage());
-        }
-
-        if (dto.getTotalQuantity() != null) {
-            entity.setTotalQuantity(dto.getTotalQuantity());
-        }
-
-        if (dto.getAvailableQuantity() != null) {
-            entity.setAvailableQuantity(dto.getAvailableQuantity());
-        }
-
-        if (dto.getRegistrationDate() != null) {
-            entity.setRegistrationDate(dto.getRegistrationDate());
         }
     }
 }

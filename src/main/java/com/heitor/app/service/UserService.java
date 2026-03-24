@@ -12,11 +12,11 @@ public interface UserService {
 
     UserResponseDTO getUserById(Long id);
 
-    UserResponseDTO createUser(UserRequestDTO user);
+    UserResponseDTO createUser(UserRequestDTO dto);
 
-    UserResponseDTO partiallyUpdateUser(UserRequestDTO newUser, Long id);
+    UserResponseDTO partiallyUpdateUser(UserRequestDTO dto, Long id);
 
-    UserResponseDTO updateUser(UserRequestDTO newUser, Long id);
+    UserResponseDTO updateUser(UserRequestDTO dto, Long id);
 
     void deleteUser(Long id);
 }

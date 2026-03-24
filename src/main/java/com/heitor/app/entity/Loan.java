@@ -22,9 +22,6 @@ public class Loan {
     @Column(name = "loan_return_date")
     private LocalDate returnDate;
 
-//    @Transient // anotacao para fazer o JPA ignorar a persistencia no banco de dados, mas util para regras de negoico
-//    private long diasAtraso;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "loan_status", nullable = false)
     private LoanStatus loanStatus;

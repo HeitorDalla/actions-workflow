@@ -1,27 +1,21 @@
 package com.heitor.app.service;
 
-import com.heitor.app.entity.Fine;
-import com.heitor.app.entity.Loan;
-import com.heitor.app.entity.User;
-import com.heitor.app.enums.LoanStatus;
+import com.heitor.app.dto.input.LoanRequestDTO;
+import com.heitor.app.dto.output.LoanResponseDTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface LoanService {
-    List<Loan> getAllLoans(
-            LocalDate loanDate,
-            LocalDate returnDate,
-            LoanStatus loanStatus,
-            User user,
-            Fine fine
+    List<LoanResponseDTO> getAllLoans(
+            Long userId,
+            Boolean fine
     );
 
-    Loan getLoanById(Long id);
+    LoanResponseDTO getLoanById(Long id);
 
-    Loan createLoan(Loan newLoan);
+    LoanResponseDTO createLoan(LoanRequestDTO dto);
 
-    Loan updateLoan(Loan newLoan, Long id);
+    LoanResponseDTO returnLoan(Long id);
 
-    void deleteLoan(Long id);
+    void cancelLoan(Long id);
 }

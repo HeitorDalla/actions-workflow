@@ -1,15 +1,14 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.entity.Fine;
-import com.heitor.app.entity.Loan;
-import com.heitor.app.entity.User;
-import com.heitor.app.enums.LoanStatus;
+import com.heitor.app.dto.input.LoanRequestDTO;
+import com.heitor.app.dto.output.LoanResponseDTO;
 import com.heitor.app.service.LoanService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -24,58 +23,36 @@ public class LoanController {
     }
 
     @GetMapping
-    public List<Loan> getAllLoans(
-            @RequestParam(required = false) LocalDate loanDate,
-            @RequestParam(required = false) LocalDate returnDate,
-            @RequestParam(required = false) LoanStatus loanStatus,
-            @RequestParam(required = false) User user,
-            @RequestParam(required = false) Fine fine
+    public ResponseEntity<List<LoanResponseDTO>> getAllLoans(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Boolean fine
     ) {
 
-        List<Loan> loans = loanService.getAllLoans(
-                loanDate,
-                returnDate,
-                loanStatus,
-                user,
+        return ResponseEntity.ok(loanService.getAllLoans(
+                userId,
                 fine
-        );
-
-        LOGGER.info("Loans successfully fetched: {}", loans);
-
-        return loans;
+        ));
     }
 
     @GetMapping("/{id}")
-    public Loan getLoanById(@PathVariable Long id) {
-        Loan loan = loanService.getLoanById(id);
-
-        LOGGER.info("Loan successfully fetched: {}", loan);
-
-        return loan;
+    public ResponseEntity<LoanResponseDTO> getLoanById(@PathVariable Long id) {
+        return ResponseEntity.ok(loanService.getLoanById(id));
     }
 
     @PostMapping
-    public Loan createLoan(@RequestBody Loan newLoan) {
-        Loan loan = loanService.createLoan(newLoan);
-
-        LOGGER.info("Loan successfully created: {}", loan);
-
-        return loan;
+    public ResponseEntity<LoanResponseDTO> createLoan(@Valid @RequestBody LoanRequestDTO dto) {
+        return ResponseEntity.ok(loanService.createLoan(dto));
     }
 
-    @PatchMapping("/{id}")
-    public Loan updateLoan(@RequestBody Loan newLoan, @PathVariable Long id) {
-        Loan loan = loanService.updateLoan(newLoan, id);
-
-        LOGGER.info("Loan successfully updated: {}", loan);
-
-        return loan;
+    @PutMapping("/{id}/return")
+    public ResponseEntity<LoanResponseDTO> returnLoan(@PathVariable Long id) {
+        return ResponseEntity.ok(loanService.returnLoan(id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLoan(@PathVariable Long id) {
-        loanService.deleteLoan(id);
+    public ResponseEntity<Void> cancelLoan(@PathVariable Long id) {
+        loanService.cancelLoan(id);
 
-        LOGGER.info("Loan successfully deleted");
+        return ResponseEntity.noContent().build();
     }
 }

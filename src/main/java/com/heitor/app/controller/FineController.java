@@ -1,14 +1,14 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.entity.Fine;
+import com.heitor.app.dto.output.FineResponseDTO;
 import com.heitor.app.enums.FineStatus;
 import com.heitor.app.service.FineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,48 +23,23 @@ public class FineController {
     }
 
     @GetMapping
-    public List<Fine> getAllFines(
+    public ResponseEntity<List<FineResponseDTO>> getAllFines(
             @RequestParam(required = false) BigDecimal amount,
-            @RequestParam(required = false) FineStatus fineStatus,
-            @RequestParam(required = false) LocalDate createdDate,
-            @RequestParam(required = false) LocalDate paymentDate) {
+            @RequestParam(required = false) FineStatus fineStatus) {
 
-        List<Fine> fines = fineService.getAllFines(
+        return ResponseEntity.ok(fineService.getAllFines(
                 amount,
-                fineStatus,
-                createdDate,
-                paymentDate
-        );
-
-        LOGGER.info("Fines successfully fetched: {}", fines);
-
-        return fines;
+                fineStatus
+        ));
     }
 
     @GetMapping("/{id}")
-    public Fine getFineById(@PathVariable Long id) {
-        Fine fine = fineService.getFineByID(id);
-
-        LOGGER.info("Fine successfully fetched: {}", fine);
-
-        return fine;
+    public ResponseEntity<FineResponseDTO> getFineById(@PathVariable Long id) {
+        return ResponseEntity.ok(fineService.getFineByID(id));
     }
 
-    @PostMapping
-    public Fine createFine(@RequestBody Fine fine) {
-        Fine createdFine = fineService.createFine(fine);
-
-        LOGGER.info("Fine successfully created: {}", createdFine);
-
-        return createdFine;
-    }
-
-    @PatchMapping("/{id}")
-    public Fine updateFine(@PathVariable Long id, @RequestBody Fine newFine) {
-        Fine fine = fineService.updateFine(newFine,id);
-
-        LOGGER.info("Fine successfully updated: {}", fine);
-
-        return fine;
+    @PutMapping("/{id}/payment")
+    public ResponseEntity<FineResponseDTO> payFine(@PathVariable Long id) {
+        return ResponseEntity.ok(fineService.payFine(id));
     }
 }

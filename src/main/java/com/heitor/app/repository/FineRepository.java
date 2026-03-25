@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -18,13 +17,9 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
         FROM Fine f
         WHERE (:amount IS NULL OR LOWER(:amount) LIKE LOWER(CONCAT('%', :amount, '%')))
             AND (:fineStatus IS NULL OR f.fineStatus = :fineStatus)
-            AND (:createdDate IS NULL OR f.createdDate = :createdDate)
-            AND (:paymentDate IS NULL OR f.paymentDate = :paymentDate)
     """)
     List<Fine> getAllFines(
             @Param("amount") BigDecimal amount,
-            @Param("fineStatus") FineStatus fineStatus,
-            @Param("createdDate") LocalDate createdDate,
-            @Param("paymentDate") LocalDate paymentDate
+            @Param("fineStatus") FineStatus fineStatus
     );
 }

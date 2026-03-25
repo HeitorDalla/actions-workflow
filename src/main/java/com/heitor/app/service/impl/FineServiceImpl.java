@@ -1,8 +1,10 @@
 package com.heitor.app.service.impl;
 
+import com.heitor.app.dto.output.FineResponseDTO;
 import com.heitor.app.entity.Fine;
 import com.heitor.app.enums.FineStatus;
 import com.heitor.app.exception.FineNotFoundException;
+import com.heitor.app.mapper.FineMapper;
 import com.heitor.app.repository.FineRepository;
 import com.heitor.app.service.FineService;
 import org.springframework.stereotype.Service;
@@ -14,58 +16,50 @@ import java.util.List;
 @Service
 public class FineServiceImpl implements FineService {
     private FineRepository fineRepository;
+    private FineMapper fineMapper;
 
-    public FineServiceImpl(FineRepository fineRepository) {
+    public FineServiceImpl(FineRepository fineRepository, FineMapper fineMapper) {
         this.fineRepository = fineRepository;
+        this.fineMapper = fineMapper;
     }
 
     @Override
-    public List<Fine> getAllFines(
+    public List<FineResponseDTO> getAllFines(
             BigDecimal amount,
-            FineStatus fineStatus,
-            LocalDate createdDate,
-            LocalDate paymentDate) {
+            FineStatus fineStatus) {
 
-        return fineRepository.getAllFines(
-                amount,
-                fineStatus,
-                createdDate,
-                paymentDate
-        );
+        List<Fine> fines = fineRepository.getAllFines(amount, fineStatus);
+
+        return fineMapper.toDtoList(fines);
     }
 
     @Override
-    public Fine getFineByID(Long id) {
-        return fineRepository.findById(id)
-                .orElseThrow(() -> new FineNotFoundException(id));
-    }
-
-    @Override
-    public Fine createFine(Fine fine) {
-        return fineRepository.save(fine);
-    }
-
-    @Override
-    public Fine updateFine(Fine newFine, Long id) {
+    public FineResponseDTO getFineByID(Long id) {
         Fine fine = fineRepository.findById(id)
                 .orElseThrow(() -> new FineNotFoundException(id));
 
-        if (newFine.getAmount() != null) {
-            fine.setAmount(newFine.getAmount());
-        }
+        return fineMapper.toDto(fine);
+    }
 
-        if (newFine.getFineStatus() != null) {
-            fine.setFineStatus(newFine.getFineStatus());
-        }
-
-        if (newFine.getCreatedDate() != null) {
-            fine.setCreatedDate(newFine.getCreatedDate());
-        }
-
-        if (newFine.getPaymentDate() != null) {
-            fine.setPaymentDate(newFine.getPaymentDate());
+    @Override
+    public Fine saveFine(Fine fine) {
+        if (fine.getLoan() == null) {
+            throw new IllegalArgumentException("Fine must be attached");
         }
 
         return fineRepository.save(fine);
+    }
+
+    @Override
+    public FineResponseDTO payFine(Long id) {
+        Fine currentFine = fineRepository.findById(id)
+                .orElseThrow(() -> new FineNotFoundException(id));
+
+        currentFine.setFineStatus(FineStatus.PAID);
+        currentFine.setPaymentDate(LocalDate.now());
+
+        fineRepository.save(currentFine);
+
+        return fineMapper.toDto(currentFine);
     }
 }

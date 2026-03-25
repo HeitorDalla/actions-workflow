@@ -17,7 +17,8 @@ public class GlobalNotFoundHandler {
             BookNotFoundException.class,
             LoanNotFoundException.class,
             LoanItemNotFoundException.class,
-            ReserveNotFoundException.class
+            ReserveNotFoundException.class,
+            FineNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErroResponseDTO handleNotFound(RuntimeException ex) {

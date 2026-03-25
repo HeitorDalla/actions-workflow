@@ -19,6 +19,9 @@ public class Loan {
     @Column(name = "loan_date", nullable = false)
     private LocalDate loanDate;
 
+    @Column(name = "loan_due_date", nullable = false)
+    private LocalDate dueDate;
+
     @Column(name = "loan_return_date")
     private LocalDate returnDate;
 
@@ -39,19 +42,21 @@ public class Loan {
     public Loan() {}
 
     public Loan(Long id,
-                User user,
                 LocalDate loanDate,
+                LocalDate dueDate,
                 LocalDate returnDate,
                 LoanStatus loanStatus,
-                List<LoanItem> items,
-                Fine fine) {
+                User user,
+                Fine fine,
+                List<LoanItem> items) {
         this.id = id;
-        this.user = user;
         this.loanDate = loanDate;
+        this.dueDate = dueDate;
         this.returnDate = returnDate;
         this.loanStatus = loanStatus;
-        this.items = items;
+        this.user = user;
         this.fine = fine;
+        this.items = items;
     }
 
     public Long getId() {
@@ -62,20 +67,20 @@ public class Loan {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public LocalDate getLoanDate() {
         return loanDate;
     }
 
     public void setLoanDate(LocalDate loanDate) {
         this.loanDate = loanDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public LocalDate getReturnDate() {
@@ -94,12 +99,12 @@ public class Loan {
         this.loanStatus = loanStatus;
     }
 
-    public List<LoanItem> getItems() {
-        return items;
+    public User getUser() {
+        return user;
     }
 
-    public void setItems(List<LoanItem> items) {
-        this.items = items;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Fine getFine() {
@@ -108,5 +113,13 @@ public class Loan {
 
     public void setFine(Fine fine) {
         this.fine = fine;
+    }
+
+    public List<LoanItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<LoanItem> items) {
+        this.items = items;
     }
 }

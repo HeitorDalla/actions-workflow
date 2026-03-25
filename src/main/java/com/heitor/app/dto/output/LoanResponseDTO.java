@@ -1,14 +1,13 @@
 package com.heitor.app.dto.output;
 
-import com.heitor.app.entity.LoanItem;
 import com.heitor.app.enums.LoanStatus;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class LoanResponseDTO {
     private Long id;
     private LocalDate loanDate;
+    private LocalDate dueDate;
     private LocalDate returnDate;
     private LoanStatus loanStatus;
     private Long userId;
@@ -18,12 +17,14 @@ public class LoanResponseDTO {
 
     public LoanResponseDTO(Long id,
                            LocalDate loanDate,
+                           LocalDate dueDate,
                            LocalDate returnDate,
                            LoanStatus loanStatus,
                            Long userId,
-                           Boolean hasFine,
-                           List<LoanItem> loanItems) {
+                           Boolean hasFine) {
+        this.id = id;
         this.loanDate = loanDate;
+        this.dueDate = dueDate;
         this.returnDate = returnDate;
         this.loanStatus = loanStatus;
         this.userId = userId;
@@ -44,6 +45,14 @@ public class LoanResponseDTO {
 
     public void setLoanDate(LocalDate loanDate) {
         this.loanDate = loanDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public LocalDate getReturnDate() {

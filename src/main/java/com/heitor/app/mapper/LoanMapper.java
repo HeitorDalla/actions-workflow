@@ -29,6 +29,7 @@ public class LoanMapper {
         LoanResponseDTO dto = new LoanResponseDTO();
         dto.setId(loan.getId());
         dto.setLoanDate(loan.getLoanDate());
+        dto.setDueDate(loan.getDueDate());
         dto.setReturnDate(loan.getReturnDate());
         dto.setLoanStatus(loan.getLoanStatus());
         dto.setUserId(loan.getUser().getId());

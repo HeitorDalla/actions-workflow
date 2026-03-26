@@ -7,6 +7,8 @@ import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.User;
 import com.heitor.app.enums.FineStatus;
 import com.heitor.app.enums.LoanStatus;
+import com.heitor.app.enums.UserStatus;
+import com.heitor.app.exception.BusinessException;
 import com.heitor.app.exception.LoanNotFoundException;
 import com.heitor.app.exception.UserNotFoundException;
 import com.heitor.app.mapper.LoanMapper;
@@ -14,6 +16,7 @@ import com.heitor.app.repository.LoanRepository;
 import com.heitor.app.repository.UserRepository;
 import com.heitor.app.service.FineService;
 import com.heitor.app.service.LoanService;
+import com.heitor.app.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,7 +30,10 @@ public class LoanServiceImpl implements LoanService {
     private FineService fineService;
     private LoanMapper mapper;
 
-    public LoanServiceImpl(UserRepository userRepository, LoanRepository loanRepository, FineService fineService, LoanMapper mapper) {
+    public LoanServiceImpl(UserRepository userRepository,
+                           LoanRepository loanRepository,
+                           FineService fineService,
+                           LoanMapper mapper) {
         this.userRepository = userRepository;
         this.loanRepository = loanRepository;
         this.fineService = fineService;
@@ -37,12 +43,14 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<LoanResponseDTO> getAllLoans(
             Long userId,
-            Boolean fine
+            Boolean fine,
+            LoanStatus loanStatus
     ) {
 
         List<Loan> loans = loanRepository.getAllLoans(
                 userId,
-                fine
+                fine,
+                loanStatus
         );
 
         return mapper.toDtoList(loans);
@@ -61,14 +69,18 @@ public class LoanServiceImpl implements LoanService {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
+        if (user.getUserStatus() != UserStatus.INACTIVE) {
+            throw new BusinessException("User is not allowed to create loans.");
+        }
+
         Loan loan = mapper.toEntity(dto, user);
 
+        // Regras de negócio
         loan.setLoanDate(LocalDate.now());
         loan.setDueDate(LocalDate.now().plusWeeks(1));
         loan.setLoanStatus(LoanStatus.OPEN);
 
         loan = loanRepository.save(loan);
-
         return mapper.toDto(loan);
     }
 
@@ -77,6 +89,7 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException(id));
 
+        // Regras de negócio
         loan.setReturnDate(LocalDate.now());
         loan.setLoanStatus(LoanStatus.RETURNED);
 
@@ -95,7 +108,6 @@ public class LoanServiceImpl implements LoanService {
         }
 
         loanRepository.save(loan);
-
         return mapper.toDto(loan);
     }
 

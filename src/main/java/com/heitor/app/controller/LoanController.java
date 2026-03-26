@@ -2,6 +2,7 @@ package com.heitor.app.controller;
 
 import com.heitor.app.dto.input.LoanRequestDTO;
 import com.heitor.app.dto.output.LoanResponseDTO;
+import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.service.LoanService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -25,12 +26,13 @@ public class LoanController {
     @GetMapping
     public ResponseEntity<List<LoanResponseDTO>> getAllLoans(
             @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) Boolean fine
-    ) {
+            @RequestParam(required = false) Boolean fine,
+            @RequestParam(required = false) LoanStatus loanStatus) {
 
         return ResponseEntity.ok(loanService.getAllLoans(
                 userId,
-                fine
+                fine,
+                loanStatus
         ));
     }
 

@@ -4,6 +4,7 @@ import com.heitor.app.dto.input.UserRequestDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
 import com.heitor.app.entity.User;
 import com.heitor.app.enums.UserStatus;
+import com.heitor.app.exception.BusinessException;
 import com.heitor.app.exception.UserNotFoundException;
 import com.heitor.app.mapper.UserMapper;
 import com.heitor.app.repository.UserRepository;
@@ -112,7 +113,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         if (!user.getLoans().isEmpty()) {
-            throw new RuntimeException("The user cannot be deactivated because they have active loans.");
+            throw new BusinessException("The user cannot be deactivated because they have active loans.");
         }
 
         user.setUserStatus(UserStatus.INACTIVE);

@@ -28,4 +28,14 @@ public class GlobalNotFoundHandler {
                 ex.getMessage()
         );
     }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroResponseDTO handleForbidden(RuntimeException ex) {
+        return new ErroResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage()
+        );
+    }
 }

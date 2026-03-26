@@ -7,6 +7,7 @@ import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import com.heitor.app.exception.BookNotFoundException;
+import com.heitor.app.exception.BusinessException;
 import com.heitor.app.mapper.BookMapper;
 import com.heitor.app.repository.BookRepository;
 import com.heitor.app.service.BookService;
@@ -59,12 +60,9 @@ public class BookServiceImpl implements BookService {
 
         // Regras de Negócio
         book.setRegistrationDate(LocalDate.now());
-
-        Integer incoming = dto.getTotalQuantity();
-        book.setAvailableQuantity(incoming);
+        book.setAvailableQuantity(dto.getTotalQuantity());
 
         Book savedBook = bookRepository.save(book);
-
         return mapper.toDto(savedBook);
     }
 
@@ -76,7 +74,6 @@ public class BookServiceImpl implements BookService {
         mapper.patchEntity(dto, book);
 
         book = bookRepository.save(book);
-
         return mapper.toDto(book);
     }
 
@@ -88,7 +85,6 @@ public class BookServiceImpl implements BookService {
         mapper.updateEntity(dto, book);
 
         bookRepository.save(book);
-
         return mapper.toDto(book);
     }
 
@@ -105,11 +101,11 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
+        // Regras de negócio
         book.setTotalQuantity(book.getTotalQuantity() + dto.getQuantity());
         book.setAvailableQuantity(book.getAvailableQuantity() + dto.getQuantity());
 
         bookRepository.save(book);
-
         return mapper.toDto(book);
     }
 
@@ -118,15 +114,14 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
+        // Regras de negócio
         if (book.getAvailableQuantity() < dto.getQuantity()) {
-            throw new IllegalArgumentException("Não há estoque disponível.");
+            throw new BusinessException("Out of stock.");
         }
-
         book.setTotalQuantity(book.getTotalQuantity() - dto.getQuantity());
         book.setAvailableQuantity(book.getAvailableQuantity() - dto.getQuantity());
 
         bookRepository.save(book);
-
         return mapper.toDto(book);
     }
 }

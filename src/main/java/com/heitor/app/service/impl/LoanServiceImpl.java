@@ -80,6 +80,7 @@ public class LoanServiceImpl implements LoanService {
         loan.setReturnDate(LocalDate.now());
         loan.setLoanStatus(LoanStatus.RETURNED);
 
+        // Regra de criação de multa
         if (loan.getReturnDate().isAfter(loan.getDueDate())) {
             Fine fine = new Fine();
             fine.setLoan(loan);
@@ -103,8 +104,8 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException(id));
 
-        loan.setLoanStatus(LoanStatus.CANCELLED);
         loan.setReturnDate(LocalDate.now());
+        loan.setLoanStatus(LoanStatus.CANCELLED);
 
         loanRepository.save(loan);
     }

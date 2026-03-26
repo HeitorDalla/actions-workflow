@@ -28,13 +28,14 @@ public class UserServiceImpl implements UserService {
         this.mapper = mapper;
     }
 
+    // Métodos de busca
     @Override
     public List<UserResponseDTO> getAllUsers(String name,
                                              String number,
-                                             String email) {
+                                             String email,
+                                             UserStatus userStatus) {
 
-        List<User> users = userRepository.getAllUsers(name, number, email);
-
+        List<User> users = userRepository.getAllUsers(name, number, email, userStatus);
         return mapper.toDtoList(users);
     }
 
@@ -46,15 +47,16 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(user);
     }
 
+    // Métodos de atualizações
     @Override
     public UserResponseDTO createUser(UserRequestDTO dto) {
         User user = mapper.toEntity(dto);
 
+        // Regras de negócio
         user.setRegistrationDate(LocalDate.now());
         user.setUserStatus(UserStatus.ACTIVE);
 
         User savedUser = userRepository.save(user);
-
         return mapper.toDto(savedUser);
     }
 
@@ -66,7 +68,6 @@ public class UserServiceImpl implements UserService {
         mapper.updateEntityFromDto(dto, user);
 
         userRepository.save(user);
-
         return mapper.toDto(user);
     }
 
@@ -84,7 +85,6 @@ public class UserServiceImpl implements UserService {
         newState.setUserStatus(current.getUserStatus());
 
         User saved = userRepository.save(newState);
-
         return mapper.toDto(saved);
     }
 
@@ -94,5 +94,28 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         userRepository.delete(existingUser);
+    }
+
+    // Métodos de Ativação e Desativação
+    @Override
+    public void activateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.setUserStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        if (!user.getLoans().isEmpty()) {
+            throw new RuntimeException("The user cannot be deactivated because they have active loans.");
+        }
+
+        user.setUserStatus(UserStatus.INACTIVE);
+        userRepository.save(user);
     }
 }

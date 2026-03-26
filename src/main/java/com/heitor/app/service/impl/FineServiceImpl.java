@@ -3,6 +3,7 @@ package com.heitor.app.service.impl;
 import com.heitor.app.dto.output.FineResponseDTO;
 import com.heitor.app.entity.Fine;
 import com.heitor.app.enums.FineStatus;
+import com.heitor.app.exception.BusinessException;
 import com.heitor.app.exception.FineNotFoundException;
 import com.heitor.app.mapper.FineMapper;
 import com.heitor.app.repository.FineRepository;
@@ -55,11 +56,19 @@ public class FineServiceImpl implements FineService {
         Fine currentFine = fineRepository.findById(id)
                 .orElseThrow(() -> new FineNotFoundException(id));
 
+        // Regras de negócio
+        if (currentFine.getFineStatus() == FineStatus.PAID) {
+            throw new BusinessException("A multa ja está paga.");
+        }
+
+        if (currentFine.getFineStatus() == FineStatus.CANCELLED) {
+            throw new BusinessException("A multa foi cancelada.");
+        }
+
         currentFine.setFineStatus(FineStatus.PAID);
         currentFine.setPaymentDate(LocalDate.now());
 
         fineRepository.save(currentFine);
-
         return fineMapper.toDto(currentFine);
     }
 }

@@ -89,7 +89,15 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException(id));
 
-        // Regras de negócio
+        if (loan.getLoanStatus() == LoanStatus.RETURNED) {
+            throw new BusinessException("The loan has already been repaid.");
+        }
+
+        if (loan.getFine() != null && loan.getFine().getFineStatus() == FineStatus.OPEN) {
+            throw new BusinessException("There is an outstanding fine.");
+        }
+
+        // Devolução
         loan.setReturnDate(LocalDate.now());
         loan.setLoanStatus(LoanStatus.RETURNED);
 
@@ -115,6 +123,15 @@ public class LoanServiceImpl implements LoanService {
     public void cancelLoan(Long id) {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException(id));
+
+        // Regras de negócio
+        if (loan.getLoanStatus() == LoanStatus.RETURNED) {
+            throw new BusinessException("O empréstimo ja foi devolvido e não pode ser cancelado.");
+        }
+
+        if (loan.getLoanStatus() == LoanStatus.CANCELLED) {
+            throw new BusinessException("O empréstimo ja foi cancelado");
+        }
 
         loan.setReturnDate(LocalDate.now());
         loan.setLoanStatus(LoanStatus.CANCELLED);

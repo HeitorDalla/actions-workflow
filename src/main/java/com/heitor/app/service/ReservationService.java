@@ -11,4 +11,6 @@ public interface ReservationService {
             Long bookId,
             ReservationStatus reservationStatus
     );
+
+    ReservationResponseDTO getReservartionById(Long id);
 }

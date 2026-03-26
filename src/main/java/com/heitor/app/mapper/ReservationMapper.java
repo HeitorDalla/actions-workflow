@@ -18,7 +18,7 @@ public class ReservationMapper {
                 .toList();
     }
 
-    private ReservationResponseDTO toDto(Reservation entity) {
+    public ReservationResponseDTO toDto(Reservation entity) {
         if (entity == null) {
             return null;
         }

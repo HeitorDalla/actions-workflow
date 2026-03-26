@@ -69,7 +69,7 @@ public class LoanServiceImpl implements LoanService {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
-        if (user.getUserStatus() != UserStatus.INACTIVE) {
+        if (user.getUserStatus() != UserStatus.ACTIVE) {
             throw new BusinessException("User is not allowed to create loans.");
         }
 

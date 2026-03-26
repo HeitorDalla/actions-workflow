@@ -36,8 +36,13 @@ public class Loan {
     @OneToOne(mappedBy = "loan", fetch = FetchType.LAZY)
     private Fine fine;
 
-    @OneToMany(mappedBy = "loan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LoanItem> items = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "loan_books",
+            joinColumns = @JoinColumn(name = "loan_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> books = new ArrayList<>();
 
     public Loan() {}
 
@@ -48,7 +53,7 @@ public class Loan {
                 LoanStatus loanStatus,
                 User user,
                 Fine fine,
-                List<LoanItem> items) {
+                List<Book> books) {
         this.id = id;
         this.loanDate = loanDate;
         this.dueDate = dueDate;
@@ -56,7 +61,7 @@ public class Loan {
         this.loanStatus = loanStatus;
         this.user = user;
         this.fine = fine;
-        this.items = items;
+        this.books = books;
     }
 
     public Long getId() {
@@ -115,11 +120,11 @@ public class Loan {
         this.fine = fine;
     }
 
-    public List<LoanItem> getItems() {
-        return items;
+    public List<Book> getBooks() {
+        return books;
     }
 
-    public void setItems(List<LoanItem> items) {
-        this.items = items;
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 }

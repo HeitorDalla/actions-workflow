@@ -40,10 +40,10 @@ public class Book {
     private LocalDate registrationDate;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    private List<LoanItem> loanItems = new ArrayList<>();
-
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<Reservation> reservations = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
+    private List<Loan> loans = new ArrayList<>();
 
     public Book() {}
 
@@ -56,8 +56,8 @@ public class Book {
                 Integer totalQuantity,
                 Integer availableQuantity,
                 LocalDate registrationDate,
-                List<LoanItem> loanItems,
-                List<Reservation> reservations) {
+                List<Reservation> reservations,
+                List<Loan> loans) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -67,8 +67,8 @@ public class Book {
         this.totalQuantity = totalQuantity;
         this.availableQuantity = availableQuantity;
         this.registrationDate = registrationDate;
-        this.loanItems = loanItems;
         this.reservations = reservations;
+        this.loans = loans;
     }
 
     public Long getId() {
@@ -143,19 +143,19 @@ public class Book {
         this.registrationDate = registrationDate;
     }
 
-    public List<LoanItem> getLoanItems() {
-        return loanItems;
-    }
-
-    public void setLoanItems(List<LoanItem> loanItems) {
-        this.loanItems = loanItems;
-    }
-
     public List<Reservation> getReservations() {
         return reservations;
     }
 
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
     }
 }

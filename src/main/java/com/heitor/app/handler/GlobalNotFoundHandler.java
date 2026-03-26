@@ -16,7 +16,6 @@ public class GlobalNotFoundHandler {
             UserNotFoundException.class,
             BookNotFoundException.class,
             LoanNotFoundException.class,
-            LoanItemNotFoundException.class,
             ReserveNotFoundException.class,
             FineNotFoundException.class
     })

@@ -58,11 +58,11 @@ public class FineServiceImpl implements FineService {
 
         // Regras de negócio
         if (currentFine.getFineStatus() == FineStatus.PAID) {
-            throw new BusinessException("A multa ja está paga.");
+            throw new BusinessException("The fine has already been paid.");
         }
 
         if (currentFine.getFineStatus() == FineStatus.CANCELLED) {
-            throw new BusinessException("A multa foi cancelada.");
+            throw new BusinessException("The fine was cancelled.");
         }
 
         currentFine.setFineStatus(FineStatus.PAID);

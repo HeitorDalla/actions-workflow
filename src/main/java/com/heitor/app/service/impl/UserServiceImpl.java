@@ -10,9 +10,9 @@ import com.heitor.app.mapper.UserMapper;
 import com.heitor.app.repository.UserRepository;
 import com.heitor.app.service.UserService;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // Métodos de atualizações
+    @Transactional
     @Override
     public UserResponseDTO createUser(UserRequestDTO dto) {
         User user = mapper.toEntity(dto);
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(savedUser);
     }
 
+    @Transactional
     @Override
     public UserResponseDTO partiallyUpdateUser(UserRequestDTO dto, Long id) {
         User user = userRepository.findById(id)
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(user);
     }
 
+    @Transactional
     @Override
     public UserResponseDTO updateUser(UserRequestDTO dto, Long id) {
         User current = userRepository.findById(id)
@@ -89,6 +92,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(saved);
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long id) {
         User existingUser = userRepository.findById(id)
@@ -98,6 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // Métodos de Ativação e Desativação
+    @Transactional
     @Override
     public void activateUser(Long id) {
         User user = userRepository.findById(id)
@@ -107,6 +112,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void deactivateUser(Long id) {
         User user = userRepository.findById(id)

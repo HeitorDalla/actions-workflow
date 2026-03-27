@@ -9,6 +9,7 @@ import com.heitor.app.mapper.FineMapper;
 import com.heitor.app.repository.FineRepository;
 import com.heitor.app.service.FineService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ public class FineServiceImpl implements FineService {
         return fineMapper.toDto(fine);
     }
 
+    @Transactional
     @Override
     public Fine saveFine(Fine fine) {
         if (fine.getLoan() == null) {
@@ -51,6 +53,7 @@ public class FineServiceImpl implements FineService {
         return fineRepository.save(fine);
     }
 
+    @Transactional
     @Override
     public FineResponseDTO payFine(Long id) {
         Fine currentFine = fineRepository.findById(id)

@@ -18,6 +18,7 @@ import com.heitor.app.service.FineService;
 import com.heitor.app.service.LoanService;
 import com.heitor.app.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -64,6 +65,7 @@ public class LoanServiceImpl implements LoanService {
         return mapper.toDto(loan);
     }
 
+    @Transactional
     @Override
     public LoanResponseDTO createLoan(LoanRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
@@ -84,6 +86,7 @@ public class LoanServiceImpl implements LoanService {
         return mapper.toDto(loan);
     }
 
+    @Transactional
     @Override
     public LoanResponseDTO returnLoan(Long id) {
         Loan loan = loanRepository.findById(id)
@@ -119,6 +122,7 @@ public class LoanServiceImpl implements LoanService {
         return mapper.toDto(loan);
     }
 
+    @Transactional
     @Override
     public void cancelLoan(Long id) {
         Loan loan = loanRepository.findById(id)

@@ -12,6 +12,7 @@ import com.heitor.app.mapper.BookMapper;
 import com.heitor.app.repository.BookRepository;
 import com.heitor.app.service.BookService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -54,6 +55,7 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(book);
     }
 
+    @Transactional
     @Override
     public BookResponseDTO createBook(BookCreateDTO dto){
         Book book = mapper.fromCreateDTO(dto);
@@ -66,6 +68,7 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(savedBook);
     }
 
+    @Transactional
     @Override
     public BookResponseDTO partiallyUpdateBook(BookPatchDTO dto, Long id) {
         Book book = bookRepository.findById(id)
@@ -77,6 +80,7 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(book);
     }
 
+    @Transactional
     @Override
     public BookResponseDTO updateBook(BookUpdateDTO dto, Long id) {
         Book book = bookRepository.findById(id)
@@ -88,6 +92,7 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(book);
     }
 
+    @Transactional
     @Override
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
@@ -96,6 +101,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
     }
 
+    @Transactional
     @Override
     public BookResponseDTO addStock(StockDTO dto, Long id) {
         Book book = bookRepository.findById(id)
@@ -109,6 +115,7 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(book);
     }
 
+    @Transactional
     @Override
     public BookResponseDTO removeStock(StockDTO dto, Long id) {
         Book book = bookRepository.findById(id)

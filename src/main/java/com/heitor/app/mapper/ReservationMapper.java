@@ -1,7 +1,10 @@
 package com.heitor.app.mapper;
 
+import com.heitor.app.dto.input.ReservationRequestDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
+import com.heitor.app.entity.Book;
 import com.heitor.app.entity.Reservation;
+import com.heitor.app.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,5 +34,17 @@ public class ReservationMapper {
         dto.setReservationStatus(entity.getReservationStatus());
 
         return dto;
+    }
+
+    public Reservation toEntity(ReservationRequestDTO dto, User user, Book book) {
+        if (dto == null) {
+            return null;
+        }
+
+        Reservation reservation = new Reservation();
+        reservation.setUser(user);
+        reservation.setBook(book);
+
+        return reservation;
     }
 }

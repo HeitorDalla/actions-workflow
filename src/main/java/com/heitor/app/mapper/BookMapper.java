@@ -36,6 +36,7 @@ public class BookMapper {
         dto.setTotalQuantity(entity.getTotalQuantity());
         dto.setRegistrationDate(entity.getRegistrationDate());
         dto.setAvailableQuantity(entity.getAvailableQuantity());
+        dto.setBookStatus(entity.getBookStatus());
 
         return dto;
     }

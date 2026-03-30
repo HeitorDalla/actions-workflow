@@ -6,6 +6,7 @@ import com.heitor.app.dto.input.BookPatchDTO;
 import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
+import com.heitor.app.enums.BookStatus;
 import com.heitor.app.exception.BookNotFoundException;
 import com.heitor.app.exception.BusinessException;
 import com.heitor.app.mapper.BookMapper;
@@ -65,6 +66,7 @@ public class BookServiceImpl implements BookService {
         // Regras de Negócio
         book.setRegistrationDate(LocalDate.now());
         book.setAvailableQuantity(dto.getTotalQuantity());
+        book.setBookStatus(BookStatus.AVAILABLE);
 
         Book savedBook = bookRepository.save(book);
         return mapper.toDto(savedBook);

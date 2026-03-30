@@ -1,8 +1,11 @@
 package com.heitor.app.controller;
 
+import com.heitor.app.dto.input.ReservationRequestDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.enums.ReservationStatus;
 import com.heitor.app.service.ReservationService;
+import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +40,10 @@ public class ReservationController {
     @GetMapping("/{id}")
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long id) {
         return ResponseEntity.ok(reservationService.getReservationById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<ReservationResponseDTO> createReservation(@Valid @RequestBody ReservationRequestDTO dto) {
+        return ResponseEntity.ok(reservationService.createReservation(dto));
     }
 }

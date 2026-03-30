@@ -1,24 +1,45 @@
 package com.heitor.app.service.impl;
 
+import com.heitor.app.dto.input.ReservationRequestDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
+import com.heitor.app.entity.Book;
+import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.Reservation;
+import com.heitor.app.entity.User;
+import com.heitor.app.enums.BookStatus;
+import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.enums.ReservationStatus;
-import com.heitor.app.exception.ReserveNotFoundException;
+import com.heitor.app.enums.UserStatus;
+import com.heitor.app.exception.*;
 import com.heitor.app.mapper.ReservationMapper;
+import com.heitor.app.repository.BookRepository;
+import com.heitor.app.repository.LoanRepository;
 import com.heitor.app.repository.ReservationRepository;
+import com.heitor.app.repository.UserRepository;
 import com.heitor.app.service.ReservationService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
     private ReservationRepository reservationRepository;
+    private UserRepository userRepository;
+    private BookRepository bookRepository;
+    private LoanRepository loanRepository;
     private ReservationMapper reservationMapper;
 
     public ReservationServiceImpl(ReservationRepository reservationRepository,
+                                  UserRepository userRepository,
+                                  BookRepository bookRepository,
+                                  LoanRepository loanRepository,
                                   ReservationMapper reservationMapper) {
         this.reservationRepository = reservationRepository;
+        this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
+        this.loanRepository = loanRepository;
         this.reservationMapper = reservationMapper;
     }
 
@@ -37,6 +58,45 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReserveNotFoundException(id));
 
+        return reservationMapper.toDto(reservation);
+    }
+
+    @Transactional
+    @Override
+    public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
+        // Verificar usuario
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
+        if (user.getUserStatus() != UserStatus.ACTIVE) {
+            throw new BusinessException("User is not allowed to create reservations.");
+        }
+
+        // Verificar se usuário tem multa pendente
+        Loan loan = loanRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new LoanNotFoundException(dto.getUserId()));
+        if (loan.getFine() == null || loan.getLoanStatus() == LoanStatus.OPEN) {
+            throw new BusinessException("There is an outstanding fine.");
+        }
+
+        // Verificar livro
+        Book book = bookRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new BookNotFoundException(dto.getBookId()));
+        if (book.getBookStatus() == BookStatus.RESERVED) {
+            throw new BusinessException("Book already has an active reservation.");
+        }
+
+        // Impedir reserva duplicada do livro pelo mesmo usuário
+        boolean exists = reservationRepository.existsByUserAndBookAndReservationStatus(user, book, List.of(ReservationStatus.PENDING, ReservationStatus.CONFIRMED));
+        if (exists) {
+            throw new BusinessException("User already has a reservation for this book");
+        }
+
+        Reservation reservation = reservationMapper.toEntity(dto, user, book);
+
+        reservation.setReservationDate(LocalDate.now());
+        reservation.setReservationStatus(ReservationStatus.PENDING);
+
+        reservationRepository.save(reservation);
         return reservationMapper.toDto(reservation);
     }
 }

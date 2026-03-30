@@ -6,16 +6,10 @@ import com.heitor.app.entity.Book;
 import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.Reservation;
 import com.heitor.app.entity.User;
-import com.heitor.app.enums.BookStatus;
-import com.heitor.app.enums.LoanStatus;
-import com.heitor.app.enums.ReservationStatus;
-import com.heitor.app.enums.UserStatus;
+import com.heitor.app.enums.*;
 import com.heitor.app.exception.*;
 import com.heitor.app.mapper.ReservationMapper;
-import com.heitor.app.repository.BookRepository;
-import com.heitor.app.repository.LoanRepository;
-import com.heitor.app.repository.ReservationRepository;
-import com.heitor.app.repository.UserRepository;
+import com.heitor.app.repository.*;
 import com.heitor.app.service.ReservationService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -28,18 +22,18 @@ public class ReservationServiceImpl implements ReservationService {
     private ReservationRepository reservationRepository;
     private UserRepository userRepository;
     private BookRepository bookRepository;
-    private LoanRepository loanRepository;
+    private FineRepository fineRepository;
     private ReservationMapper reservationMapper;
 
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   UserRepository userRepository,
                                   BookRepository bookRepository,
-                                  LoanRepository loanRepository,
+                                  FineRepository fineRepository,
                                   ReservationMapper reservationMapper) {
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
-        this.loanRepository = loanRepository;
+        this.fineRepository = fineRepository;
         this.reservationMapper = reservationMapper;
     }
 
@@ -72,10 +66,9 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // Verificar se usuário tem multa pendente
-        Loan loan = loanRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new LoanNotFoundException(dto.getUserId()));
-        if (loan.getFine() == null || loan.getLoanStatus() == LoanStatus.OPEN) {
-            throw new BusinessException("There is an outstanding fine.");
+        boolean hasUnpaidFine = fineRepository.existsByLoanUserAndFineStatus(user, FineStatus.OPEN);
+        if (hasUnpaidFine) {
+            throw new BusinessException("User has an outstanding fine.");
         }
 
         // Verificar livro

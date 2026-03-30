@@ -1,6 +1,7 @@
 package com.heitor.app.repository;
 
 import com.heitor.app.entity.Fine;
+import com.heitor.app.entity.User;
 import com.heitor.app.enums.FineStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,17 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
     """)
     List<Fine> getAllFines(
             @Param("amount") BigDecimal amount,
+            @Param("fineStatus") FineStatus fineStatus
+    );
+
+    @Query("""
+        SELECT COUNT(f) > 0
+        FROM Fine f
+        WHERE f.loan.user = :user
+            AND f.fineStatus = :fineStatus
+    """)
+    boolean existsByLoanUserAndFineStatus(
+            @Param("user") User user,
             @Param("fineStatus") FineStatus fineStatus
     );
 }

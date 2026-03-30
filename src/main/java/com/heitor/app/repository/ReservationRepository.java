@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+    // Busca reservas, aplicando filtros quando os parametros forem informados
     @Query("""
         SELECT r
         FROM Reservation r

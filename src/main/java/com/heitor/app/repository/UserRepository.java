@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    // Busca usuarios, aplicando filtros quando os parametros forem informados
     @Query("""
     SELECT u
     FROM User u

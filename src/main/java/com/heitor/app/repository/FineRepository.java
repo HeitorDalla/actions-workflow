@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface FineRepository extends JpaRepository<Fine, Long> {
+    // Busca multas, aplicando filtros quando os parametros forem informados
     @Query("""
         SELECT f
         FROM Fine f

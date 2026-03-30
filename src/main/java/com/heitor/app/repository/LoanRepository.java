@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
-
+    // Busca emprestimos, aplicando filtros quando os parametros forem informados
     @Query("""
         SELECT l
         FROM Loan l

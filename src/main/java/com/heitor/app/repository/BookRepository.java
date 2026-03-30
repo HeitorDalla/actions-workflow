@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
+    // Busca livros, aplicando filtros quando os parametros forem informados
     @Query("""
         SELECT b
         FROM Book b

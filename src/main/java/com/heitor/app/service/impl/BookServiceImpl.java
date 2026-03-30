@@ -22,7 +22,9 @@ public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
     private BookMapper mapper;
 
-    public BookServiceImpl(BookRepository bookRepository, BookMapper mapper) {
+    public BookServiceImpl(BookRepository bookRepository,
+
+                           BookMapper mapper) {
         this.bookRepository = bookRepository;
         this.mapper = mapper;
     }
@@ -70,7 +72,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookResponseDTO partiallyUpdateBook(BookPatchDTO dto, Long id) {
+    public BookResponseDTO partiallyUpdateBook(BookPatchDTO dto,
+                                               Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
@@ -82,7 +85,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookResponseDTO updateBook(BookUpdateDTO dto, Long id) {
+    public BookResponseDTO updateBook(BookUpdateDTO dto,
+                                      Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
@@ -103,7 +107,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookResponseDTO addStock(StockDTO dto, Long id) {
+    public BookResponseDTO addStock(StockDTO dto,
+                                    Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
@@ -117,7 +122,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookResponseDTO removeStock(StockDTO dto, Long id) {
+    public BookResponseDTO removeStock(StockDTO dto,
+                                       Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 

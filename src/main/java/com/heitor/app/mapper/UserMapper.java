@@ -2,6 +2,7 @@ package com.heitor.app.mapper;
 
 import com.heitor.app.dto.input.UserRequestDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
+import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.User;
 import org.springframework.stereotype.Component;
 

@@ -19,7 +19,7 @@ import java.util.List;
 public class BookController {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
-    private BookService bookService;
+    private final BookService bookService;
 
     public BookController(BookService bookService) {
         this.bookService = bookService;

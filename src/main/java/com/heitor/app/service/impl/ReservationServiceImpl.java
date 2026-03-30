@@ -23,11 +23,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationResponseDTO> getAllReservations(
-            Long userId,
-            Long bookId,
-            ReservationStatus reservationStatus
-    ) {
+    public List<ReservationResponseDTO> getAllReservations(Long userId,
+                                                           Long bookId,
+                                                           ReservationStatus reservationStatus) {
 
         List<Reservation> reservations = reservationRepository.findAllReservations(userId, bookId, reservationStatus);
 
@@ -35,7 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationResponseDTO getReservartionById(Long id) {
+    public ReservationResponseDTO getReservationById(Long id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReserveNotFoundException(id));
 

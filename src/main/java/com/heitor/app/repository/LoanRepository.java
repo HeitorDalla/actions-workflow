@@ -29,4 +29,6 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             @Param("fine") Boolean fine,
             @Param("loanStatus") LoanStatus loanStatus
     );
+
+    List<Loan> findByUserId(Long userId);
 }

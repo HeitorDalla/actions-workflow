@@ -6,11 +6,10 @@ import com.heitor.app.enums.ReservationStatus;
 import java.util.List;
 
 public interface ReservationService {
-    List<ReservationResponseDTO> getAllReservations(
-            Long userId,
-            Long bookId,
-            ReservationStatus reservationStatus
+    List<ReservationResponseDTO> getAllReservations(Long userId,
+                                                    Long bookId,
+                                                    ReservationStatus reservationStatus
     );
 
-    ReservationResponseDTO getReservartionById(Long id);
+    ReservationResponseDTO getReservationById(Long id);
 }

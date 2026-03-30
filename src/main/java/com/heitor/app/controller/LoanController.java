@@ -17,7 +17,7 @@ import java.util.List;
 public class LoanController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoanController.class);
 
-    private LoanService loanService;
+    private final LoanService loanService;
 
     public LoanController(LoanService loanService) {
         this.loanService = loanService;

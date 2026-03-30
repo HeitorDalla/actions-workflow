@@ -7,10 +7,9 @@ import com.heitor.app.enums.LoanStatus;
 import java.util.List;
 
 public interface LoanService {
-    List<LoanResponseDTO> getAllLoans(
-            Long userId,
-            Boolean fine,
-            LoanStatus loanStatus
+    List<LoanResponseDTO> getAllLoans(Long userId,
+                                      Boolean fine,
+                                      LoanStatus loanStatus
     );
 
     LoanResponseDTO getLoanById(Long id);

@@ -15,7 +15,7 @@ import java.util.List;
 public class ReservationController {
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
@@ -36,6 +36,6 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long id) {
-        return ResponseEntity.ok(reservationService.getReservartionById(id));
+        return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 }

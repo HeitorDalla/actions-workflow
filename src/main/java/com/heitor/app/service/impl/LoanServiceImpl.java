@@ -42,11 +42,9 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<LoanResponseDTO> getAllLoans(
-            Long userId,
-            Boolean fine,
-            LoanStatus loanStatus
-    ) {
+    public List<LoanResponseDTO> getAllLoans(Long userId,
+                                             Boolean fine,
+                                             LoanStatus loanStatus) {
 
         List<Loan> loans = loanRepository.getAllLoans(
                 userId,

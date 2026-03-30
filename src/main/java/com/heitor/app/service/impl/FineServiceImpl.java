@@ -20,15 +20,15 @@ public class FineServiceImpl implements FineService {
     private FineRepository fineRepository;
     private FineMapper fineMapper;
 
-    public FineServiceImpl(FineRepository fineRepository, FineMapper fineMapper) {
+    public FineServiceImpl(FineRepository fineRepository,
+                           FineMapper fineMapper) {
         this.fineRepository = fineRepository;
         this.fineMapper = fineMapper;
     }
 
     @Override
-    public List<FineResponseDTO> getAllFines(
-            BigDecimal amount,
-            FineStatus fineStatus) {
+    public List<FineResponseDTO> getAllFines(BigDecimal amount,
+                                             FineStatus fineStatus) {
 
         List<Fine> fines = fineRepository.getAllFines(amount, fineStatus);
 

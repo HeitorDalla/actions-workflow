@@ -8,9 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface FineService {
-    List<FineResponseDTO> getAllFines(
-            BigDecimal amount,
-            FineStatus fineStatus
+    List<FineResponseDTO> getAllFines(BigDecimal amount,
+                                      FineStatus fineStatus
     );
 
     FineResponseDTO getFineByID(Long id);

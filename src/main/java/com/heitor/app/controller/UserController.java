@@ -1,12 +1,13 @@
 package com.heitor.app.controller;
 
 import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.output.LoanResponseDTO;
+import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
 import com.heitor.app.enums.UserStatus;
 import com.heitor.app.service.UserService;
 
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -51,12 +52,14 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> partiallyUpdateUser(@RequestBody UserRequestDTO dto, @PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> partiallyUpdateUser(@RequestBody UserRequestDTO dto,
+                                                               @PathVariable Long id) {
         return ResponseEntity.ok(userService.partiallyUpdateUser(dto, id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@Valid @RequestBody UserRequestDTO dto, @PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> updateUser(@Valid @RequestBody UserRequestDTO dto,
+                                                      @PathVariable Long id) {
         return ResponseEntity.ok(userService.updateUser(dto, id));
     }
 
@@ -80,5 +83,16 @@ public class UserController {
         userService.deactivateUser(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    // Rotas de relacionamentos
+    @GetMapping("/{id}/loans")
+    public ResponseEntity<List<LoanResponseDTO>> getUserLoans(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserLoans(id));
+    }
+
+    @GetMapping("/{id}/reservations")
+    public ResponseEntity<List<ReservationResponseDTO>> getUserReservations(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserReservations(id));
     }
 }

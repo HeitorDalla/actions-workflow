@@ -16,7 +16,7 @@ import java.util.List;
 public class FineController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FineController.class);
 
-    private FineService fineService;
+    private final FineService fineService;
 
     public FineController(FineService fineService) {
         this.fineService = fineService;
@@ -38,7 +38,7 @@ public class FineController {
         return ResponseEntity.ok(fineService.getFineByID(id));
     }
 
-    @PutMapping("/{id}/payment")
+    @PatchMapping("/{id}/payment")
     public ResponseEntity<FineResponseDTO> payFine(@PathVariable Long id) {
         return ResponseEntity.ok(fineService.payFine(id));
     }

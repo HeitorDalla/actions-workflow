@@ -1,0 +1,7 @@
+package com.heitor.app.enums;
+
+public enum BookStatus {
+    AVAILABLE,
+    BORROWED,
+    RESERVED
+}

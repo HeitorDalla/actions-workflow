@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.heitor.app.enums.BookStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -39,6 +40,10 @@ public class Book {
     @Column(name = "book_registration_date", nullable = false)
     private LocalDate registrationDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "book_status", nullable = false)
+    private BookStatus bookStatus;
+
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<Reservation> reservations = new ArrayList<>();
 
@@ -56,6 +61,7 @@ public class Book {
                 Integer totalQuantity,
                 Integer availableQuantity,
                 LocalDate registrationDate,
+                BookStatus bookStatus,
                 List<Reservation> reservations,
                 List<Loan> loans) {
         this.id = id;
@@ -67,6 +73,7 @@ public class Book {
         this.totalQuantity = totalQuantity;
         this.availableQuantity = availableQuantity;
         this.registrationDate = registrationDate;
+        this.bookStatus = bookStatus;
         this.reservations = reservations;
         this.loans = loans;
     }
@@ -141,6 +148,14 @@ public class Book {
 
     public void setRegistrationDate(LocalDate registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public BookStatus getBookStatus() {
+        return bookStatus;
+    }
+
+    public void setBookStatus(BookStatus bookStatus) {
+        this.bookStatus = bookStatus;
     }
 
     public List<Reservation> getReservations() {

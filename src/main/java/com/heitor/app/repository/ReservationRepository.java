@@ -6,6 +6,7 @@ import com.heitor.app.entity.User;
 import com.heitor.app.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -24,11 +25,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserId(Long id);
 
     @Query("""
-        SELECT r
+        SELECT COUNT(r) > 0
         FROM Reservation r
-        INNER JOIN        
+        WHERE r.user = :user
+            AND r.book = :book
+            AND r.reservationStatus IN :status
     """)
-    boolean existsByUserAndBookAndReservationStatus(User user,
-                                                    Book book,
-                                                    List<ReservationStatus> status);
+    boolean existsByUserAndBookAndReservationStatus(
+            @Param("user") User user,
+            @Param("book") Book book,
+            @Param("status") List<ReservationStatus> status);
 }

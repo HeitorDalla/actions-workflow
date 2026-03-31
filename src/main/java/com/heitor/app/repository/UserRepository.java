@@ -1,6 +1,7 @@
 package com.heitor.app.repository;
 
 import com.heitor.app.entity.User;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,16 +14,15 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     // Busca usuarios, aplicando filtros quando os parametros forem informados
     @Query("""
-    SELECT u
-    FROM User u
-    WHERE (:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')))
-      AND (:number IS NULL OR u.number = :number)
-      AND (:email IS NULL OR :email = '' OR LOWER(u.email) = LOWER(:email))
-      AND (:userStatus IS NULL OR u.userStatus = :userStatus)
+        SELECT u
+        FROM User u
+        WHERE (:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')))
+            AND (:number IS NULL OR u.number = :number)
+            AND (:email IS NULL OR :email = '' OR LOWER(u.email) = LOWER(:email))
     """)
     List<User> getAllUsers(
             @Param("name") String name,
             @Param("number") String number,
-            @Param("email") String email,
-            @Param("userStatus") UserStatus userStatus);
+            @Param("email") String email
+    );
 }

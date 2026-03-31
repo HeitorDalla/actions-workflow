@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class GlobalNotFoundHandler {
+public class GlobalHandler {
 
     @ExceptionHandler({
             UserNotFoundException.class,

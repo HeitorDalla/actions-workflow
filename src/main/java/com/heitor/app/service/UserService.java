@@ -4,6 +4,7 @@ import com.heitor.app.dto.input.UserRequestDTO;
 import com.heitor.app.dto.output.LoanResponseDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
 
 import java.util.List;
@@ -11,8 +12,7 @@ import java.util.List;
 public interface UserService {
     List<UserResponseDTO> getAllUsers(String name,
                                       String number,
-                                      String email,
-                                      UserStatus userStatus);
+                                      String email);
 
     UserResponseDTO getUserById(Long id);
 
@@ -23,8 +23,6 @@ public interface UserService {
 
     UserResponseDTO updateUser(UserRequestDTO dto, 
                                Long id);
-
-    void deleteUser(Long id);
 
     void activateUser(Long id);
 

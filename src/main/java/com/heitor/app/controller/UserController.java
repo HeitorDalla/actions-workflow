@@ -4,6 +4,7 @@ import com.heitor.app.dto.input.UserRequestDTO;
 import com.heitor.app.dto.output.LoanResponseDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
 import com.heitor.app.service.UserService;
 
@@ -30,14 +31,12 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String number,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) UserStatus userStatus) {
+            @RequestParam(required = false) String email) {
 
         return ResponseEntity.ok(userService.getAllUsers(
                 name,
                 number,
-                email,
-                userStatus
+                email
         ));
     }
 
@@ -63,24 +62,17 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(dto, id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
     // Rotas para Ativar e Desativar Usuários
-    @PatchMapping("/{id}/activate")
-    public ResponseEntity<Void> activateUser(@PathVariable Long id) {
-        userService.activateUser(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivateUser(@PathVariable Long id) {
         userService.deactivateUser(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<Void> activateUser(@PathVariable Long id) {
+        userService.activateUser(id);
 
         return ResponseEntity.noContent().build();
     }

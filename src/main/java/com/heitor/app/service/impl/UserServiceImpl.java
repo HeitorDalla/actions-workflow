@@ -7,6 +7,7 @@ import com.heitor.app.dto.output.UserResponseDTO;
 import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.Reservation;
 import com.heitor.app.entity.User;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
 import com.heitor.app.exception.BusinessException;
 import com.heitor.app.exception.UserNotFoundException;
@@ -54,10 +55,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDTO> getAllUsers(String name,
                                              String number,
-                                             String email,
-                                             UserStatus userStatus) {
+                                             String email) {
 
-        List<User> users = userRepository.getAllUsers(name, number, email, userStatus);
+        List<User> users = userRepository.getAllUsers(name, number, email);
         return mapper.toDtoList(users);
     }
 
@@ -77,7 +77,8 @@ public class UserServiceImpl implements UserService {
 
         // Regras de negócio
         user.setRegistrationDate(LocalDate.now());
-        user.setUserStatus(UserStatus.ACTIVE);
+        user.setUserStatus(UserStatus.OK);
+        user.setRecordStatus(RecordStatus.ACTIVE);
 
         User savedUser = userRepository.save(user);
         return mapper.toDto(savedUser);
@@ -110,6 +111,7 @@ public class UserServiceImpl implements UserService {
         // Regras de negócio
         newState.setRegistrationDate(current.getRegistrationDate());
         newState.setUserStatus(current.getUserStatus());
+        newState.setRecordStatus(current.getRecordStatus());
 
         User saved = userRepository.save(newState);
         return mapper.toDto(saved);
@@ -117,11 +119,26 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUser(Long id) {
-        User existingUser = userRepository.findById(id)
+    public void deactivateUser(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        userRepository.delete(existingUser);
+        // Verificar se usuário tem empréstimos pedentes
+        if (!user.getLoans().isEmpty()) {
+            throw new BusinessException("The user cannot be deactivated because they have active loans.");
+        }
+
+        // Verificar se usuário tem multas pendentes
+
+
+        // Verificar se usuário tem reservas pendentes
+        if (!user.getReservations().isEmpty()) {
+            throw new BusinessException("The user cannot be deactivated because they have active reservations.");
+        }
+
+        user.setRecordStatus(RecordStatus.INACTIVE);
+
+        userRepository.save(user);
     }
 
     // Métodos de Ativação e Desativação
@@ -131,22 +148,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        user.setUserStatus(UserStatus.ACTIVE);
-
-        userRepository.save(user);
-    }
-
-    @Transactional
-    @Override
-    public void deactivateUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
-        if (!user.getLoans().isEmpty()) {
-            throw new BusinessException("The user cannot be deactivated because they have active loans.");
-        }
-
-        user.setUserStatus(UserStatus.INACTIVE);
+        user.setUserStatus(UserStatus.OK);
+        user.setRecordStatus(RecordStatus.ACTIVE);
 
         userRepository.save(user);
     }

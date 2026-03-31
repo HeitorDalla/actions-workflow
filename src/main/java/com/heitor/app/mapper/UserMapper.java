@@ -33,6 +33,7 @@ public class UserMapper {
         dto.setEmail(entity.getEmail());
         dto.setRegistrationDate(entity.getRegistrationDate());
         dto.setUserStatus(entity.getUserStatus());
+        dto.setRecordStatus(entity.getRecordStatus());
 
         return dto;
     }

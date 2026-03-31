@@ -1,5 +1,6 @@
 package com.heitor.app.dto.output;
 
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class UserResponseDTO {
     private String email;
     private LocalDate registrationDate;
     private UserStatus userStatus;
+    private RecordStatus recordStatus;
 
     public UserResponseDTO() {}
 
@@ -19,13 +21,15 @@ public class UserResponseDTO {
                            String number,
                            String email,
                            LocalDate registrationDate,
-                           UserStatus userStatus) {
+                           UserStatus userStatus,
+                           RecordStatus recordStatus) {
         this.id = id;
         this.name = name;
         this.number = number;
         this.email = email;
         this.registrationDate = registrationDate;
         this.userStatus = userStatus;
+        this.recordStatus = recordStatus;
     }
 
     public Long getId() {
@@ -74,5 +78,13 @@ public class UserResponseDTO {
 
     public void setUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }

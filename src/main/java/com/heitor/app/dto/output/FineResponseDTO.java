@@ -1,6 +1,7 @@
 package com.heitor.app.dto.output;
 
 import com.heitor.app.enums.FineStatus;
+import com.heitor.app.enums.RecordStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public class FineResponseDTO {
     private LocalDate createdDate;
     private LocalDate paymentDate;
     private Long loanId;
+    private RecordStatus recordStatus;
 
     public FineResponseDTO() {}
 
@@ -20,13 +22,15 @@ public class FineResponseDTO {
                            FineStatus fineStatus,
                            LocalDate createdDate,
                            LocalDate paymentDate,
-                           Long loanId) {
+                           Long loanId,
+                           RecordStatus recordStatus) {
         this.id = id;
         this.amount = amount;
         this.fineStatus = fineStatus;
         this.createdDate = createdDate;
         this.paymentDate = paymentDate;
         this.loanId = loanId;
+        this.recordStatus = recordStatus;
     }
 
     public Long getId() {
@@ -75,5 +79,13 @@ public class FineResponseDTO {
 
     public void setLoanId(Long loanId) {
         this.loanId = loanId;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }

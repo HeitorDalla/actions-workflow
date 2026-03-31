@@ -27,6 +27,7 @@ public class FineMapper {
         dto.setId(entity.getId());
         dto.setAmount(entity.getAmount());
         dto.setFineStatus(entity.getFineStatus());
+        dto.setRecordStatus(entity.getRecordStatus());
         dto.setCreatedDate(entity.getCreatedDate());
         dto.setPaymentDate(entity.getPaymentDate());
         dto.setLoanId(entity.getLoan().getId());

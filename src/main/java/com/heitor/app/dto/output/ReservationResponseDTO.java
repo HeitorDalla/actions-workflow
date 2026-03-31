@@ -1,5 +1,6 @@
 package com.heitor.app.dto.output;
 
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.ReservationStatus;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ public class ReservationResponseDTO {
     private Long bookId;
     private LocalDate reservationDate;
     private ReservationStatus reservationStatus;
+    private RecordStatus recordStatus;
 
     public ReservationResponseDTO() {}
 
@@ -17,12 +19,14 @@ public class ReservationResponseDTO {
                                   Long userId,
                                   Long bookId,
                                   LocalDate reservationDate,
-                                  ReservationStatus reservationStatus) {
+                                  ReservationStatus reservationStatus,
+                                  RecordStatus recordStatus) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
         this.reservationDate = reservationDate;
         this.reservationStatus = reservationStatus;
+        this.recordStatus = recordStatus;
     }
 
     public Long getId() {
@@ -63,5 +67,13 @@ public class ReservationResponseDTO {
 
     public void setReservationStatus(ReservationStatus reservationStatus) {
         this.reservationStatus = reservationStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }

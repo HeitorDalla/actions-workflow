@@ -1,6 +1,7 @@
 package com.heitor.app.dto.output;
 
 import com.heitor.app.enums.BookStatus;
+import com.heitor.app.enums.RecordStatus;
 
 import java.time.LocalDate;
 
@@ -15,6 +16,7 @@ public class BookResponseDTO {
     private Integer availableQuantity;
     private LocalDate registrationDate;
     private BookStatus bookStatus;
+    private RecordStatus recordStatus;
 
     public BookResponseDTO() {}
 
@@ -27,7 +29,8 @@ public class BookResponseDTO {
                            Integer totalQuantity,
                            Integer availableQuantity,
                            LocalDate registrationDate,
-                           BookStatus bookStatus) {
+                           BookStatus bookStatus,
+                           RecordStatus recordStatus) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -38,6 +41,7 @@ public class BookResponseDTO {
         this.availableQuantity = availableQuantity;
         this.registrationDate = registrationDate;
         this.bookStatus = bookStatus;
+        this.recordStatus = recordStatus;
     }
 
     public Long getId() {
@@ -118,5 +122,13 @@ public class BookResponseDTO {
 
     public void setBookStatus(BookStatus bookStatus) {
         this.bookStatus = bookStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }

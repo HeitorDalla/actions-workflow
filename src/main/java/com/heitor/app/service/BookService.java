@@ -27,7 +27,9 @@ public interface BookService {
     BookResponseDTO updateBook(BookUpdateDTO dto,
                                Long id);
 
-    void deleteBook(Long id);
+    void deactivateBook(Long id);
+
+    void activateBook(Long id);
 
     BookResponseDTO addStock(StockDTO dto,
                              Long id);

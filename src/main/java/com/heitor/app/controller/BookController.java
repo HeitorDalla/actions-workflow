@@ -66,9 +66,17 @@ public class BookController {
         return ResponseEntity.ok(bookService.updateBook(dto, id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        bookService.deleteBook(id);
+    // Rotas para Ativar e Desativar Livros
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateBook(@PathVariable Long id) {
+        bookService.deactivateBook(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<Void> activateBook(@PathVariable Long id) {
+        bookService.activateBook(id);
 
         return ResponseEntity.noContent().build();
     }

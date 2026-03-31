@@ -7,6 +7,7 @@ import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import com.heitor.app.enums.BookStatus;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.exception.BookNotFoundException;
 import com.heitor.app.exception.BusinessException;
 import com.heitor.app.mapper.BookMapper;
@@ -67,6 +68,7 @@ public class BookServiceImpl implements BookService {
         book.setRegistrationDate(LocalDate.now());
         book.setAvailableQuantity(dto.getTotalQuantity());
         book.setBookStatus(BookStatus.AVAILABLE);
+        book.setRecordStatus(RecordStatus.ACTIVE);
 
         Book savedBook = bookRepository.save(book);
         return mapper.toDto(savedBook);
@@ -100,11 +102,38 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void deleteBook(Long id) {
+    public void deactivateBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        bookRepository.delete(book);
+        // Verificar se o livro esta em empréstimos pedentes
+        if (!book.getLoans().isEmpty()) {
+            throw new BusinessException("The book cannot be deactivated because they have active loans.");
+        }
+
+        // Verificar se o livro esta em um empréstimos com multas pendentes
+
+
+        // Verificar se o livro esta reservado
+        if (!book.getReservations().isEmpty()) {
+            throw new BusinessException("The book cannot be deactivated because they have active reservations.");
+        }
+
+        book.setRecordStatus(RecordStatus.INACTIVE);
+
+        bookRepository.save(book);
+    }
+
+    @Transactional
+    @Override
+    public void activateBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        book.setBookStatus(BookStatus.AVAILABLE);
+        book.setRecordStatus(RecordStatus.ACTIVE);
+
+        bookRepository.save(book);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.heitor.app.entity;
 
 import com.heitor.app.enums.FineStatus;
+import com.heitor.app.enums.RecordStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -18,15 +19,19 @@ public class Fine {
     @Column(name = "fine_amount", nullable = false)
     private BigDecimal amount;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "fine_status", nullable = false)
-    private FineStatus fineStatus;
-
     @Column(name = "fine_created_date", nullable = false)
     private LocalDate createdDate;
 
     @Column(name = "fine_payment_date")
     private LocalDate paymentDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "fine_status", nullable = false)
+    private FineStatus fineStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "record_status", nullable = false)
+    private RecordStatus recordStatus;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "loan_id", nullable = false)
@@ -35,17 +40,19 @@ public class Fine {
     public Fine() {}
 
     public Fine(Long id,
-                Loan loan,
                 BigDecimal amount,
-                FineStatus fineStatus,
                 LocalDate createdDate,
-                LocalDate paymentDate) {
+                LocalDate paymentDate,
+                FineStatus fineStatus,
+                RecordStatus recordStatus,
+                Loan loan) {
         this.id = id;
-        this.loan = loan;
         this.amount = amount;
-        this.fineStatus = fineStatus;
         this.createdDate = createdDate;
         this.paymentDate = paymentDate;
+        this.fineStatus = fineStatus;
+        this.recordStatus = recordStatus;
+        this.loan = loan;
     }
 
     public Long getId() {
@@ -56,28 +63,12 @@ public class Fine {
         this.id = id;
     }
 
-    public Loan getLoan() {
-        return loan;
-    }
-
-    public void setLoan(Loan loan) {
-        this.loan = loan;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public FineStatus getFineStatus() {
-        return fineStatus;
-    }
-
-    public void setFineStatus(FineStatus fineStatus) {
-        this.fineStatus = fineStatus;
     }
 
     public LocalDate getCreatedDate() {
@@ -94,5 +85,29 @@ public class Fine {
 
     public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public FineStatus getFineStatus() {
+        return fineStatus;
+    }
+
+    public void setFineStatus(FineStatus fineStatus) {
+        this.fineStatus = fineStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 }

@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
 import jakarta.persistence.*;
 
@@ -33,6 +34,10 @@ public class User {
     @Column(name = "user_status", nullable = false)
     private UserStatus userStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "record_status", nullable = false)
+    private RecordStatus recordStatus;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Loan> loans = new ArrayList<>();
 
@@ -47,6 +52,7 @@ public class User {
                 String email,
                 LocalDate registrationDate,
                 UserStatus userStatus,
+                RecordStatus recordStatus,
                 List<Loan> loans,
                 List<Reservation> reservations) {
         this.id = id;
@@ -55,6 +61,7 @@ public class User {
         this.email = email;
         this.registrationDate = registrationDate;
         this.userStatus = userStatus;
+        this.recordStatus = recordStatus;
         this.loans = loans;
         this.reservations = reservations;
     }
@@ -105,6 +112,14 @@ public class User {
 
     public void setUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 
     public List<Loan> getLoans() {

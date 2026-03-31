@@ -1,6 +1,7 @@
 package com.heitor.app.entity;
 
 import com.heitor.app.enums.LoanStatus;
+import com.heitor.app.enums.RecordStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -29,11 +30,15 @@ public class Loan {
     @Column(name = "loan_status", nullable = false)
     private LoanStatus loanStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "record_status", nullable = false)
+    private RecordStatus recordStatus;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "loan", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "loan")
     private Fine fine;
 
     @ManyToMany
@@ -51,6 +56,7 @@ public class Loan {
                 LocalDate dueDate,
                 LocalDate returnDate,
                 LoanStatus loanStatus,
+                RecordStatus recordStatus,
                 User user,
                 Fine fine,
                 List<Book> books) {
@@ -59,6 +65,7 @@ public class Loan {
         this.dueDate = dueDate;
         this.returnDate = returnDate;
         this.loanStatus = loanStatus;
+        this.recordStatus = recordStatus;
         this.user = user;
         this.fine = fine;
         this.books = books;
@@ -102,6 +109,14 @@ public class Loan {
 
     public void setLoanStatus(LoanStatus loanStatus) {
         this.loanStatus = loanStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 
     public User getUser() {

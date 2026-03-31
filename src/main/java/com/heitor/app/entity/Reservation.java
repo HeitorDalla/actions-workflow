@@ -1,5 +1,6 @@
 package com.heitor.app.entity;
 
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.ReservationStatus;
 import jakarta.persistence.*;
 
@@ -14,6 +15,17 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "reservation_date", nullable = false)
+    private LocalDate reservationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reservation_status", nullable = false)
+    private ReservationStatus reservationStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "record_status", nullable = false)
+    private RecordStatus recordStatus;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -22,25 +34,20 @@ public class Reservation {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @Column(name = "reservation_date", nullable = false)
-    private LocalDate reservationDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "reservation_status", nullable = false)
-    private ReservationStatus reservationStatus;
-
     public Reservation() {}
 
     public Reservation(Long id,
-                       User user,
-                       Book book,
                        LocalDate reservationDate,
-                       ReservationStatus reservationStatus) {
+                       ReservationStatus reservationStatus,
+                       RecordStatus recordStatus,
+                       User user,
+                       Book book) {
         this.id = id;
-        this.user = user;
-        this.book = book;
         this.reservationDate = reservationDate;
         this.reservationStatus = reservationStatus;
+        this.recordStatus = recordStatus;
+        this.user = user;
+        this.book = book;
     }
 
     public Long getId() {
@@ -49,22 +56,6 @@ public class Reservation {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
     }
 
     public LocalDate getReservationDate() {
@@ -81,5 +72,29 @@ public class Reservation {
 
     public void setReservationStatus(ReservationStatus reservationStatus) {
         this.reservationStatus = reservationStatus;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 }

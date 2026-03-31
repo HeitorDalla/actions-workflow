@@ -12,7 +12,9 @@ import java.util.List;
 public interface UserService {
     List<UserResponseDTO> getAllUsers(String name,
                                       String number,
-                                      String email);
+                                      String email,
+                                      UserStatus userStatus,
+                                      RecordStatus recordStatus);
 
     UserResponseDTO getUserById(Long id);
 

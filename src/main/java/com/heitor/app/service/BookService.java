@@ -5,6 +5,9 @@ import com.heitor.app.dto.input.BookCreateDTO;
 import com.heitor.app.dto.input.BookPatchDTO;
 import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
+import com.heitor.app.enums.BookStatus;
+import com.heitor.app.enums.RecordStatus;
+
 import java.util.List;
 
 public interface BookService {
@@ -14,7 +17,9 @@ public interface BookService {
                                       String isbn,
                                       Long publicationYear,
                                       String language,
-                                      Integer totalQuantity
+                                      Integer totalQuantity,
+                                      BookStatus bookStatus,
+                                      RecordStatus recordStatus
     );
 
     BookResponseDTO getBookById(Long id);

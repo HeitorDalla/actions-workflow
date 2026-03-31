@@ -2,10 +2,10 @@ package com.heitor.app.controller;
 
 import com.heitor.app.dto.input.ReservationRequestDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.ReservationStatus;
 import com.heitor.app.service.ReservationService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +28,14 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponseDTO>> getAllReservations(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Long bookId,
-            @RequestParam(required = false) ReservationStatus reservationStatus) {
+            @RequestParam(required = false) ReservationStatus reservationStatus,
+            @RequestParam(required = false) RecordStatus recordStatus) {
 
         return ResponseEntity.ok(reservationService.getAllReservations(
                 userId,
                 bookId,
-                reservationStatus)
+                reservationStatus,
+                recordStatus)
         );
     }
 

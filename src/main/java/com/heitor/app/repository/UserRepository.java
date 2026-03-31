@@ -16,13 +16,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("""
         SELECT u
         FROM User u
-        WHERE (:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')))
-            AND (:number IS NULL OR u.number = :number)
-            AND (:email IS NULL OR :email = '' OR LOWER(u.email) = LOWER(:email))
+        WHERE (:name IS NULL OR u.name = :name)
+          AND (:number IS NULL OR u.number = :number)
+          AND (:email IS NULL OR :email = '' OR LOWER(u.email) = LOWER(:email))
+          AND (:userStatus IS NULL OR u.userStatus = :userStatus)
+          AND (:recordStatus IS NULL OR u.recordStatus = :recordStatus)
     """)
     List<User> getAllUsers(
             @Param("name") String name,
             @Param("number") String number,
-            @Param("email") String email
+            @Param("email") String email,
+            @Param("userStatus") UserStatus userStatus,
+            @Param("recordStatus") RecordStatus recordStatus
     );
 }

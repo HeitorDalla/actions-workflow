@@ -31,12 +31,16 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String number,
-            @RequestParam(required = false) String email) {
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) UserStatus userStatus,
+            @RequestParam(required = false) RecordStatus recordStatus) {
 
         return ResponseEntity.ok(userService.getAllUsers(
                 name,
                 number,
-                email
+                email,
+                userStatus,
+                recordStatus
         ));
     }
 

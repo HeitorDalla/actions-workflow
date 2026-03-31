@@ -44,12 +44,14 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<LoanResponseDTO> getAllLoans(Long userId,
                                              Boolean fine,
-                                             LoanStatus loanStatus) {
+                                             LoanStatus loanStatus,
+                                             RecordStatus recordStatus) {
 
         List<Loan> loans = loanRepository.getAllLoans(
                 userId,
                 fine,
-                loanStatus
+                loanStatus,
+                recordStatus
         );
 
         return mapper.toDtoList(loans);

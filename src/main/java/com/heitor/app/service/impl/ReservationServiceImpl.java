@@ -40,9 +40,10 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<ReservationResponseDTO> getAllReservations(Long userId,
                                                            Long bookId,
-                                                           ReservationStatus reservationStatus) {
+                                                           ReservationStatus reservationStatus,
+                                                           RecordStatus recordStatus) {
 
-        List<Reservation> reservations = reservationRepository.findAllReservations(userId, bookId, reservationStatus);
+        List<Reservation> reservations = reservationRepository.findAllReservations(userId, bookId, reservationStatus, recordStatus);
 
         return reservationMapper.toDtoList(reservations);
     }

@@ -36,7 +36,9 @@ public class BookServiceImpl implements BookService {
                                              String isbn,
                                              Long publicationYear,
                                              String language,
-                                             Integer totalQuantity) {
+                                             Integer totalQuantity,
+                                             BookStatus bookStatus,
+                                             RecordStatus recordStatus) {
 
         List<Book> books = bookRepository.getAllBooks(
                 title,
@@ -44,7 +46,9 @@ public class BookServiceImpl implements BookService {
                 isbn,
                 publicationYear,
                 language,
-                totalQuantity
+                totalQuantity,
+                bookStatus,
+                recordStatus
         );
 
         return mapper.toDtoList(books);

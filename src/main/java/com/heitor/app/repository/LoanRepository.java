@@ -2,6 +2,7 @@ package com.heitor.app.repository;
 
 import com.heitor.app.entity.Loan;
 import com.heitor.app.enums.LoanStatus;
+import com.heitor.app.enums.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,11 +24,13 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
                 OR (:fine = false AND f IS NULL)
             )
             AND (:loanStatus IS NULL OR l.loanStatus = :loanStatus)
+            AND (:recordStatus IS NULL OR l.recordStatus = :recordStatus)
     """)
     List<Loan> getAllLoans(
             @Param("userId") Long userId,
             @Param("fine") Boolean fine,
-            @Param("loanStatus") LoanStatus loanStatus
+            @Param("loanStatus") LoanStatus loanStatus,
+            @Param("recordStatus") RecordStatus recordStatus
     );
 
     // Encontra emprestimos feitos pelo usuario buscado

@@ -3,6 +3,7 @@ package com.heitor.app.repository;
 import com.heitor.app.entity.Fine;
 import com.heitor.app.entity.User;
 import com.heitor.app.enums.FineStatus;
+import com.heitor.app.enums.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,12 +18,14 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
     @Query("""
         SELECT f
         FROM Fine f
-        WHERE (:amount IS NULL OR LOWER(:amount) LIKE LOWER(CONCAT('%', :amount, '%')))
-            AND (:fineStatus IS NULL OR f.fineStatus = :fineStatus)
+        WHERE (:amount IS NULL OR f.amount = :amount)
+          AND (:fineStatus IS NULL OR f.fineStatus = :fineStatus)
+          AND (:recordStatus IS NULL OR f.recordStatus = :recordStatus)
     """)
     List<Fine> getAllFines(
             @Param("amount") BigDecimal amount,
-            @Param("fineStatus") FineStatus fineStatus
+            @Param("fineStatus") FineStatus fineStatus,
+            @Param("recordStatus") RecordStatus recordStatus
     );
 
     @Query("""

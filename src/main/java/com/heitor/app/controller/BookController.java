@@ -5,6 +5,8 @@ import com.heitor.app.dto.input.BookCreateDTO;
 import com.heitor.app.dto.input.BookPatchDTO;
 import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
+import com.heitor.app.enums.BookStatus;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.service.BookService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -32,7 +34,9 @@ public class BookController {
             @RequestParam(required = false) String isbn,
             @RequestParam(required = false) Long publicationYear,
             @RequestParam(required = false) String language,
-            @RequestParam(required = false) Integer totalQuantity) {
+            @RequestParam(required = false) Integer totalQuantity,
+            @RequestParam(required = false) BookStatus bookStatus,
+            @RequestParam(required = false) RecordStatus recordStatus) {
 
         return ResponseEntity.ok(bookService.getAllBooks(
                 title,
@@ -40,7 +44,9 @@ public class BookController {
                 isbn,
                 publicationYear,
                 language,
-                totalQuantity
+                totalQuantity,
+                bookStatus,
+                recordStatus
         ));
     }
 

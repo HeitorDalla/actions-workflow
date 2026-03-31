@@ -3,6 +3,7 @@ package com.heitor.app.service.impl;
 import com.heitor.app.dto.output.FineResponseDTO;
 import com.heitor.app.entity.Fine;
 import com.heitor.app.enums.FineStatus;
+import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.exception.BusinessException;
 import com.heitor.app.exception.FineNotFoundException;
 import com.heitor.app.mapper.FineMapper;
@@ -28,15 +29,16 @@ public class FineServiceImpl implements FineService {
 
     @Override
     public List<FineResponseDTO> getAllFines(BigDecimal amount,
-                                             FineStatus fineStatus) {
+                                             FineStatus fineStatus,
+                                             RecordStatus recordStatus) {
 
-        List<Fine> fines = fineRepository.getAllFines(amount, fineStatus);
+        List<Fine> fines = fineRepository.getAllFines(amount, fineStatus, recordStatus);
 
         return fineMapper.toDtoList(fines);
     }
 
     @Override
-    public FineResponseDTO getFineByID(Long id) {
+    public FineResponseDTO getFineById(Long id) {
         Fine fine = fineRepository.findById(id)
                 .orElseThrow(() -> new FineNotFoundException(id));
 

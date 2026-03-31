@@ -55,9 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDTO> getAllUsers(String name,
                                              String number,
-                                             String email) {
+                                             String email,
+                                             UserStatus userStatus,
+                                             RecordStatus recordStatus) {
 
-        List<User> users = userRepository.getAllUsers(name, number, email);
+        List<User> users = userRepository.getAllUsers(name, number, email, userStatus, recordStatus);
         return mapper.toDtoList(users);
     }
 

@@ -21,11 +21,10 @@ import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService {
-    private BookRepository bookRepository;
-    private BookMapper mapper;
+    private final BookRepository bookRepository;
+    private final BookMapper mapper;
 
     public BookServiceImpl(BookRepository bookRepository,
-
                            BookMapper mapper) {
         this.bookRepository = bookRepository;
         this.mapper = mapper;

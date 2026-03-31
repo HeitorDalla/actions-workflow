@@ -19,11 +19,11 @@ import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
-    private ReservationRepository reservationRepository;
-    private UserRepository userRepository;
-    private BookRepository bookRepository;
-    private FineRepository fineRepository;
-    private ReservationMapper reservationMapper;
+    private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
+    private final BookRepository bookRepository;
+    private final FineRepository fineRepository;
+    private final ReservationMapper reservationMapper;
 
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   UserRepository userRepository,

@@ -32,6 +32,7 @@ public class LoanMapper {
         dto.setDueDate(loan.getDueDate());
         dto.setReturnDate(loan.getReturnDate());
         dto.setLoanStatus(loan.getLoanStatus());
+        dto.setRecordStatus(loan.getRecordStatus());
         dto.setUserId(loan.getUser().getId());
         dto.setHasFine(loan.getFine() != null);
 

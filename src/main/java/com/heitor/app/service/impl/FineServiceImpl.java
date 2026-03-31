@@ -17,8 +17,8 @@ import java.util.List;
 
 @Service
 public class FineServiceImpl implements FineService {
-    private FineRepository fineRepository;
-    private FineMapper fineMapper;
+    private final FineRepository fineRepository;
+    private final FineMapper fineMapper;
 
     public FineServiceImpl(FineRepository fineRepository,
                            FineMapper fineMapper) {

@@ -30,5 +30,11 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             @Param("loanStatus") LoanStatus loanStatus
     );
 
-    List<Loan> findByUserId(Long userId);
+    // Encontra emprestimos feitos pelo usuario buscado
+    @Query("""
+        SELECT l
+        FROM Loan l
+        WHERE l.user.id = :userId
+    """)
+    List<Loan> findByUserId(@Param("userId") Long userId);
 }

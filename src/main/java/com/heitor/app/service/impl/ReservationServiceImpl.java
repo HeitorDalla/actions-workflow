@@ -3,7 +3,6 @@ package com.heitor.app.service.impl;
 import com.heitor.app.dto.input.ReservationRequestDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.entity.Book;
-import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.Reservation;
 import com.heitor.app.entity.User;
 import com.heitor.app.enums.*;
@@ -62,7 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
         // Verificar usuario
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-        if (user.getUserStatus() != UserStatus.ACTIVE) {
+        if (user.getUserStatus() != UserStatus.OK || user.getRecordStatus() != RecordStatus.ACTIVE) {
             throw new BusinessException("User is not allowed to create reservations.");
         }
 
@@ -75,9 +74,20 @@ public class ReservationServiceImpl implements ReservationService {
         // Verificar livro
         Book book = bookRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new BookNotFoundException(dto.getBookId()));
-        if (book.getBookStatus() == BookStatus.RESERVED) {
-            throw new BusinessException("Book already has an active reservation.");
+        if (book.getBookStatus() != BookStatus.AVAILABLE) {
+            throw new BusinessException("Book is unavailable for reservation.");
         }
+
+        if (book.getRecordStatus() != RecordStatus.ACTIVE) {
+            throw new BusinessException("Book is inactive.");
+        }
+
+        if (book.getAvailableQuantity() == null || book.getAvailableQuantity() <= 0) {
+            throw new BusinessException("No copies available for reservation.");
+        }
+
+        // Diminuir a quantidade disponivel e o status do livro conforme a quantidade disponivel
+
 
         // Impedir reserva duplicada do livro pelo mesmo usuário
         boolean exists = reservationRepository.existsByUserAndBookAndReservationStatus(user, book, List.of(ReservationStatus.PENDING, ReservationStatus.CONFIRMED));
@@ -89,6 +99,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.setReservationDate(LocalDate.now());
         reservation.setReservationStatus(ReservationStatus.PENDING);
+        reservation.setRecordStatus(RecordStatus.ACTIVE);
 
         reservationRepository.save(reservation);
         return reservationMapper.toDto(reservation);

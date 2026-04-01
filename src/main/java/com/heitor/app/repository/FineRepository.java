@@ -28,6 +28,7 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
             @Param("recordStatus") RecordStatus recordStatus
     );
 
+    // Vai verificar se tem alguma multa no usuario buscado
     @Query("""
         SELECT COUNT(f) > 0
         FROM Fine f

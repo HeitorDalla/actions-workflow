@@ -68,12 +68,17 @@ public class LoanServiceImpl implements LoanService {
     @Transactional
     @Override
     public LoanResponseDTO createLoan(LoanRequestDTO dto) {
+        // Verificar usuario
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
         if (user.getUserStatus() != UserStatus.OK || user.getRecordStatus() != RecordStatus.ACTIVE) {
             throw new BusinessException("User is not allowed to create loans.");
         }
+
+        // Verificar livro
+        // Diminuir quantidade disponivel e o status do book conforme a quantidade disponivel
+
 
         Loan loan = mapper.toEntity(dto, user);
 
@@ -90,6 +95,7 @@ public class LoanServiceImpl implements LoanService {
     @Transactional
     @Override
     public LoanResponseDTO returnLoan(Long id) {
+        // Verificar emprestimo
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException(id));
 
@@ -100,6 +106,10 @@ public class LoanServiceImpl implements LoanService {
         if (loan.getLoanStatus() == LoanStatus.CANCELLED) {
             throw new BusinessException("Cancelled loan cannot be returned.");
         }
+
+        // Verificar livro
+        // Aumentar a quantidade disponivel e o status do book conforme a quantidade disponivel
+
 
         // Devolução
         loan.setReturnDate(LocalDate.now());

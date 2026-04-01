@@ -114,9 +114,6 @@ public class BookServiceImpl implements BookService {
             throw new BusinessException("The book cannot be deactivated because they have active loans.");
         }
 
-        // Verificar se o livro esta em um empréstimos com multas pendentes
-
-
         // Verificar se o livro esta reservado
         if (!book.getReservations().isEmpty()) {
             throw new BusinessException("The book cannot be deactivated because they have active reservations.");

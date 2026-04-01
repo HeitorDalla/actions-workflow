@@ -1,6 +1,8 @@
 package com.heitor.app.repository;
 
+import com.heitor.app.entity.Book;
 import com.heitor.app.entity.Reservation;
+import com.heitor.app.entity.User;
 import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +37,18 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
         WHERE r.user.id = :userId
     """)
     List<Reservation> findByUserId(@Param("userId") Long userId);
+
+    // Vai verificar se tem reservas ativas de um livro pelo usuario buscado
+    @Query("""
+        SELECT COUNT(r) > 0
+        FROM Reservation r
+        WHERE r.user = :user
+            AND r.book = :book
+            AND r.reservationStatus IN :status
+    """)
+    boolean existsByUserAndBookAndReservationStatus(
+            @Param("user") User user,
+            @Param("book") Book book,
+            @Param("status") List<ReservationStatus> status
+    );
 }

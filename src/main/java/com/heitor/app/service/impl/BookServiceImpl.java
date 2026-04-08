@@ -109,12 +109,12 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        // Verificar se o livro esta em empréstimos pedentes
+        // Verificar se o livro esta em um empréstimos pedentes
         if (!book.getLoans().isEmpty()) {
             throw new BusinessException("The book cannot be deactivated because they have active loans.");
         }
 
-        // Verificar se o livro esta reservado
+        // Verificar se o livro esta em uma reserva pendente
         if (!book.getReservations().isEmpty()) {
             throw new BusinessException("The book cannot be deactivated because they have active reservations.");
         }
@@ -144,6 +144,9 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new BookNotFoundException(id));
 
         // Regras de negócio
+        if (book.getRecordStatus() != RecordStatus.ACTIVE) {
+            throw new BusinessException("It is not possible to add inventory to an inactive book.");
+        }
         book.setTotalQuantity(book.getTotalQuantity() + dto.getQuantity());
         book.setAvailableQuantity(book.getAvailableQuantity() + dto.getQuantity());
 

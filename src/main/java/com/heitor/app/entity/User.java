@@ -21,6 +21,9 @@ public class User {
     @Column(name = "username", nullable = false)
     private String name;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "user_number", nullable = false)
     private String number;
 
@@ -48,6 +51,7 @@ public class User {
 
     public User(Long id,
                 String name,
+                String password,
                 String number,
                 String email,
                 LocalDate registrationDate,
@@ -57,6 +61,7 @@ public class User {
                 List<Reservation> reservations) {
         this.id = id;
         this.name = name;
+        this.password = password;
         this.number = number;
         this.email = email;
         this.registrationDate = registrationDate;
@@ -80,6 +85,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getNumber() {

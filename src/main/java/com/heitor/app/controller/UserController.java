@@ -11,6 +11,7 @@ import com.heitor.app.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String number,
@@ -44,23 +47,37 @@ public class UserController {
         ));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(
+            path = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<UserResponseDTO> partiallyUpdateUser(@RequestBody UserRequestDTO dto,
                                                                @PathVariable Long id) {
         return ResponseEntity.ok(userService.partiallyUpdateUser(dto, id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(
+            path = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<UserResponseDTO> updateUser(@Valid @RequestBody UserRequestDTO dto,
                                                       @PathVariable Long id) {
         return ResponseEntity.ok(userService.updateUser(dto, id));
@@ -82,12 +99,18 @@ public class UserController {
     }
 
     // Rotas de relacionamentos
-    @GetMapping("/{id}/loans")
+    @GetMapping(
+            path = "/{id}/loans",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<LoanResponseDTO>> getUserLoans(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserLoans(id));
     }
 
-    @GetMapping("/{id}/reservations")
+    @GetMapping(
+            path = "/{id}/reservations",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<ReservationResponseDTO>> getUserReservations(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserReservations(id));
     }

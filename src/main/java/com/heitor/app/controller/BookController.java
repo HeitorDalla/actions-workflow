@@ -11,6 +11,7 @@ import com.heitor.app.service.BookService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,9 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<BookResponseDTO>> getAllBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
@@ -50,23 +53,37 @@ public class BookController {
         ));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
-    @PostMapping()
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<BookResponseDTO> createBook(@Valid @RequestBody BookCreateDTO dto) {
         return ResponseEntity.ok(bookService.createBook(dto));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(
+            path = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<BookResponseDTO> partiallyUpdateBook(@RequestBody BookPatchDTO dto,
                                                                @PathVariable Long id) {
         return ResponseEntity.ok(bookService.partiallyUpdateBook(dto, id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(
+            path = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<BookResponseDTO> updateBook(@Valid @RequestBody BookUpdateDTO dto,
                                                       @PathVariable Long id) {
         return ResponseEntity.ok(bookService.updateBook(dto, id));
@@ -88,13 +105,21 @@ public class BookController {
     }
 
     // Rotas para controlar estoque
-    @PatchMapping("/{id}/add-stock")
+    @PatchMapping(
+            path = "/{id}/add-stock",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<BookResponseDTO> addStock(@RequestBody StockDTO dto,
                                                     @PathVariable Long id) {
         return ResponseEntity.ok(bookService.addStock(dto, id));
     }
 
-    @PatchMapping("/{id}/remove-stock")
+    @PatchMapping(
+            path = "/{id}/remove-stock",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<BookResponseDTO> removeStock(@RequestBody StockDTO dto,
                                                        @PathVariable Long id) {
         return ResponseEntity.ok(bookService.removeStock(dto, id));

@@ -6,6 +6,7 @@ import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.service.FineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,9 @@ public class FineController {
         this.fineService = fineService;
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<FineResponseDTO>> getAllFines(
             @RequestParam(required = false) BigDecimal amount,
             @RequestParam(required = false) FineStatus fineStatus,
@@ -36,12 +39,18 @@ public class FineController {
         ));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<FineResponseDTO> getFineById(@PathVariable Long id) {
         return ResponseEntity.ok(fineService.getFineById(id));
     }
 
-    @PatchMapping("/{id}/payment")
+    @PatchMapping(
+            path = "/{id}/payment",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<FineResponseDTO> payFine(@PathVariable Long id) {
         return ResponseEntity.ok(fineService.payFine(id));
     }

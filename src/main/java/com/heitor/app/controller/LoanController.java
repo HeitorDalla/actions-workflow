@@ -8,9 +8,11 @@ import com.heitor.app.service.LoanService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,9 @@ public class LoanController {
         this.loanService = loanService;
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<LoanResponseDTO>> getAllLoans(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Boolean fine,
@@ -39,17 +43,26 @@ public class LoanController {
         ));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<LoanResponseDTO> getLoanById(@PathVariable Long id) {
         return ResponseEntity.ok(loanService.getLoanById(id));
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<LoanResponseDTO> createLoan(@Valid @RequestBody LoanRequestDTO dto) {
         return ResponseEntity.ok(loanService.createLoan(dto));
     }
 
-    @PutMapping("/{id}/return")
+    @PutMapping(
+            path = "/{id}/return",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<LoanResponseDTO> returnLoan(@PathVariable Long id) {
         return ResponseEntity.ok(loanService.returnLoan(id));
     }

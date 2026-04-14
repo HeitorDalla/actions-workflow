@@ -8,6 +8,7 @@ import com.heitor.app.service.ReservationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,9 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<List<ReservationResponseDTO>> getAllReservations(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Long bookId,
@@ -39,12 +42,18 @@ public class ReservationController {
         );
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long id) {
         return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ReservationResponseDTO> createReservation(@Valid @RequestBody ReservationRequestDTO dto) {
         return ResponseEntity.ok(reservationService.createReservation(dto));
     }

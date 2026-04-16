@@ -31,7 +31,7 @@ on:
         type: string
       REPOSITORY:
         description: Nome do repositório do Artifact Registry
-        default: actions-workflow
+        default: library-ops
         required: false
         type: string
       IMAGE_NAME:

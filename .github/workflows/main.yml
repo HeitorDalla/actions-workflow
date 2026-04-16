@@ -64,7 +64,7 @@ jobs:
       sdk_version: '>= 363.0.0'
       REGION: us-west4
       PROJECT_ID: meta-coral-473420-b8
-      REPOSITORY: actions-workflow
+      REPOSITORY: library-ops
       IMAGE_NAME: my-app
       TAG_NAME: ${{ github.sha }}
     secrets:

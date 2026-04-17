@@ -18,8 +18,58 @@ A robust RESTful API for a library management system, built with Java and Spring
 - **Containerization:** Docker
 - **CI/CD:** GitHub Actions, Google Artifact Registry, Google Cloud Run
 
-## API Documentation
+## Project Structure
 
+The project follows a layered architecture commonly used in Spring Boot
+applications, separating concerns and improving maintainability.
+
+```sh
+library-ops/
+├── .github/
+│   ├── actions/
+│   │   ├── cache-maven/
+│   │   │   └── action.yml              # Reusable action for Maven dependency caching
+│   │   └── upload-artifact/
+│   │       └── action.yml              # Reusable action for build artifacts handling
+│   └── workflows/
+│       ├── build-java.yml              # Application build workflow
+│       ├── test-java.yml               # Unit tests and quality checks
+│       ├── scan-security.yml           # Trivy security scanning
+│       ├── docker-publish.yml          # Docker build and push
+│       └── main.yml                    # CI/CD pipeline orchestration
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── heitor/
+│   │   │           └── app/
+│   │   │               ├── controller/        # REST controllers (API layer)
+│   │   │               ├── dto/               # Data Transfer Objects
+│   │   │               │   ├── input/          # Request payloads
+│   │   │               │   ├── output/         # Response payloads
+│   │   │               │   └── common/         # Shared DTO structures
+│   │   │               ├── entity/             # JPA entities (domain model)
+│   │   │               ├── enums/              # Domain enumerations
+│   │   │               ├── exception/          # Custom application exceptions
+│   │   │               ├── handler/            # Global exception handling
+│   │   │               ├── mapper/             # Entity ↔ DTO mappers
+│   │   │               ├── repository/         # Spring Data JPA repositories
+│   │   │               └── service/            # Business logic layer
+│   │   │                   └── impl/           # Service implementations
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/                               # Unit and integration tests
+│
+├── Dockerfile
+├── pom.xml
+├── README.md
+├── CONTRIBUTING.md
+└── LICENSE
+```
+
+## API Documentation
 Once the application is running, the complete API documentation is available via Swagger UI. You can explore all endpoints, view schemas, and test the API directly from your browser.
 
 - **Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)

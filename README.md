@@ -63,7 +63,6 @@ docker run -p 8080:8080 library-ops
 The application will be accessible at `http://localhost:8080`.
 
 ## API Endpoints Overview
-
 The API provides a set of RESTful endpoints to manage library resources. For detailed information, please refer to the [Swagger UI](#api-documentation).
 
 | Method | Endpoint | Description |
@@ -101,17 +100,34 @@ The API provides a set of RESTful endpoints to manage library resources. For det
 | GET, PATCH | `/fines/{id}` | Get a specific fine or process its payment. |
 
 ## CI/CD Pipeline
-This repository is equipped with a comprehensive CI/CD pipeline managed by GitHub Actions (`.github/workflows/main.yml`).
+This project implements a complete CI/CD pipeline using **GitHub Actions** to automate build, test, security scanning, containerization, and deployment to **Google Cloud Run**.
 
-- **Triggers:** The pipeline runs on every `push` and `pull_request` to the `main` branch.
+- **Triggers:** Runs on every `push` and `pull_request` targeting the `main` branch.
 - **Jobs:**
-  1. **Build:** Compiles the application and packages it into a JAR file.
-  2. **Test:** Executes unit tests and performs code style analysis using Checkstyle.
-  3. **Scan:** Uses Trivy to scan the repository for security vulnerabilities and uploads the report to the GitHub Security tab.
-  4. **Publish & Deploy (on main branch push):**
-     - Builds a Docker image
-     - Pushes the image to Google Artifact Registry
-     - Deploys the application to Google Cloud Run
+  1. **Build**
+      - Compiles the application using Maven
+      - Packages the application as a JAR
+
+  2. **Test & Quality Checks**
+      - Executes unit tests
+      - Runs Checkstyle to enforce coding standards
+
+  3. **Security Scanning**
+      - Uses Trivy to scan the repository for known vulnerabilities
+      - Uploads security results to the GitHub Security tab
+
+  4. **Containerization**
+      - Builds a Docker image using the generated JAR
+      - Tags the image based on the commit SHA
+
+  5. **Artifact Registry**
+      - Authenticates with Google Cloud via service account
+      - Pushes the Docker image to Google Artifact Registry
+
+  6. **Deployment**
+      - Deploys the container to Google Cloud Run
+      - Uses a fully managed, serverless environment
+      - Ensures zero-downtime deployment
 
 ## Contributing
 Contributions are welcome! Please read the `CONTRIBUTING.md` file for details on our code of conduct and the process for submitting pull requests.

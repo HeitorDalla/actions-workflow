@@ -1,26 +1,16 @@
 # Contributing to This Project
-
 Thank you for considering contributing!
 Please follow these guidelines to keep an organized and efficient workflow.
 
 ---
 
 ## Getting Started
-
-1. Fork the repository.
-2. Clone your fork:
-   ```
-   git clone git@github.com:HeitorDalla/library-ops.git
-   ```
-3. Install dependencies:
-   ```
-   mvn clean package
-   ```
+Before contributing, make sure you have read the main README.md
+and can run the project locally without errors.
 
 ---
 
 ## Creating a Branch
-
 Always create a new branch for your contribution:
 
 ```
@@ -36,7 +26,6 @@ git checkout -b fix/bug-description
 ---
 
 ## Reporting Bugs
-
 Open an issue including:
 - Error description
 - Step-by-step instructions to reproduce
@@ -46,7 +35,6 @@ Open an issue including:
 ---
 
 ## Creating a Pull Request
-
 1. Commit your changes following best practices:
    ```
    git commit -m "feat: add feature X"
@@ -63,7 +51,6 @@ Open an issue including:
 ---
 
 ## Pre-PR Checklist
-
 - [ ] Code formatted
 - [ ] Tests passing
 - [ ] Documentation updated
@@ -72,7 +59,6 @@ Open an issue including:
 ---
 
 ## Questions?
-
 Open an issue with the **question** label.
 
 Thank you for contributing!

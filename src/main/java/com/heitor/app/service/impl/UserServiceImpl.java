@@ -106,16 +106,14 @@ public class UserServiceImpl implements UserService {
         User current = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        // Copiar tudo do DTO
-        User newState = mapper.toEntity(dto);
-        newState.setId(current.getId());
+        // Cria um novo estado para o usuario com as novas informações que o cliente passou + as informações de regras de negócio
+        User newStateUSer = mapper.toEntity(dto);
+        newStateUSer.setId(current.getId());
+        newStateUSer.setRegistrationDate(current.getRegistrationDate());
+        newStateUSer.setUserStatus(current.getUserStatus());
+        newStateUSer.setRecordStatus(current.getRecordStatus());
 
-        // Regras de negócio
-        newState.setRegistrationDate(current.getRegistrationDate());
-        newState.setUserStatus(current.getUserStatus());
-        newState.setRecordStatus(current.getRecordStatus());
-
-        User saved = userRepository.save(newState);
+        User saved = userRepository.save(newStateUSer);
         return mapper.toDto(saved);
     }
 

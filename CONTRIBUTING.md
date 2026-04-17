@@ -1,78 +1,78 @@
-# Contribuindo para este projeto
+# Contributing to This Project
 
-Obrigado por considerar contribuir!  
-Siga estas orientações para mantermos um fluxo organizado e eficiente.
+Thank you for considering contributing!
+Please follow these guidelines to keep an organized and efficient workflow.
 
 ---
 
-## Como começar
+## Getting Started
 
-1. Faça um fork do repositório.
-2. Clone seu fork:
+1. Fork the repository.
+2. Clone your fork:
    ```
-   git clone git@github.com:HeitorDalla/actions-workflow.git
+   git clone git@github.com:HeitorDalla/library-ops.git
    ```
-3. Instale as dependências:
+3. Install dependencies:
    ```
    mvn clean package
    ```
 
 ---
 
-## Criando uma branch
+## Creating a Branch
 
-Sempre crie uma branch nova para sua contribuição:
-
-```
-git checkout -b feature/nome-da-feature
-```
-
-Ou para correções:
+Always create a new branch for your contribution:
 
 ```
-git checkout -b fix/descricao-do-bug
+git checkout -b feature/feature-name
+```
+
+Or for bug fixes:
+
+```
+git checkout -b fix/bug-description
 ```
 
 ---
 
-## Reportando bugs
+## Reporting Bugs
 
-Abra uma issue com:
-- Descrição do erro
-- Passo a passo para reproduzir
-- Logs ou prints
-- Ambiente (SO, versão)
-
----
-
-## Criando um Pull Request
-
-1. Faça commit seguindo boas práticas:
-   ```
-   git commit -m "feat: adiciona funcionalidade X"
-   ```
-2. Envie para seu fork:
-   ```
-   git push origin feature/nome-da-feature
-   ```
-3. Abra o PR no GitHub com:
-   - Descrição clara
-   - Screenshots (se aplicável)
-   - Checklist completo
+Open an issue including:
+- Error description
+- Step-by-step instructions to reproduce
+- Logs or screenshots
+- Environment details (OS, version)
 
 ---
 
-## Checklist antes do PR
+## Creating a Pull Request
 
-- [ ] Código formatado
-- [ ] Testes rodando
-- [ ] Documentação atualizada
-- [ ] Mudanças explicadas claramente no PR
+1. Commit your changes following best practices:
+   ```
+   git commit -m "feat: add feature X"
+   ```
+2. Push to your fork:
+   ```
+   git push origin feature/feature-name
+   ```
+3. Open a PR on GitHub with:
+    - Clear description
+    - Screenshots (if applicable)
+    - Completed checklist
 
 ---
 
-## Dúvidas?
+## Pre-PR Checklist
 
-Abra uma issue com a tag **question**.
+- [ ] Code formatted
+- [ ] Tests passing
+- [ ] Documentation updated
+- [ ] Changes clearly explained in the PR
 
-Obrigado por contribuir!
+---
+
+## Questions?
+
+Open an issue with the **question** label.
+
+Thank you for contributing!

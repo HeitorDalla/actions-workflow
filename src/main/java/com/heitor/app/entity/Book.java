@@ -46,7 +46,7 @@ public class Book {
     private BookStatus bookStatus;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", nullable = false)
+    @Column(name = "book_record_status", nullable = false)
     private RecordStatus recordStatus;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)

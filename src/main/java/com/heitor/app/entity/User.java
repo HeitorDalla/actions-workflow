@@ -21,16 +21,16 @@ public class User {
     @Column(name = "username", nullable = false)
     private String name;
 
-    @Column(name = "password")
+    @Column(name = "user_password")
     private String password;
 
     @Column(name = "user_number", nullable = false)
     private String number;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "user_email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "registration_date", nullable = false)
+    @Column(name = "user_registration_date", nullable = false)
     private LocalDate registrationDate;
 
     @Enumerated(EnumType.STRING)
@@ -38,7 +38,7 @@ public class User {
     private UserStatus userStatus;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", nullable = false)
+    @Column(name = "user_record_status", nullable = false)
     private RecordStatus recordStatus;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

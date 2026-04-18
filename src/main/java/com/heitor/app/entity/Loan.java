@@ -17,6 +17,18 @@ public class Loan {
     @Column(name = "id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "loan_books",
+            joinColumns = @JoinColumn(name = "loan_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> books = new ArrayList<>();
+
     @Column(name = "loan_date", nullable = false)
     private LocalDate loanDate;
 
@@ -31,23 +43,11 @@ public class Loan {
     private LoanStatus loanStatus;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", nullable = false)
+    @Column(name = "loan_record_status", nullable = false)
     private RecordStatus recordStatus;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @OneToOne(mappedBy = "loan")
     private Fine fine;
-
-    @ManyToMany
-    @JoinTable(
-            name = "loan_books",
-            joinColumns = @JoinColumn(name = "loan_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<Book> books = new ArrayList<>();
 
     public Loan() {}
 

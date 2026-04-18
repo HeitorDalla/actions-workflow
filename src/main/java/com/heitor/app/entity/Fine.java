@@ -16,6 +16,10 @@ public class Fine {
     @Column(name = "id")
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "loan_id", nullable = false)
+    private Loan loan;
+
     @Column(name = "fine_amount", nullable = false)
     private BigDecimal amount;
 
@@ -30,12 +34,8 @@ public class Fine {
     private FineStatus fineStatus;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", nullable = false)
+    @Column(name = "fine_record_status", nullable = false)
     private RecordStatus recordStatus;
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "loan_id", nullable = false)
-    private Loan loan;
 
     public Fine() {}
 

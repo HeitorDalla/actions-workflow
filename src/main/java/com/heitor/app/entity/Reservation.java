@@ -15,6 +15,14 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+
     @Column(name = "reservation_date", nullable = false)
     private LocalDate reservationDate;
 
@@ -23,16 +31,8 @@ public class Reservation {
     private ReservationStatus reservationStatus;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", nullable = false)
+    @Column(name = "reservation_record_status", nullable = false)
     private RecordStatus recordStatus;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
 
     public Reservation() {}
 

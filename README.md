@@ -38,7 +38,7 @@ The system also integrates with cloud infrastructure using containerization and 
 ## Entity-Relationship Diagram
 The following diagram represents the database structure, including entities, relationships, and constraints:
 
-![ER Diagram](./docs/diagrama-entidade-relacionamento.png)
+![ER Diagram](./docs/er-diagram.png)
 
 ### Key Design Decisions:
 * A **User** can have multiple **Loans** and **Reservations**
@@ -54,7 +54,7 @@ This structure ensures flexibility and supports real-world library operations.
 ## CI/CD Pipeline
 The project uses an automated CI/CD pipeline to ensure quality, security, and continuous delivery.
 
-![CI/CD Pipeline](./docs/fluxo-ci-cd.png)
+![CI/CD Pipeline](./docs/ci-cd-pipeline.png)
 
 ### Pipeline Steps:
 1. **Code Quality Analysis**

@@ -20,7 +20,7 @@ on:
         type: string
 
       REGION:
-        description: Nome da região meu Artifact Registry
+        description: Nome da região do meu Artifact Registry
         default: us-west4
         required: false
         type: string

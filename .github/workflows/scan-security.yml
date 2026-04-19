@@ -40,7 +40,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ inputs.fetch-depth }}
+          fetch-depth: 0
 
       - name: Install Trivy
         uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
@@ -53,7 +53,7 @@ jobs:
       - name: Run File System Scan
         run: |
           trivy fs --format sarif \
-                   --output trivy-results.sarif \
+                   --output ${{ inputs.artifact_path }} \
                    .
 
       # Envia arquivos gerados pelo build para a seção de Artifacts da execução (para testes locais)
@@ -66,4 +66,4 @@ jobs:
       - name: Publish Report to Security Tab
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: trivy-results.sarif
+          sarif_file: ${{ inputs.artifact_path }}

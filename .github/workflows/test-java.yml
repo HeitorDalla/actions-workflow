@@ -39,7 +39,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ inputs.fetch-depth }}
+          fetch-depth: 0
 
       # Colocar cache nas dependências do Maven
       - uses: ./.github/actions/cache-maven

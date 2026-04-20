@@ -30,6 +30,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("recordStatus") RecordStatus recordStatus
     );
 
+    // Vai verificar se existe reservas para o Usuario buscado
+    @Query("""
+        SELECT COUNT(r) > 0
+        FROM Reservation r
+        WHERE (r.user = :user) AND (r.reservationStatus = :reservationStatus)
+    """)
+    boolean existsByUserAndReservationStatus(
+            @Param("user") User user,
+            @Param("reservationStatus") ReservationStatus reservationStatus
+    );
+
     // Encontra reservas de livros feitos pelo usuario buscado
     @Query("""
         SELECT r

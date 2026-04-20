@@ -1,6 +1,7 @@
 package com.heitor.app.repository;
 
 import com.heitor.app.entity.Loan;
+import com.heitor.app.entity.User;
 import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.enums.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,6 +32,17 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             @Param("fine") Boolean fine,
             @Param("loanStatus") LoanStatus loanStatus,
             @Param("recordStatus") RecordStatus recordStatus
+    );
+
+    // Verifica se o Usuario buscado tem emprestimos atrasados
+    @Query("""
+        SELECT COUNT(l) > 0
+        FROM Loan l
+        WHERE (l.user = :user) AND (l.loanStatus = :loanStatus)
+    """)
+    boolean existsByUserAndLoanStatus(
+            @Param("user") User user,
+            @Param("loanStatus") LoanStatus loanStatus
     );
 
     // Encontra emprestimos feitos pelo usuario buscado

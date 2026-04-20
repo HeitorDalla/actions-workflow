@@ -7,13 +7,13 @@ import com.heitor.app.dto.output.UserResponseDTO;
 import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.Reservation;
 import com.heitor.app.entity.User;
-import com.heitor.app.enums.RecordStatus;
-import com.heitor.app.enums.UserStatus;
+import com.heitor.app.enums.*;
 import com.heitor.app.exception.BusinessException;
 import com.heitor.app.exception.UserNotFoundException;
 import com.heitor.app.mapper.LoanMapper;
 import com.heitor.app.mapper.ReservationMapper;
 import com.heitor.app.mapper.UserMapper;
+import com.heitor.app.repository.FineRepository;
 import com.heitor.app.repository.LoanRepository;
 import com.heitor.app.repository.ReservationRepository;
 import com.heitor.app.repository.UserRepository;
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final LoanRepository loanRepository;
     private final ReservationRepository reservationRepository;
+    private final FineRepository fineRepository;
     private final UserMapper mapper;
     private final LoanMapper loanMapper;
     private final ReservationMapper reservationMapper;
@@ -40,12 +41,14 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository,
                            LoanRepository loanRepository,
                            ReservationRepository reservationRepository,
+                           FineRepository fineRepository,
                            UserMapper mapper,
                            LoanMapper loanMapper,
                            ReservationMapper reservationMapper) {
         this.userRepository = userRepository;
         this.loanRepository = loanRepository;
         this.reservationRepository = reservationRepository;
+        this.fineRepository = fineRepository;
         this.mapper = mapper;
         this.loanMapper = loanMapper;
         this.reservationMapper = reservationMapper;
@@ -124,15 +127,17 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         // Verificar se usuário tem empréstimos pedentes
-        if (!user.getLoans().isEmpty()) {
+        if (loanRepository.existsByUserAndLoanStatus(user, LoanStatus.OVERDUE)) {
             throw new BusinessException("The user cannot be deactivated because they have active loans.");
         }
 
         // Verificar se usuário tem multas pendentes
-
+        if (fineRepository.existsByLoanUserAndFineStatus(user, FineStatus.OPEN)) {
+            throw new BusinessException("The user cannot be deactivated because they have outstanding fines.");
+        }
 
         // Verificar se usuário tem reservas pendentes
-        if (!user.getReservations().isEmpty()) {
+        if (reservationRepository.existsByUserAndReservationStatus(user, ReservationStatus.PENDING)) {
             throw new BusinessException("The user cannot be deactivated because they have active reservations.");
         }
 

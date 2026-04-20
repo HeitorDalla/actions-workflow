@@ -66,8 +66,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // Verificar se usuário tem multa pendente
-        boolean hasUnpaidFine = fineRepository.existsByLoanUserAndFineStatus(user, FineStatus.OPEN);
-        if (hasUnpaidFine) {
+        if (fineRepository.existsByLoanUserAndFineStatus(user, FineStatus.OPEN)) {
             throw new BusinessException("User has an outstanding fine.");
         }
 

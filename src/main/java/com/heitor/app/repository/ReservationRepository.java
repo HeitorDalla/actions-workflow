@@ -34,7 +34,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("""
         SELECT COUNT(r) > 0
         FROM Reservation r
-        WHERE (r.user = :user) AND (r.reservationStatus = :reservationStatus)
+        WHERE (r.user = :user)
+          AND (r.reservationStatus = :reservationStatus)
     """)
     boolean existsByUserAndReservationStatus(
             @Param("user") User user,
@@ -45,7 +46,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("""
         SELECT COUNT(r) > 0
         FROM Reservation r
-        WHERE (r.book = :book) AND (r.reservationStatus = :reservationStatus)
+        WHERE (r.book = :book)
+          AND (r.reservationStatus = :reservationStatus)
     """)
     boolean existsByBookAndReservationStatus(
             @Param("book") Book book,
@@ -64,9 +66,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("""
         SELECT COUNT(r) > 0
         FROM Reservation r
-        WHERE r.user = :user
-            AND r.book = :book
-            AND r.reservationStatus IN :status
+        WHERE (r.user = :user)
+          AND (r.book = :book)
+          AND (r.reservationStatus IN :status)
     """)
     boolean existsByUserAndBookAndReservationStatus(
             @Param("user") User user,

@@ -39,7 +39,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Query("""
         SELECT COUNT(l) > 0
         FROM Loan l
-        WHERE (l.user = :user) AND (l.loanStatus = :loanStatus)
+        WHERE l.user = :user
+          AND l.loanStatus = :loanStatus
     """)
     boolean existsByUserAndLoanStatus(
             @Param("user") User user,
@@ -50,7 +51,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Query("""
         SELECT COUNT(l) > 0
         FROM Loan l
-        WHERE (:book MEMBER OF l.books) AND (l.loanStatus = :loanStatus)
+        WHERE (:book MEMBER OF l.books)
+            AND (l.loanStatus = :loanStatus)
     """)
     boolean existsByBookAndLoanStatus(
             @Param("book") Book book,
@@ -64,4 +66,19 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
         WHERE l.user.id = :userId
     """)
     List<Loan> findByUserId(@Param("userId") Long userId);
+
+    // Verificar se usuario ja tem emprestimo ativo para determinados livros
+    @Query("""
+        SELECT COUNT(l) > 0
+        FROM Loan l
+        JOIN l.books b
+        WHERE (l.user.id = :userId)
+          AND (b.id = :bookId)
+          AND (l.loanStatus = :loanStatus)
+    """)
+    boolean existsByUserIdAndBooks_IdAndLoanStatus(
+            @Param("userId") Long userId,
+            @Param("bookId") Long bookId,
+            @Param("loanStatus") LoanStatus loanStatus
+    );
 }

@@ -32,8 +32,8 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
     @Query("""
         SELECT COUNT(f) > 0
         FROM Fine f
-        WHERE f.loan.user = :user
-            AND f.fineStatus = :fineStatus
+        WHERE (f.loan.user = :user)
+          AND (f.fineStatus = :fineStatus)
     """)
     boolean existsByLoanUserAndFineStatus(
             @Param("user") User user,

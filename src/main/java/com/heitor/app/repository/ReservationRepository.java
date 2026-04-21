@@ -30,7 +30,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("recordStatus") RecordStatus recordStatus
     );
 
-    // Vai verificar se existe reservas para o Usuario buscado
+    // Vai verificar se existe reservas pendentes para o Usuario buscado
     @Query("""
         SELECT COUNT(r) > 0
         FROM Reservation r
@@ -38,6 +38,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     """)
     boolean existsByUserAndReservationStatus(
             @Param("user") User user,
+            @Param("reservationStatus") ReservationStatus reservationStatus
+    );
+
+    // Vai verificar se existe reservas pendentes para o Livro buscado
+    @Query("""
+        SELECT COUNT(r) > 0
+        FROM Reservation r
+        WHERE (r.book = :book) AND (r.reservationStatus = :reservationStatus)
+    """)
+    boolean existsByBookAndReservationStatus(
+            @Param("book") Book book,
             @Param("reservationStatus") ReservationStatus reservationStatus
     );
 

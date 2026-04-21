@@ -1,5 +1,6 @@
 package com.heitor.app.repository;
 
+import com.heitor.app.entity.Book;
 import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.User;
 import com.heitor.app.enums.LoanStatus;
@@ -34,7 +35,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             @Param("recordStatus") RecordStatus recordStatus
     );
 
-    // Verifica se o Usuario buscado tem emprestimos atrasados
+    // Verifica se existe emprestimos pendentes para usuario buscado
     @Query("""
         SELECT COUNT(l) > 0
         FROM Loan l
@@ -42,6 +43,17 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     """)
     boolean existsByUserAndLoanStatus(
             @Param("user") User user,
+            @Param("loanStatus") LoanStatus loanStatus
+    );
+
+    // Verificar se existe emprestimos pendentes para o livro buscado
+    @Query("""
+        SELECT COUNT(l) > 0
+        FROM Loan l
+        WHERE (:book MEMBER OF l.books) AND (l.loanStatus = :loanStatus)
+    """)
+    boolean existsByBookAndLoanStatus(
+            @Param("book") Book book,
             @Param("loanStatus") LoanStatus loanStatus
     );
 

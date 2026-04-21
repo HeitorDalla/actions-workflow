@@ -7,11 +7,15 @@ import com.heitor.app.dto.input.BookUpdateDTO;
 import com.heitor.app.dto.output.BookResponseDTO;
 import com.heitor.app.entity.Book;
 import com.heitor.app.enums.BookStatus;
+import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.enums.RecordStatus;
+import com.heitor.app.enums.ReservationStatus;
 import com.heitor.app.exception.BookNotFoundException;
 import com.heitor.app.exception.BusinessException;
 import com.heitor.app.mapper.BookMapper;
 import com.heitor.app.repository.BookRepository;
+import com.heitor.app.repository.LoanRepository;
+import com.heitor.app.repository.ReservationRepository;
 import com.heitor.app.service.BookService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +26,17 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final LoanRepository loanRepository;
+    private final ReservationRepository reservationRepository;
     private final BookMapper mapper;
 
     public BookServiceImpl(BookRepository bookRepository,
+                           LoanRepository loanRepository,
+                           ReservationRepository reservationRepository,
                            BookMapper mapper) {
         this.bookRepository = bookRepository;
+        this.loanRepository = loanRepository;
+        this.reservationRepository = reservationRepository;
         this.mapper = mapper;
     }
 
@@ -109,13 +119,13 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
-        // Verificar se o livro esta em um empréstimos pedentes
-        if (!book.getLoans().isEmpty()) {
+        // Verificar se o livro esta em um empréstimos atrasados
+        if (loanRepository.existsByBookAndLoanStatus(book, LoanStatus.OVERDUE)) {
             throw new BusinessException("The book cannot be deactivated because they have active loans.");
         }
 
         // Verificar se o livro esta em uma reserva pendente
-        if (!book.getReservations().isEmpty()) {
+        if (reservationRepository.existsByBookAndReservationStatus(book, ReservationStatus.PENDING)) {
             throw new BusinessException("The book cannot be deactivated because they have active reservations.");
         }
 

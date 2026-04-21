@@ -4,6 +4,7 @@ import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.enums.RecordStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class LoanResponseDTO {
     private Long id;
@@ -13,6 +14,7 @@ public class LoanResponseDTO {
     private LoanStatus loanStatus;
     private RecordStatus recordStatus;
     private Long userId;
+    private List<Long> booksId;
     private Boolean hasFine;
 
     public LoanResponseDTO() {}
@@ -24,6 +26,7 @@ public class LoanResponseDTO {
                            LoanStatus loanStatus,
                            RecordStatus recordStatus,
                            Long userId,
+                           List<Long> booksId,
                            Boolean hasFine) {
         this.id = id;
         this.loanDate = loanDate;
@@ -32,6 +35,7 @@ public class LoanResponseDTO {
         this.loanStatus = loanStatus;
         this.recordStatus = recordStatus;
         this.userId = userId;
+        this.booksId = booksId;
         this.hasFine = hasFine;
     }
 
@@ -89,6 +93,14 @@ public class LoanResponseDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public List<Long> getBooksId() {
+        return booksId;
+    }
+
+    public void setBooksId(List<Long> booksId) {
+        this.booksId = booksId;
     }
 
     public Boolean getHasFine() {

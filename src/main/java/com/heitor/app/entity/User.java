@@ -150,4 +150,23 @@ public class User {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
+
+    public void activate() {
+        this.setUserStatus(UserStatus.OK);
+        this.setRecordStatus(RecordStatus.ACTIVE);
+    }
+
+    public void deactivate() {
+        this.setRecordStatus(RecordStatus.INACTIVE);
+    }
+
+    public void initialize() {
+        if (this.id != null) {
+            throw new IllegalStateException("User already initialized.");
+        }
+
+        this.setRegistrationDate(LocalDate.now());
+        this.setUserStatus(UserStatus.OK);
+        this.setRecordStatus(RecordStatus.ACTIVE);
+    }
 }

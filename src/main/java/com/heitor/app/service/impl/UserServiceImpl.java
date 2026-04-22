@@ -54,78 +54,20 @@ public class UserServiceImpl implements UserService {
         this.reservationMapper = reservationMapper;
     }
 
-    // Métodos de busca
-    @Override
-    public List<UserResponseDTO> getAllUsers(String name,
-                                             String number,
-                                             String email,
-                                             UserStatus userStatus,
-                                             RecordStatus recordStatus) {
-
-        List<User> users = userRepository.getAllUsers(name, number, email, userStatus, recordStatus);
-        return mapper.toDtoList(users);
+    private List<User> findAllUsers(String name,
+                                    String number,
+                                    String email,
+                                    UserStatus userStatus,
+                                    RecordStatus recordStatus) {
+        return userRepository.getAllUsers(name, number, email, userStatus, recordStatus);
     }
 
-    @Override
-    public UserResponseDTO getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
-        return mapper.toDto(user);
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
-    // Métodos de atualizações
-    @Transactional
-    @Override
-    public UserResponseDTO createUser(UserRequestDTO dto) {
-        User user = mapper.toEntity(dto);
-
-        // Regras de negócio
-        user.setRegistrationDate(LocalDate.now());
-        user.setUserStatus(UserStatus.OK);
-        user.setRecordStatus(RecordStatus.ACTIVE);
-
-        User savedUser = userRepository.save(user);
-        return mapper.toDto(savedUser);
-    }
-
-    @Transactional
-    @Override
-    public UserResponseDTO partiallyUpdateUser(UserRequestDTO dto,
-                                               Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
-        mapper.updateEntityFromDto(dto, user);
-
-        userRepository.save(user);
-        return mapper.toDto(user);
-    }
-
-    @Transactional
-    @Override
-    public UserResponseDTO updateUser(UserRequestDTO dto,
-                                      Long id) {
-        User current = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
-        // Cria um novo estado para o usuario com as novas informações que o cliente passou + as informações de regras de negócio
-        User newStateUSer = mapper.toEntity(dto);
-        newStateUSer.setId(current.getId());
-        newStateUSer.setRegistrationDate(current.getRegistrationDate());
-        newStateUSer.setUserStatus(current.getUserStatus());
-        newStateUSer.setRecordStatus(current.getRecordStatus());
-
-        User saved = userRepository.save(newStateUSer);
-        return mapper.toDto(saved);
-    }
-
-    @Transactional
-    @Override
-    public void deactivateUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
+    private void validateUserCanBeDeactivated(User user) {
         // Verificar se usuário tem empréstimos pedentes
         if (loanRepository.existsByUserAndLoanStatus(user, LoanStatus.OVERDUE)) {
             throw new BusinessException("The user cannot be deactivated because they have active loans.");
@@ -140,21 +82,87 @@ public class UserServiceImpl implements UserService {
         if (reservationRepository.existsByUserAndReservationStatus(user, ReservationStatus.PENDING)) {
             throw new BusinessException("The user cannot be deactivated because they have active reservations.");
         }
+    }
 
-        user.setRecordStatus(RecordStatus.INACTIVE);
+    // Métodos de busca
+    @Override
+    public List<UserResponseDTO> getAllUsers(String name,
+                                             String number,
+                                             String email,
+                                             UserStatus userStatus,
+                                             RecordStatus recordStatus) {
+
+        List<User> users = findAllUsers(name, number, email, userStatus, recordStatus);
+        return mapper.toDtoList(users);
+    }
+
+    @Override
+    public UserResponseDTO getUserById(Long id) {
+        User user = findUser(id);
+
+        return mapper.toDto(user);
+    }
+
+    @Transactional
+    @Override
+    public UserResponseDTO createUser(UserRequestDTO dto) {
+        User user = mapper.toEntity(dto);
+
+        user.initialize();
+
+        User savedUser = userRepository.save(user);
+        return mapper.toDto(savedUser);
+    }
+
+    // Métodos de atualizações
+    @Transactional
+    @Override
+    public UserResponseDTO partiallyUpdateUser(UserRequestDTO dto,
+                                               Long id) {
+        User user = findUser(id);
+
+        mapper.updateEntityFromDto(dto, user);
 
         userRepository.save(user);
+        return mapper.toDto(user);
+    }
+
+    @Transactional
+    @Override
+    public UserResponseDTO updateUser(UserRequestDTO dto,
+                                      Long id) {
+        User current = findUser(id);
+
+        // Cria um novo estado para o usuario com as novas informações que o cliente passou + as informações de regras de negócio
+        User newStateUSer = mapper.toEntity(dto);
+        newStateUSer.setId(current.getId());
+        newStateUSer.setRegistrationDate(current.getRegistrationDate());
+        newStateUSer.setUserStatus(current.getUserStatus());
+        newStateUSer.setRecordStatus(current.getRecordStatus());
+
+        User saved = userRepository.save(newStateUSer);
+        return mapper.toDto(saved);
     }
 
     // Métodos de Ativação e Desativação
     @Transactional
     @Override
     public void activateUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+        User user = findUser(id);
 
-        user.setUserStatus(UserStatus.OK);
-        user.setRecordStatus(RecordStatus.ACTIVE);
+        user.activate();
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void deactivateUser(Long id) {
+        User user = findUser(id);
+
+        validateUserCanBeDeactivated(user);
+
+        user.deactivate();
 
         userRepository.save(user);
     }
@@ -162,8 +170,7 @@ public class UserServiceImpl implements UserService {
     // Metodos de relacionamentos
     @Override
     public List<LoanResponseDTO> getUserLoans(Long id) {
-        userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+        findUser(id);
 
         List<Loan> loans = loanRepository.findByUserId(id);
 
@@ -172,8 +179,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ReservationResponseDTO> getUserReservations(Long id) {
-        userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+        findUser(id);
 
         List<Reservation> reservations = reservationRepository.findByUserId(id);
 

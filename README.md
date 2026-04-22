@@ -87,7 +87,10 @@ The project uses an automated CI/CD pipeline to ensure quality, security, and co
 ## Technologies
 * Java 17+
 * Spring Boot
+* Spring MVC
+* Spring Security
 * Spring Data JPA
+* Maven
 * PostgreSQL
 * Docker
 * Google Cloud Run

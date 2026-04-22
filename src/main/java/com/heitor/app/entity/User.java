@@ -2,6 +2,7 @@ package com.heitor.app.entity;
 
 import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.UserStatus;
+import com.heitor.app.exception.BusinessException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -152,21 +153,20 @@ public class User {
     }
 
     public void activate() {
-        this.setUserStatus(UserStatus.OK);
-        this.setRecordStatus(RecordStatus.ACTIVE);
+        this.userStatus = UserStatus.OK;
+        this.recordStatus = RecordStatus.ACTIVE;
     }
 
     public void deactivate() {
-        this.setRecordStatus(RecordStatus.INACTIVE);
+        this.recordStatus = RecordStatus.INACTIVE;
     }
 
     public void initialize() {
         if (this.id != null) {
-            throw new IllegalStateException("User already initialized.");
+            throw new BusinessException("User already initialized.");
         }
 
-        this.setRegistrationDate(LocalDate.now());
-        this.setUserStatus(UserStatus.OK);
-        this.setRecordStatus(RecordStatus.ACTIVE);
+        this.registrationDate = LocalDate.now();
+        activate();
     }
 }

@@ -40,6 +40,43 @@ public class BookServiceImpl implements BookService {
         this.mapper = mapper;
     }
 
+    private List<Book> findAllBooks(String title,
+                                   String author,
+                                   String isbn,
+                                   Long publicationYear,
+                                   String language,
+                                   Integer totalQuantity,
+                                   BookStatus bookStatus,
+                                   RecordStatus recordStatus) {
+        return bookRepository.getAllBooks(
+                title,
+                author,
+                isbn,
+                publicationYear,
+                language,
+                totalQuantity,
+                bookStatus,
+                recordStatus
+        );
+    }
+
+    private Book findBook (Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    private void validateBookCanBeDeactivated(Book book) {
+        // Verificar se o livro esta em um empréstimos atrasados
+        if (loanRepository.existsByBookAndLoanStatus(book, LoanStatus.OVERDUE)) {
+            throw new BusinessException("The book cannot be deactivated because they have active loans.");
+        }
+
+        // Verificar se o livro esta em uma reserva pendente
+        if (reservationRepository.existsByBookAndReservationStatus(book, ReservationStatus.PENDING)) {
+            throw new BusinessException("The book cannot be deactivated because they have active reservations.");
+        }
+    }
+
     @Override
     public List<BookResponseDTO> getAllBooks(String title,
                                              String author,
@@ -50,24 +87,14 @@ public class BookServiceImpl implements BookService {
                                              BookStatus bookStatus,
                                              RecordStatus recordStatus) {
 
-        List<Book> books = bookRepository.getAllBooks(
-                title,
-                author,
-                isbn,
-                publicationYear,
-                language,
-                totalQuantity,
-                bookStatus,
-                recordStatus
-        );
+        List<Book> books = findAllBooks(title, author, isbn, publicationYear, language, totalQuantity, bookStatus, recordStatus);
 
         return mapper.toDtoList(books);
     }
 
     @Override
     public BookResponseDTO getBookById(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
         return mapper.toDto(book);
     }
@@ -77,11 +104,7 @@ public class BookServiceImpl implements BookService {
     public BookResponseDTO createBook(BookCreateDTO dto){
         Book book = mapper.fromCreateDTO(dto);
 
-        // Regras de Negócio
-        book.setRegistrationDate(LocalDate.now());
-        book.setAvailableQuantity(dto.getTotalQuantity());
-        book.setBookStatus(BookStatus.AVAILABLE);
-        book.setRecordStatus(RecordStatus.ACTIVE);
+        book.initialize(dto.getTotalQuantity());
 
         Book savedBook = bookRepository.save(book);
         return mapper.toDto(savedBook);
@@ -91,8 +114,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDTO partiallyUpdateBook(BookPatchDTO dto,
                                                Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
         mapper.patchEntity(dto, book);
 
@@ -104,8 +126,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDTO updateBook(BookUpdateDTO dto,
                                       Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
         mapper.updateEntity(dto, book);
 
@@ -113,23 +134,15 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(book);
     }
 
+    // Métodos de Ativação e Desativação de Livros
     @Transactional
     @Override
     public void deactivateBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
-        // Verificar se o livro esta em um empréstimos atrasados
-        if (loanRepository.existsByBookAndLoanStatus(book, LoanStatus.OVERDUE)) {
-            throw new BusinessException("The book cannot be deactivated because they have active loans.");
-        }
+        validateBookCanBeDeactivated(book);
 
-        // Verificar se o livro esta em uma reserva pendente
-        if (reservationRepository.existsByBookAndReservationStatus(book, ReservationStatus.PENDING)) {
-            throw new BusinessException("The book cannot be deactivated because they have active reservations.");
-        }
-
-        book.setRecordStatus(RecordStatus.INACTIVE);
+        book.deactivate();
 
         bookRepository.save(book);
     }
@@ -137,28 +150,21 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void activateBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
-        book.setBookStatus(BookStatus.AVAILABLE);
-        book.setRecordStatus(RecordStatus.ACTIVE);
+        book.activate();
 
         bookRepository.save(book);
     }
 
+    // Métodos de controle de estoque
     @Transactional
     @Override
     public BookResponseDTO addStock(StockDTO dto,
                                     Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
-        // Regras de negócio
-        if (book.getRecordStatus() != RecordStatus.ACTIVE) {
-            throw new BusinessException("It is not possible to add inventory to an inactive book.");
-        }
-        book.setTotalQuantity(book.getTotalQuantity() + dto.getQuantity());
-        book.setAvailableQuantity(book.getAvailableQuantity() + dto.getQuantity());
+        book.addStock(dto.getQuantity());
 
         bookRepository.save(book);
         return mapper.toDto(book);
@@ -168,15 +174,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDTO removeStock(StockDTO dto,
                                        Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
+        Book book = findBook(id);
 
-        // Regras de negócio
-        if (book.getAvailableQuantity() < dto.getQuantity()) {
-            throw new BusinessException("Out of stock.");
-        }
-        book.setTotalQuantity(book.getTotalQuantity() - dto.getQuantity());
-        book.setAvailableQuantity(book.getAvailableQuantity() - dto.getQuantity());
+        book.removeStock(dto.getQuantity());
 
         bookRepository.save(book);
         return mapper.toDto(book);

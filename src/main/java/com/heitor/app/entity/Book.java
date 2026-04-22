@@ -2,6 +2,7 @@ package com.heitor.app.entity;
 
 import com.heitor.app.enums.BookStatus;
 import com.heitor.app.enums.RecordStatus;
+import com.heitor.app.exception.BusinessException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -187,5 +188,55 @@ public class Book {
 
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
+    }
+
+    public void activate() {
+        this.bookStatus = BookStatus.AVAILABLE;
+        this.recordStatus = RecordStatus.ACTIVE;
+    }
+
+    public void deactivate() {
+        this.recordStatus = RecordStatus.INACTIVE;
+    }
+
+    public void initialize(Integer totalQuantity) {
+        if (this.id != null) {
+            throw new BusinessException("Book already initialized.");
+        }
+
+        if (totalQuantity == null || totalQuantity <= 0) {
+            throw new BusinessException("Total quantity must be greater than zero.");
+        }
+
+        this.registrationDate = LocalDate.now();
+        this.totalQuantity = totalQuantity;
+        this.availableQuantity = totalQuantity;
+        activate();
+    }
+
+    public void addStock(Integer quantity) {
+        if (recordStatus != RecordStatus.ACTIVE) {
+            throw new BusinessException("It is not possible to add inventory to an inactive book.");
+        }
+
+        if (quantity <= 0) {
+            throw new BusinessException("Quantity must be greater than zero.");
+        }
+
+        this.totalQuantity += quantity;
+        this.availableQuantity += quantity;
+    }
+
+    public void removeStock(Integer quantity) {
+        if (quantity <= 0) {
+            throw new BusinessException("Quantity must be greater than zero.");
+        }
+
+        if (availableQuantity < quantity) {
+            throw new BusinessException("Out of stock.");
+        }
+
+        this.totalQuantity -= quantity;
+        this.availableQuantity -= quantity;
     }
 }

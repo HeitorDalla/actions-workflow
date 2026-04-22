@@ -17,6 +17,7 @@ import com.heitor.app.repository.LoanRepository;
 import com.heitor.app.repository.UserRepository;
 import com.heitor.app.service.FineService;
 import com.heitor.app.service.LoanService;
+import com.heitor.app.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,26 +46,37 @@ public class LoanServiceImpl implements LoanService {
         this.mapper = mapper;
     }
 
+    private List<Loan> findAllLoans (Long userId,
+                                     Boolean fine,
+                                     LoanStatus loanStatus,
+                                     RecordStatus recordStatus) {
+        return loanRepository.getAllLoans(
+                userId,
+                fine,
+                loanStatus,
+                recordStatus
+        );
+    }
+
+    private Loan findLoan (Long id) {
+        return loanRepository.findById(id)
+                .orElseThrow(() -> new LoanNotFoundException(id));
+    }
+
     @Override
     public List<LoanResponseDTO> getAllLoans(Long userId,
                                              Boolean fine,
                                              LoanStatus loanStatus,
                                              RecordStatus recordStatus) {
 
-        List<Loan> loans = loanRepository.getAllLoans(
-                userId,
-                fine,
-                loanStatus,
-                recordStatus
-        );
+        List<Loan> loans = findAllLoans(userId, fine, loanStatus, recordStatus);
 
         return mapper.toDtoList(loans);
     }
 
     @Override
     public LoanResponseDTO getLoanById(Long id) {
-        Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException(id));
+        Loan loan = findLoan(id);
 
         return mapper.toDto(loan);
     }
@@ -133,8 +145,7 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public LoanResponseDTO returnLoan(Long id) {
         // Verificar emprestimo
-        Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException(id));
+        Loan loan = findLoan(id);
 
         if (loan.getLoanStatus() == LoanStatus.RETURNED) {
             throw new BusinessException("The loan has already been returned.");
@@ -181,8 +192,7 @@ public class LoanServiceImpl implements LoanService {
     @Transactional
     @Override
     public void cancelLoan(Long id) {
-        Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException(id));
+        Loan loan = findLoan(id);
 
         // Regras de negócio
         if (loan.getLoanStatus() != LoanStatus.OPEN) {

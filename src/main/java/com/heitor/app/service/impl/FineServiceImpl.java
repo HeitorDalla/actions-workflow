@@ -27,20 +27,40 @@ public class FineServiceImpl implements FineService {
         this.fineMapper = fineMapper;
     }
 
+    private List<Fine> findAllFines(BigDecimal amount,
+                                    FineStatus fineStatus,
+                                    RecordStatus recordStatus) {
+        return fineRepository.getAllFines(amount, fineStatus, recordStatus);
+    }
+
     @Override
     public List<FineResponseDTO> getAllFines(BigDecimal amount,
                                              FineStatus fineStatus,
                                              RecordStatus recordStatus) {
 
-        List<Fine> fines = fineRepository.getAllFines(amount, fineStatus, recordStatus);
+        List<Fine> fines = findAllFines(amount, fineStatus, recordStatus);
 
         return fineMapper.toDtoList(fines);
     }
 
+    private Fine findFine(Long id) {
+        return fineRepository.findById(id)
+                .orElseThrow(() -> new FineNotFoundException(id));
+    }
+
+    private void validateCanBePaid (Fine currentFine) {
+        if (currentFine.getFineStatus() == FineStatus.PAID) {
+            throw new BusinessException("The fine has already been paid.");
+        }
+
+        if (currentFine.getFineStatus() == FineStatus.CANCELLED) {
+            throw new BusinessException("The fine was cancelled.");
+        }
+    }
+
     @Override
     public FineResponseDTO getFineById(Long id) {
-        Fine fine = fineRepository.findById(id)
-                .orElseThrow(() -> new FineNotFoundException(id));
+        Fine fine = findFine(id);
 
         return fineMapper.toDto(fine);
     }
@@ -58,20 +78,11 @@ public class FineServiceImpl implements FineService {
     @Transactional
     @Override
     public FineResponseDTO payFine(Long id) {
-        Fine currentFine = fineRepository.findById(id)
-                .orElseThrow(() -> new FineNotFoundException(id));
+        Fine currentFine = findFine(id);
 
-        // Regras de negócio
-        if (currentFine.getFineStatus() == FineStatus.PAID) {
-            throw new BusinessException("The fine has already been paid.");
-        }
+        validateCanBePaid(currentFine);
 
-        if (currentFine.getFineStatus() == FineStatus.CANCELLED) {
-            throw new BusinessException("The fine was cancelled.");
-        }
-
-        currentFine.setFineStatus(FineStatus.PAID);
-        currentFine.setPaymentDate(LocalDate.now());
+        currentFine.paid();
 
         fineRepository.save(currentFine);
         return fineMapper.toDto(currentFine);

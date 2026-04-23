@@ -110,4 +110,9 @@ public class Fine {
     public void setLoan(Loan loan) {
         this.loan = loan;
     }
+
+    public void paid() {
+        fineStatus = FineStatus.PAID;
+        paymentDate = LocalDate.now();
+    }
 }

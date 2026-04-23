@@ -170,9 +170,7 @@ public class User {
         activate();
     }
 
-    public void validateCanBorrow() {
-        if (userStatus != UserStatus.OK || recordStatus != RecordStatus.ACTIVE) {
-            throw new BusinessException("User is not allowed to create loans.");
-        }
+    public boolean isActive() {
+        return userStatus == UserStatus.OK && recordStatus == RecordStatus.ACTIVE;
     }
 }

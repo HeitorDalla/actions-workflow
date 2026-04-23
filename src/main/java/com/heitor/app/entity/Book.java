@@ -196,6 +196,7 @@ public class Book {
     }
 
     public void deactivate() {
+        bookStatus = BookStatus.UNAVAILABLE;
         recordStatus = RecordStatus.INACTIVE;
     }
 
@@ -248,7 +249,7 @@ public class Book {
         availableQuantity--;
 
         if (availableQuantity == 0) {
-            bookStatus = BookStatus.BORROWED;
+            bookStatus = BookStatus.UNAVAILABLE;
         }
     }
 

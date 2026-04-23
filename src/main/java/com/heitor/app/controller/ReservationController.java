@@ -57,4 +57,14 @@ public class ReservationController {
     public ResponseEntity<ReservationResponseDTO> createReservation(@Valid @RequestBody ReservationRequestDTO dto) {
         return ResponseEntity.ok(reservationService.createReservation(dto));
     }
+
+    @PatchMapping(
+            path = "/{id}/cancel",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ReservationResponseDTO> cancelReservation(@PathVariable Long id) {
+        reservationService.cancelReservation(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -87,8 +87,9 @@ public class LoanServiceImpl implements LoanService {
         // Verificar se usuario esta ativo
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-
-        user.validateCanBorrow();
+        if (!user.isActive()) {
+            throw new BusinessException("User is not allowed to create loans.");
+        }
 
         // Verificar se ja usuario ja possui um emprestimo com alguns dos livros
         for (Long bookId : dto.getBookIds()) {

@@ -36,21 +36,32 @@ public class ReservationServiceImpl implements ReservationService {
         this.reservationMapper = reservationMapper;
     }
 
+    private List<Reservation> findAllReservations(Long userId,
+                                                  Long bookId,
+                                                  ReservationStatus reservationStatus,
+                                                  RecordStatus recordStatus) {
+        return reservationRepository.findAllReservations(userId, bookId, reservationStatus, recordStatus);
+    }
+
+    private Reservation findReservation(Long id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new ReserveNotFoundException(id));
+    }
+
     @Override
     public List<ReservationResponseDTO> getAllReservations(Long userId,
                                                            Long bookId,
                                                            ReservationStatus reservationStatus,
                                                            RecordStatus recordStatus) {
 
-        List<Reservation> reservations = reservationRepository.findAllReservations(userId, bookId, reservationStatus, recordStatus);
+        List<Reservation> reservations = findAllReservations(userId, bookId, reservationStatus, recordStatus);
 
         return reservationMapper.toDtoList(reservations);
     }
 
     @Override
     public ReservationResponseDTO getReservationById(Long id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ReserveNotFoundException(id));
+        Reservation reservation = findReservation(id);
 
         return reservationMapper.toDto(reservation);
     }
@@ -58,10 +69,10 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
-        // Verificar usuario
+        // Verificar usuario esta ativo
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-        if (user.getUserStatus() != UserStatus.OK || user.getRecordStatus() != RecordStatus.ACTIVE) {
+        if (!user.isActive()) {
             throw new BusinessException("User is not allowed to create reservations.");
         }
 
@@ -89,18 +100,35 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         // Impedir reserva duplicada do livro pelo mesmo usuário
-        boolean exists = reservationRepository.existsByUserAndBookAndReservationStatus(user, book, List.of(ReservationStatus.PENDING, ReservationStatus.CONFIRMED));
+        boolean exists = reservationRepository.existsByUserAndBookAndReservationStatus(user, book, List.of(ReservationStatus.PENDING, ReservationStatus.CONFIRMED, ReservationStatus.EXPIRED));
         if (exists) {
             throw new BusinessException("User already has a reservation for this book");
         }
 
         Reservation reservation = reservationMapper.toEntity(dto, user, book);
 
-        reservation.setReservationDate(LocalDate.now());
-        reservation.setReservationStatus(ReservationStatus.PENDING);
-        reservation.setRecordStatus(RecordStatus.ACTIVE);
+        reservation.initialize();
 
         reservationRepository.save(reservation);
         return reservationMapper.toDto(reservation);
+    }
+
+    @Transactional
+    @Override
+    public void cancelReservation(Long id) {
+        Reservation reservation = findReservation(id);
+
+        // Armazena o status da reserva antes do cancelamento
+        ReservationStatus previousStatus = reservation.getReservationStatus();
+
+        reservation.cancel();
+
+        // Só devolve ao estoque se a Reserva segura o Livro
+        if (previousStatus == ReservationStatus.CONFIRMED) {
+            Book book = reservation.getBook();
+            book.returnBook();
+
+            bookRepository.save(book);
+        }
     }
 }

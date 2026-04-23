@@ -2,6 +2,7 @@ package com.heitor.app.entity;
 
 import com.heitor.app.enums.RecordStatus;
 import com.heitor.app.enums.ReservationStatus;
+import com.heitor.app.exception.BusinessException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -96,5 +97,23 @@ public class Reservation {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public void initialize() {
+        reservationDate = LocalDate.now();
+        reservationStatus = ReservationStatus.PENDING;
+        recordStatus = RecordStatus.ACTIVE;
+    }
+
+    public void cancel() {
+        if (reservationStatus == ReservationStatus.EXPIRED) {
+            throw new BusinessException("Expired reservations cannot be cancelled.");
+        }
+        if (reservationStatus == ReservationStatus.CANCELLED) {
+            throw new BusinessException("Reservation is already cancelled.");
+        }
+
+        reservationStatus = ReservationStatus.CANCELLED;
+        recordStatus = RecordStatus.INACTIVE;
     }
 }

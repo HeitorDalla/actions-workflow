@@ -2,6 +2,7 @@ package com.heitor.app.entity;
 
 import com.heitor.app.enums.FineStatus;
 import com.heitor.app.enums.RecordStatus;
+import com.heitor.app.exception.BusinessException;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -111,8 +112,22 @@ public class Fine {
         this.loan = loan;
     }
 
-    public void paid() {
-        fineStatus = FineStatus.PAID;
+    public void pay() {
+        if (fineStatus != FineStatus.OPEN) {
+            throw new BusinessException("Only open fines can be paid.");
+        }
+
         paymentDate = LocalDate.now();
+        fineStatus = FineStatus.PAID;
+        recordStatus = RecordStatus.INACTIVE;
+    }
+
+    public void cancel() {
+        if (fineStatus != FineStatus.OPEN) {
+            throw new BusinessException("Only open fines can be cancelled.");
+        }
+
+        fineStatus = FineStatus.CANCELLED;
+        recordStatus = RecordStatus.INACTIVE;
     }
 }

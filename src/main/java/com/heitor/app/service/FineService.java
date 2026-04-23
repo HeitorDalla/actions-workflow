@@ -19,4 +19,6 @@ public interface FineService {
     Fine saveFine(Fine fine);
 
     FineResponseDTO payFine(Long id);
+
+    void cancelFine(Long id);
 }

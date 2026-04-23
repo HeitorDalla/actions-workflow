@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,6 +32,11 @@ public class FineServiceImpl implements FineService {
         return fineRepository.getAllFines(amount, fineStatus, recordStatus);
     }
 
+    private Fine findFine(Long id) {
+        return fineRepository.findById(id)
+                .orElseThrow(() -> new FineNotFoundException(id));
+    }
+
     @Override
     public List<FineResponseDTO> getAllFines(BigDecimal amount,
                                              FineStatus fineStatus,
@@ -41,21 +45,6 @@ public class FineServiceImpl implements FineService {
         List<Fine> fines = findAllFines(amount, fineStatus, recordStatus);
 
         return fineMapper.toDtoList(fines);
-    }
-
-    private Fine findFine(Long id) {
-        return fineRepository.findById(id)
-                .orElseThrow(() -> new FineNotFoundException(id));
-    }
-
-    private void validateCanBePaid (Fine currentFine) {
-        if (currentFine.getFineStatus() == FineStatus.PAID) {
-            throw new BusinessException("The fine has already been paid.");
-        }
-
-        if (currentFine.getFineStatus() == FineStatus.CANCELLED) {
-            throw new BusinessException("The fine was cancelled.");
-        }
     }
 
     @Override
@@ -69,7 +58,7 @@ public class FineServiceImpl implements FineService {
     @Override
     public Fine saveFine(Fine fine) {
         if (fine.getLoan() == null) {
-            throw new IllegalArgumentException("Fine must be attached");
+            throw new BusinessException("Fine must be associated with a loan.");
         }
 
         return fineRepository.save(fine);
@@ -78,13 +67,21 @@ public class FineServiceImpl implements FineService {
     @Transactional
     @Override
     public FineResponseDTO payFine(Long id) {
-        Fine currentFine = findFine(id);
+        Fine fine = findFine(id);
 
-        validateCanBePaid(currentFine);
+        fine.pay();
 
-        currentFine.paid();
+        fineRepository.save(fine);
+        return fineMapper.toDto(fine);
+    }
 
-        fineRepository.save(currentFine);
-        return fineMapper.toDto(currentFine);
+    @Transactional
+    @Override
+    public void cancelFine(Long id) {
+        Fine fine = findFine(id);
+
+        fine.cancel();
+
+        fineRepository.save(fine);
     }
 }

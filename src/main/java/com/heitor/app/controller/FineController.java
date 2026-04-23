@@ -54,4 +54,14 @@ public class FineController {
     public ResponseEntity<FineResponseDTO> payFine(@PathVariable Long id) {
         return ResponseEntity.ok(fineService.payFine(id));
     }
+
+    @PatchMapping(
+            path = "/{id}/cancel",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Void> cancelFine(@PathVariable Long id) {
+        fineService.cancelFine(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

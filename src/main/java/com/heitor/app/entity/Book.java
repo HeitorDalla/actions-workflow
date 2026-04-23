@@ -242,7 +242,7 @@ public class Book {
 
     public void borrow() {
         if (availableQuantity <= 0) {
-            throw new BusinessException("Book out of stock");
+            throw new BusinessException("Book out of stock.");
         }
 
         availableQuantity--;

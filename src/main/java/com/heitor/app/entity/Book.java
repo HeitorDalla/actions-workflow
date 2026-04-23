@@ -191,16 +191,16 @@ public class Book {
     }
 
     public void activate() {
-        this.bookStatus = BookStatus.AVAILABLE;
-        this.recordStatus = RecordStatus.ACTIVE;
+        bookStatus = BookStatus.AVAILABLE;
+        recordStatus = RecordStatus.ACTIVE;
     }
 
     public void deactivate() {
-        this.recordStatus = RecordStatus.INACTIVE;
+        recordStatus = RecordStatus.INACTIVE;
     }
 
     public void initialize(Integer totalQuantity) {
-        if (this.id != null) {
+        if (id != null) {
             throw new BusinessException("Book already initialized.");
         }
 
@@ -208,9 +208,9 @@ public class Book {
             throw new BusinessException("Total quantity must be greater than zero.");
         }
 
-        this.registrationDate = LocalDate.now();
+        registrationDate = LocalDate.now();
         this.totalQuantity = totalQuantity;
-        this.availableQuantity = totalQuantity;
+        availableQuantity = totalQuantity;
         activate();
     }
 
@@ -223,8 +223,8 @@ public class Book {
             throw new BusinessException("Quantity must be greater than zero.");
         }
 
-        this.totalQuantity += quantity;
-        this.availableQuantity += quantity;
+        totalQuantity += quantity;
+        availableQuantity += quantity;
     }
 
     public void removeStock(Integer quantity) {
@@ -236,7 +236,31 @@ public class Book {
             throw new BusinessException("Out of stock.");
         }
 
-        this.totalQuantity -= quantity;
-        this.availableQuantity -= quantity;
+        totalQuantity -= quantity;
+        availableQuantity -= quantity;
+    }
+
+    public void borrow() {
+        if (availableQuantity <= 0) {
+            throw new BusinessException("Book out of stock");
+        }
+
+        availableQuantity--;
+
+        if (availableQuantity == 0) {
+            bookStatus = BookStatus.BORROWED;
+        }
+    }
+
+    public void returnBook() {
+        if (recordStatus != RecordStatus.ACTIVE) {
+            throw new BusinessException("Cannot return book that is inactive.");
+        }
+
+        availableQuantity++;
+
+        if (availableQuantity > 0) {
+            bookStatus = BookStatus.AVAILABLE;
+        }
     }
 }

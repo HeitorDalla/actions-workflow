@@ -2,6 +2,7 @@ package com.heitor.app.entity;
 
 import com.heitor.app.enums.LoanStatus;
 import com.heitor.app.enums.RecordStatus;
+import com.heitor.app.exception.BusinessException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -141,5 +142,37 @@ public class Loan {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    public void initialize() {
+        loanDate = LocalDate.now();
+        dueDate = loanDate.plusWeeks(1);
+        loanStatus = LoanStatus.OPEN;
+        recordStatus = RecordStatus.ACTIVE;
+    }
+
+    public void validateCanBeReturned() {
+        if (loanStatus == LoanStatus.RETURNED) {
+            throw new BusinessException("The loan has already been returned.");
+        }
+
+        if (loanStatus == LoanStatus.CANCELLED) {
+            throw new BusinessException("Cancelled loan cannot be returned.");
+        }
+    }
+
+    public void finishLoan() {
+        returnDate = LocalDate.now();
+        loanStatus = LoanStatus.RETURNED;
+        recordStatus = RecordStatus.INACTIVE;
+    }
+
+    public void cancel() {
+        if (loanStatus != LoanStatus.OPEN) {
+            throw new BusinessException("Only open loans can be cancelled.");
+        }
+
+        loanStatus = LoanStatus.CANCELLED;
+        recordStatus = RecordStatus.INACTIVE;
     }
 }

@@ -153,20 +153,26 @@ public class User {
     }
 
     public void activate() {
-        this.userStatus = UserStatus.OK;
-        this.recordStatus = RecordStatus.ACTIVE;
+        userStatus = UserStatus.OK;
+        recordStatus = RecordStatus.ACTIVE;
     }
 
     public void deactivate() {
-        this.recordStatus = RecordStatus.INACTIVE;
+        recordStatus = RecordStatus.INACTIVE;
     }
 
     public void initialize() {
-        if (this.id != null) {
+        if (id != null) {
             throw new BusinessException("User already initialized.");
         }
 
-        this.registrationDate = LocalDate.now();
+        registrationDate = LocalDate.now();
         activate();
+    }
+
+    public void validateCanBorrow() {
+        if (userStatus != UserStatus.OK || recordStatus != RecordStatus.ACTIVE) {
+            throw new BusinessException("User is not allowed to create loans.");
+        }
     }
 }

@@ -161,7 +161,7 @@ public class Loan {
         }
     }
 
-    public void finishLoan() {
+    public void finish() {
         returnDate = LocalDate.now();
         loanStatus = LoanStatus.RETURNED;
         recordStatus = RecordStatus.INACTIVE;

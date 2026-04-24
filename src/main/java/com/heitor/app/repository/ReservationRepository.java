@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -75,4 +77,20 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("book") Book book,
             @Param("status") List<ReservationStatus> status
     );
+
+    // Busca a reserva PENDING mais antiga (fila)
+    Optional<Reservation>
+    findFirstByBookAndReservationStatusOrderByReservationDateAscIdAsc(
+            Book book,
+            ReservationStatus reservationStatus
+    );
+
+    // Método que busca todas as reservas expiradas
+    @Query("""
+        SELECT r
+        FROM Reservation r
+        WHERE r.reservationStatus = 'PENDING'
+          AND r.dueDate < :today
+    """)
+    List<Reservation> findPendingExpired(@Param("today") LocalDate today);
 }

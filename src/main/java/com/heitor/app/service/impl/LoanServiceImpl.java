@@ -140,7 +140,7 @@ public class LoanServiceImpl implements LoanService {
         }
 
         // Finalizar devolucao do emprestimo
-        loan.finishLoan();
+        loan.finish();
 
         // Regra de criação de multa
         if (loan.getReturnDate().isAfter(loan.getDueDate())) {

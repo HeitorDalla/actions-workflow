@@ -20,4 +20,6 @@ public interface ReservationService {
     ReservationResponseDTO createReservation(@Valid ReservationRequestDTO dto);
 
     void cancelReservation(Long id);
+
+    ReservationResponseDTO returnReservation(Long id);
 }

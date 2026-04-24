@@ -59,6 +59,14 @@ public class ReservationController {
     }
 
     @PatchMapping(
+            path = "/{id}/return",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ReservationResponseDTO> returnReservation(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.returnReservation(id));
+    }
+
+    @PatchMapping(
             path = "/{id}/cancel",
             produces = MediaType.APPLICATION_JSON_VALUE
     )

@@ -48,6 +48,21 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ReserveNotFoundException(id));
     }
 
+    private void tryConfirmNextReservation(Book book) {
+        if (book.getAvailableQuantity() <= 0) {
+            return;
+        }
+
+        reservationRepository.findFirstByBookAndReservationStatusOrderByReservationDateAscIdAsc(book, ReservationStatus.PENDING)
+                .ifPresent(reservation -> {
+                    reservation.confirm();
+                    book.reserve();
+
+                    reservationRepository.save(reservation);
+                    bookRepository.save(book);
+                });
+    }
+
     @Override
     public List<ReservationResponseDTO> getAllReservations(Long userId,
                                                            Long bookId,
@@ -84,32 +99,50 @@ public class ReservationServiceImpl implements ReservationService {
         // Verificar livro
         Book book = bookRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new BookNotFoundException(dto.getBookId()));
-        if (book.getBookStatus() != BookStatus.AVAILABLE) {
-            throw new BusinessException("Book is unavailable for reservation.");
-        }
-
         if (book.getRecordStatus() != RecordStatus.ACTIVE) {
             throw new BusinessException("Book is inactive.");
         }
 
-        if (book.getAvailableQuantity() == null || book.getAvailableQuantity() <= 0) {
-            throw new BusinessException("No copies available for reservation.");
-        }
-
-        // Diminuir a quantidade disponivel e o status do livro conforme a quantidade disponivel
-
-
         // Impedir reserva duplicada do livro pelo mesmo usuário
-        boolean exists = reservationRepository.existsByUserAndBookAndReservationStatus(user, book, List.of(ReservationStatus.PENDING, ReservationStatus.CONFIRMED, ReservationStatus.EXPIRED));
+        boolean exists = reservationRepository.
+                existsByUserAndBookAndReservationStatus(
+                        user,
+                        book,
+                        List.of(
+                                ReservationStatus.PENDING,
+                                ReservationStatus.CONFIRMED,
+                                ReservationStatus.EXPIRED)
+                );
+
         if (exists) {
             throw new BusinessException("User already has a reservation for this book");
         }
 
         Reservation reservation = reservationMapper.toEntity(dto, user, book);
-
         reservation.initialize();
+        reservationRepository.save(reservation);
+
+        // tenta confirmar caso exista estoque disponível
+        tryConfirmNextReservation(book);
+
+        return reservationMapper.toDto(reservation);
+    }
+
+    @Transactional
+    @Override
+    public ReservationResponseDTO returnReservation(Long id) {
+        Reservation reservation = findReservation(id);
+        Book book = reservation.getBook();
+
+        reservation.finish();
+        book.releaseReservation();
 
         reservationRepository.save(reservation);
+        bookRepository.save(book);
+
+        // chama a próxima pessoa da fila
+        tryConfirmNextReservation(book);
+
         return reservationMapper.toDto(reservation);
     }
 
@@ -117,18 +150,19 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void cancelReservation(Long id) {
         Reservation reservation = findReservation(id);
+        Book book = reservation.getBook();
 
-        // Armazena o status da reserva antes do cancelamento
-        ReservationStatus previousStatus = reservation.getReservationStatus();
+        // verifica se a reserva esta confirmada
+        boolean wasHolding = reservation.holdsBook();
 
         reservation.cancel();
+        reservationRepository.save(reservation);
 
-        // Só devolve ao estoque se a Reserva segura o Livro
-        if (previousStatus == ReservationStatus.CONFIRMED) {
-            Book book = reservation.getBook();
-            book.returnBook();
-
+        if (wasHolding) {
+            book.releaseReservation();
             bookRepository.save(book);
+
+            tryConfirmNextReservation(book);
         }
     }
 }

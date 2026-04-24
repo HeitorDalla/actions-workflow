@@ -200,6 +200,12 @@ public class Book {
         recordStatus = RecordStatus.INACTIVE;
     }
 
+    private void validateActive() {
+        if (recordStatus != RecordStatus.ACTIVE) {
+            throw new BusinessException("Book is inactive.");
+        }
+    }
+
     public void initialize(Integer totalQuantity) {
         if (id != null) {
             throw new BusinessException("Book already initialized.");
@@ -215,33 +221,37 @@ public class Book {
         activate();
     }
 
-    public void addStock(Integer quantity) {
-        if (recordStatus != RecordStatus.ACTIVE) {
-            throw new BusinessException("It is not possible to add inventory to an inactive book.");
+    /* Reserva */
+    public void reserve() {
+        validateActive();
+
+        if (availableQuantity <= 0) {
+            throw new BusinessException("No available copies for reservation.");
         }
 
-        if (quantity <= 0) {
-            throw new BusinessException("Quantity must be greater than zero.");
-        }
+        availableQuantity--;
 
-        totalQuantity += quantity;
-        availableQuantity += quantity;
+        if (availableQuantity == 0) {
+            bookStatus = BookStatus.RESERVED;
+        }
     }
 
-    public void removeStock(Integer quantity) {
-        if (quantity <= 0) {
-            throw new BusinessException("Quantity must be greater than zero.");
+    public void releaseReservation() {
+        validateActive();
+
+        if (availableQuantity < totalQuantity) {
+            availableQuantity++;
         }
 
-        if (availableQuantity < quantity) {
-            throw new BusinessException("Out of stock.");
-        }
-
-        totalQuantity -= quantity;
-        availableQuantity -= quantity;
+        bookStatus = BookStatus.AVAILABLE;
     }
 
+    /* Empréstimo */
+
+    // Método para emprestimo de livro com controle de estoque
     public void borrow() {
+        validateActive();
+
         if (availableQuantity <= 0) {
             throw new BusinessException("Book out of stock.");
         }
@@ -253,15 +263,42 @@ public class Book {
         }
     }
 
+    // Método para retorno de livros com controle de estoque
     public void returnBook() {
-        if (recordStatus != RecordStatus.ACTIVE) {
-            throw new BusinessException("Cannot return book that is inactive.");
-        }
+        validateActive();
 
         availableQuantity++;
 
         if (availableQuantity > 0) {
             bookStatus = BookStatus.AVAILABLE;
         }
+    }
+
+    /* Controle de Estoque */
+
+    // Método para administradores adicionar livros ao estoque
+    public void addStock(Integer quantity) {
+        validateActive();
+
+        if (quantity <= 0) {
+            throw new BusinessException("Quantity must be greater than zero.");
+        }
+
+        totalQuantity += quantity;
+        availableQuantity += quantity;
+    }
+
+    // Método para administradores remover livros ao estoque
+    public void removeStock(Integer quantity) {
+        if (quantity <= 0) {
+            throw new BusinessException("Quantity must be greater than zero.");
+        }
+
+        if (availableQuantity < quantity) {
+            throw new BusinessException("Out of stock.");
+        }
+
+        totalQuantity -= quantity;
+        availableQuantity -= quantity;
     }
 }

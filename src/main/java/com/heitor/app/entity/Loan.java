@@ -175,4 +175,12 @@ public class Loan {
         loanStatus = LoanStatus.CANCELLED;
         recordStatus = RecordStatus.INACTIVE;
     }
+
+    public void markAsOverdue() {
+        if (loanStatus != LoanStatus.OPEN) {
+            return;
+        }
+
+        loanStatus = LoanStatus.OVERDUE;
+    }
 }

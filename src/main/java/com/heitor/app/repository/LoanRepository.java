@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -81,4 +82,13 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             @Param("bookId") Long bookId,
             @Param("loanStatus") LoanStatus loanStatus
     );
+
+    // Método que busca todos os emprestimos pendentes (scheduler)
+    @Query("""
+        SELECT l
+        FROM Loan l
+        WHERE (l.loanStatus = 'OPEN')
+          AND (l.dueDate < :today)
+""")
+    List<Loan> findOverdueLoans(@Param("today") LocalDate today);
 }

@@ -85,12 +85,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             ReservationStatus reservationStatus
     );
 
-    // Método que busca todas as reservas expiradas
+    // Método que busca todas as reservas expiradas (scheduler)
     @Query("""
         SELECT r
         FROM Reservation r
-        WHERE r.reservationStatus = 'PENDING'
-          AND r.dueDate < :today
+        WHERE (r.reservationStatus = 'PENDING')
+          AND (r.dueDate < :today)
     """)
     List<Reservation> findPendingExpired(@Param("today") LocalDate today);
 }

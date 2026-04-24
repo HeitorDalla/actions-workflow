@@ -31,6 +31,8 @@ public class ReservationMapper {
         dto.setUserId(entity.getUser().getId());
         dto.setBookId(entity.getBook().getId());
         dto.setReservationDate(entity.getReservationDate());
+        dto.setDueDate(entity.getDueDate());
+        dto.setReturnDate(entity.getReturnDate());
         dto.setReservationStatus(entity.getReservationStatus());
         dto.setRecordStatus(entity.getRecordStatus());
 

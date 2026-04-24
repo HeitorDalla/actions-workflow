@@ -10,8 +10,11 @@ public class ReservationResponseDTO {
     private Long userId;
     private Long bookId;
     private LocalDate reservationDate;
+    private LocalDate dueDate;
+    private LocalDate returnDate;
     private ReservationStatus reservationStatus;
     private RecordStatus recordStatus;
+
 
     public ReservationResponseDTO() {}
 
@@ -19,12 +22,16 @@ public class ReservationResponseDTO {
                                   Long userId,
                                   Long bookId,
                                   LocalDate reservationDate,
+                                  LocalDate dueDate,
+                                  LocalDate returnDate,
                                   ReservationStatus reservationStatus,
                                   RecordStatus recordStatus) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
         this.reservationDate = reservationDate;
+        this.dueDate = dueDate;
+        this.returnDate = returnDate;
         this.reservationStatus = reservationStatus;
         this.recordStatus = recordStatus;
     }
@@ -59,6 +66,22 @@ public class ReservationResponseDTO {
 
     public void setReservationDate(LocalDate reservationDate) {
         this.reservationDate = reservationDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
     public ReservationStatus getReservationStatus() {

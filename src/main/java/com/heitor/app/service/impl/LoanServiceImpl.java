@@ -130,7 +130,6 @@ public class LoanServiceImpl implements LoanService {
     public LoanResponseDTO returnLoan(Long id) {
         // Verificar emprestimo
         Loan loan = findLoan(id);
-
         loan.validateCanBeReturned();
 
         // Devolver os livros
@@ -165,7 +164,6 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public void cancelLoan(Long id) {
         Loan loan = findLoan(id);
-
         loan.cancel();
 
         // Devolver os livros

@@ -221,59 +221,6 @@ public class Book {
         activate();
     }
 
-    /* Reserva */
-    public void reserve() {
-        validateActive();
-
-        if (availableQuantity <= 0) {
-            throw new BusinessException("No available copies for reservation.");
-        }
-
-        availableQuantity--;
-
-        if (availableQuantity == 0) {
-            bookStatus = BookStatus.RESERVED;
-        }
-    }
-
-    public void releaseReservation() {
-        validateActive();
-
-        if (availableQuantity < totalQuantity) {
-            availableQuantity++;
-        }
-
-        bookStatus = BookStatus.AVAILABLE;
-    }
-
-    /* Empréstimo */
-
-    // Método para emprestimo de livro com controle de estoque
-    public void borrow() {
-        validateActive();
-
-        if (availableQuantity <= 0) {
-            throw new BusinessException("Book out of stock.");
-        }
-
-        availableQuantity--;
-
-        if (availableQuantity == 0) {
-            bookStatus = BookStatus.UNAVAILABLE;
-        }
-    }
-
-    // Método para retorno de livros com controle de estoque
-    public void returnBook() {
-        validateActive();
-
-        availableQuantity++;
-
-        if (availableQuantity > 0) {
-            bookStatus = BookStatus.AVAILABLE;
-        }
-    }
-
     /* Controle de Estoque */
 
     // Método para administradores adicionar livros ao estoque
@@ -300,5 +247,58 @@ public class Book {
 
         totalQuantity -= quantity;
         availableQuantity -= quantity;
+    }
+
+    /* Empréstimo */
+
+    // Método para emprestimo de livro com controle de estoque
+    public void borrow() {
+        validateActive();
+
+        if (availableQuantity <= 0) {
+            throw new BusinessException("Book out of stock.");
+        }
+
+        availableQuantity--;
+
+        if (availableQuantity == 0) {
+            bookStatus = BookStatus.UNAVAILABLE;
+        }
+    }
+
+    // Método para retorno de livros do emprestimo com controle de estoque
+    public void returnBook() {
+        validateActive();
+
+        availableQuantity++;
+
+        if (availableQuantity > 0) {
+            bookStatus = BookStatus.AVAILABLE;
+        }
+    }
+
+    /* Reserva */
+    public void reserve() {
+        validateActive();
+
+        if (availableQuantity <= 0) {
+            throw new BusinessException("No available copies for reservation.");
+        }
+
+        availableQuantity--;
+
+        if (availableQuantity == 0) {
+            bookStatus = BookStatus.RESERVED;
+        }
+    }
+
+    public void releaseReservation() {
+        validateActive();
+
+        if (availableQuantity < totalQuantity) {
+            availableQuantity++;
+        }
+
+        bookStatus = BookStatus.AVAILABLE;
     }
 }

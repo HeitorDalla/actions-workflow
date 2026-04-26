@@ -42,7 +42,7 @@ public class BookMapper {
         return dto;
     }
 
-    public Book fromCreateDTO(BookCreateDTO dto) { // create
+    public Book toEntity(BookCreateDTO dto) {
         if (dto == null) {
             return null;
         }

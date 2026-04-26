@@ -2,6 +2,7 @@ package com.heitor.app.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class BookUpdateDTO {
     @NotBlank
@@ -11,6 +12,7 @@ public class BookUpdateDTO {
     private String author;
 
     @NotBlank
+    @Size(min = 10, max = 13)
     private String isbn;
 
     @NotNull

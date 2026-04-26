@@ -1,6 +1,11 @@
 package com.heitor.app.dto.common;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public class StockDTO {
+    @NotNull
+    @Min(1)
     private Integer quantity;
 
     public StockDTO() {}

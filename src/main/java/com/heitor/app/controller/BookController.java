@@ -74,7 +74,7 @@ public class BookController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BookResponseDTO> partiallyUpdateBook(@RequestBody BookPatchDTO dto,
+    public ResponseEntity<BookResponseDTO> partiallyUpdateBook(@Valid @RequestBody BookPatchDTO dto,
                                                                @PathVariable Long id) {
         return ResponseEntity.ok(bookService.partiallyUpdateBook(dto, id));
     }
@@ -110,7 +110,7 @@ public class BookController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BookResponseDTO> addStock(@RequestBody StockDTO dto,
+    public ResponseEntity<BookResponseDTO> addStock(@Valid @RequestBody StockDTO dto,
                                                     @PathVariable Long id) {
         return ResponseEntity.ok(bookService.addStock(dto, id));
     }
@@ -120,7 +120,7 @@ public class BookController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BookResponseDTO> removeStock(@RequestBody StockDTO dto,
+    public ResponseEntity<BookResponseDTO> removeStock(@Valid @RequestBody StockDTO dto,
                                                        @PathVariable Long id) {
         return ResponseEntity.ok(bookService.removeStock(dto, id));
     }

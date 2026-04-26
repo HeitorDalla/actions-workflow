@@ -102,7 +102,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookResponseDTO createBook(BookCreateDTO dto){
-        Book book = mapper.fromCreateDTO(dto);
+        Book book = mapper.toEntity(dto);
 
         book.initialize(dto.getTotalQuantity());
 
@@ -118,7 +118,7 @@ public class BookServiceImpl implements BookService {
 
         mapper.patchEntity(dto, book);
 
-        book = bookRepository.save(book);
+        bookRepository.save(book);
         return mapper.toDto(book);
     }
 
@@ -137,22 +137,22 @@ public class BookServiceImpl implements BookService {
     // Métodos de Ativação e Desativação de Livros
     @Transactional
     @Override
-    public void deactivateBook(Long id) {
+    public void activateBook(Long id) {
         Book book = findBook(id);
 
-        validateBookCanBeDeactivated(book);
-
-        book.deactivate();
+        book.activate();
 
         bookRepository.save(book);
     }
 
     @Transactional
     @Override
-    public void activateBook(Long id) {
+    public void deactivateBook(Long id) {
         Book book = findBook(id);
 
-        book.activate();
+        validateBookCanBeDeactivated(book);
+
+        book.deactivate();
 
         bookRepository.save(book);
     }

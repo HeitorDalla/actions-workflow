@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateUserCanBeDeactivated(User user) {
         // Verificar se usuário tem empréstimos pedentes
-        if (loanRepository.existsByUserAndLoanStatus(user, LoanStatus.OVERDUE)) {
+        if (loanRepository.existsByUserAndLoanStatus(user, List.of(LoanStatus.OPEN, LoanStatus.OVERDUE))) {
             throw new BusinessException("The user cannot be deactivated because they have active loans.");
         }
 

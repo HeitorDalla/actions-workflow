@@ -21,13 +21,13 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
         FROM Loan l
         LEFT JOIN l.fine f
         WHERE (:userId IS NULL OR l.user.id = :userId)
-            AND (
-                :fine IS NULL
-                OR (:fine = true AND f IS NOT NULL)
-                OR (:fine = false AND f IS NULL)
-            )
-            AND (:loanStatus IS NULL OR l.loanStatus = :loanStatus)
-            AND (:recordStatus IS NULL OR l.recordStatus = :recordStatus)
+          AND (
+              :fine IS NULL
+              OR (:fine = true AND f IS NOT NULL)
+              OR (:fine = false AND f IS NULL)
+          )
+          AND (:loanStatus IS NULL OR l.loanStatus = :loanStatus)
+          AND (:recordStatus IS NULL OR l.recordStatus = :recordStatus)
     """)
     List<Loan> getAllLoans(
             @Param("userId") Long userId,
@@ -40,12 +40,12 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Query("""
         SELECT COUNT(l) > 0
         FROM Loan l
-        WHERE l.user = :user
-          AND l.loanStatus = :loanStatus
+        WHERE (l.user = :user)
+          AND (l.loanStatus IN :loanStatus)
     """)
     boolean existsByUserAndLoanStatus(
             @Param("user") User user,
-            @Param("loanStatus") LoanStatus loanStatus
+            @Param("loanStatus") List<LoanStatus> loanStatus
     );
 
     // Verificar se existe emprestimos pendentes para o livro buscado
@@ -53,11 +53,11 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
         SELECT COUNT(l) > 0
         FROM Loan l
         WHERE (:book MEMBER OF l.books)
-            AND (l.loanStatus = :loanStatus)
+          AND (l.loanStatus IN :loanStatus)
     """)
     boolean existsByBookAndLoanStatus(
             @Param("book") Book book,
-            @Param("loanStatus") LoanStatus loanStatus
+            @Param("loanStatus") List<LoanStatus> loanStatus
     );
 
     // Encontra emprestimos feitos pelo usuario buscado

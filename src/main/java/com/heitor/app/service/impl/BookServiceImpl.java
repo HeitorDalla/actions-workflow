@@ -66,13 +66,13 @@ public class BookServiceImpl implements BookService {
     }
 
     private void validateBookCanBeDeactivated(Book book) {
-        // Verificar se o livro esta em um empréstimos atrasados
-        if (loanRepository.existsByBookAndLoanStatus(book, LoanStatus.OVERDUE)) {
+        // Verificar se o livro esta em um empréstimo aberto ou atrasado
+        if (loanRepository.existsByBookAndLoanStatus(book, List.of(LoanStatus.OPEN, LoanStatus.OVERDUE))) {
             throw new BusinessException("The book cannot be deactivated because they have active loans.");
         }
 
-        // Verificar se o livro esta em uma reserva pendente
-        if (reservationRepository.existsByBookAndReservationStatus(book, ReservationStatus.PENDING)) {
+        // Verificar se o livro esta em uma reserva pendente ou expirada
+        if (reservationRepository.existsByBookAndReservationStatus(book, List.of(ReservationStatus.PENDING, ReservationStatus.EXPIRED))) {
             throw new BusinessException("The book cannot be deactivated because they have active reservations.");
         }
     }

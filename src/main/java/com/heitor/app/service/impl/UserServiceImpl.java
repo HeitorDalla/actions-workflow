@@ -1,6 +1,7 @@
 package com.heitor.app.service.impl;
 
-import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.input.UserPatchDTO;
+import com.heitor.app.dto.input.UserUpsertDTO;
 import com.heitor.app.dto.output.LoanResponseDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Verificar se usuário tem reservas pendentes
-        if (reservationRepository.existsByUserAndReservationStatus(user, ReservationStatus.PENDING)) {
+        if (reservationRepository.existsByUserAndReservationStatus(user, List.of(ReservationStatus.PENDING, ReservationStatus.EXPIRED))) {
             throw new BusinessException("The user cannot be deactivated because they have active reservations.");
         }
     }
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResponseDTO createUser(UserRequestDTO dto) {
+    public UserResponseDTO createUser(UserUpsertDTO dto) {
         User user = mapper.toEntity(dto);
 
         user.initialize();
@@ -117,11 +117,11 @@ public class UserServiceImpl implements UserService {
     // Métodos de atualizações
     @Transactional
     @Override
-    public UserResponseDTO partiallyUpdateUser(UserRequestDTO dto,
+    public UserResponseDTO partiallyUpdateUser(UserPatchDTO dto,
                                                Long id) {
         User user = findUser(id);
 
-        mapper.updateEntityFromDto(dto, user);
+        mapper.patchEntity(dto, user);
 
         userRepository.save(user);
         return mapper.toDto(user);
@@ -129,19 +129,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResponseDTO updateUser(UserRequestDTO dto,
+    public UserResponseDTO updateUser(UserUpsertDTO dto,
                                       Long id) {
-        User current = findUser(id);
+        User user = findUser(id);
 
-        // Cria um novo estado para o usuario com as novas informações que o cliente passou + as informações de regras de negócio
-        User newStateUSer = mapper.toEntity(dto);
-        newStateUSer.setId(current.getId());
-        newStateUSer.setRegistrationDate(current.getRegistrationDate());
-        newStateUSer.setUserStatus(current.getUserStatus());
-        newStateUSer.setRecordStatus(current.getRecordStatus());
+        mapper.updateEntity(dto, user);
 
-        User saved = userRepository.save(newStateUSer);
-        return mapper.toDto(saved);
+        userRepository.save(user);
+        return mapper.toDto(user);
     }
 
     // Métodos de Ativação e Desativação

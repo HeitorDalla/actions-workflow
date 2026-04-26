@@ -3,7 +3,7 @@ package com.heitor.app.dto.input;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class UserRequestDTO {
+public class UserUpsertDTO {
     @NotBlank
     private String name;
 
@@ -14,11 +14,11 @@ public class UserRequestDTO {
     @NotBlank
     private String email;
 
-    public UserRequestDTO() {}
+    public UserUpsertDTO() {}
 
-    public UserRequestDTO(String name,
-                          String number,
-                          String email) {
+    public UserUpsertDTO(String name,
+                         String number,
+                         String email) {
         this.name = name;
         this.number = number;
         this.email = email;

@@ -1,8 +1,8 @@
 package com.heitor.app.mapper;
 
-import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.input.UserPatchDTO;
+import com.heitor.app.dto.input.UserUpsertDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
-import com.heitor.app.entity.Loan;
 import com.heitor.app.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,7 @@ public class UserMapper {
     }
 
     // Converte o DTO de entrada para uma nova Entity (POST ou PUT)
-    public User toEntity(UserRequestDTO dto) {
+    public User toEntity(UserUpsertDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -53,21 +53,31 @@ public class UserMapper {
     }
 
     // Atualiza apenas os campos NÃO-NULL do DTO na Entity existente (EVITAR SOBRESCREVER CAMPOS COM 'NULL')
-    public void updateEntityFromDto(UserRequestDTO dto, User user) {
-        if (dto == null || user == null) {
+    public void patchEntity(UserPatchDTO dto, User entity) {
+        if (dto == null || entity == null) {
             return;
         }
 
         if (dto.getName() != null) {
-            user.setName(dto.getName());
+            entity.setName(dto.getName());
         }
 
         if (dto.getNumber() != null) {
-            user.setNumber(dto.getNumber());
+            entity.setNumber(dto.getNumber());
         }
 
         if (dto.getEmail() != null) {
-            user.setEmail(dto.getEmail());
+            entity.setEmail(dto.getEmail());
         }
+    }
+
+    public void updateEntity(UserUpsertDTO dto, User entity) {
+        if (dto == null || entity == null) {
+            return;
+        }
+
+        entity.setName(dto.getName());
+        entity.setNumber(dto.getNumber());
+        entity.setEmail(dto.getEmail());
     }
 }

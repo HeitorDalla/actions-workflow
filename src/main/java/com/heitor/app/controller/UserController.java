@@ -1,6 +1,7 @@
 package com.heitor.app.controller;
 
-import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.input.UserPatchDTO;
+import com.heitor.app.dto.input.UserUpsertDTO;
 import com.heitor.app.dto.output.LoanResponseDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
@@ -59,7 +60,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserUpsertDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
@@ -68,7 +69,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserResponseDTO> partiallyUpdateUser(@RequestBody UserRequestDTO dto,
+    public ResponseEntity<UserResponseDTO> partiallyUpdateUser(@Valid @RequestBody UserPatchDTO dto,
                                                                @PathVariable Long id) {
         return ResponseEntity.ok(userService.partiallyUpdateUser(dto, id));
     }
@@ -78,7 +79,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserResponseDTO> updateUser(@Valid @RequestBody UserRequestDTO dto,
+    public ResponseEntity<UserResponseDTO> updateUser(@Valid @RequestBody UserUpsertDTO dto,
                                                       @PathVariable Long id) {
         return ResponseEntity.ok(userService.updateUser(dto, id));
     }
@@ -108,7 +109,7 @@ public class UserController {
     }
 
     @GetMapping(
-            path = "/{id}/reservations",
+            path = "/{id}/reservations", 
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<ReservationResponseDTO>> getUserReservations(@PathVariable Long id) {

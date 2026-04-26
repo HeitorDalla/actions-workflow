@@ -1,6 +1,7 @@
 package com.heitor.app.service;
 
-import com.heitor.app.dto.input.UserRequestDTO;
+import com.heitor.app.dto.input.UserPatchDTO;
+import com.heitor.app.dto.input.UserUpsertDTO;
 import com.heitor.app.dto.output.LoanResponseDTO;
 import com.heitor.app.dto.output.ReservationResponseDTO;
 import com.heitor.app.dto.output.UserResponseDTO;
@@ -18,12 +19,12 @@ public interface UserService {
 
     UserResponseDTO getUserById(Long id);
 
-    UserResponseDTO createUser(UserRequestDTO dto);
+    UserResponseDTO createUser(UserUpsertDTO dto);
 
-    UserResponseDTO partiallyUpdateUser(UserRequestDTO dto, 
+    UserResponseDTO partiallyUpdateUser(UserPatchDTO dto,
                                         Long id);
 
-    UserResponseDTO updateUser(UserRequestDTO dto, 
+    UserResponseDTO updateUser(UserUpsertDTO dto,
                                Long id);
 
     void activateUser(Long id);

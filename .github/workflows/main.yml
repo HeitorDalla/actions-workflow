@@ -61,7 +61,7 @@ jobs:
       os_version: ubuntu-latest
       environment_name: production
       sdk_version: '>= 363.0.0'
-      REGION: us-west4
+      REGION: us-central1
       PROJECT_ID: meta-coral-473420-b8
       REPOSITORY: library-ops
       IMAGE_NAME: my-app

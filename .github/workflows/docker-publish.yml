@@ -21,7 +21,7 @@ on:
 
       REGION:
         description: Nome da região do meu Artifact Registry
-        default: us-west4
+        default: us-central1
         required: false
         type: string
       PROJECT_ID:

@@ -8,7 +8,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-# Stage para usar o .JAR
+# Stage para usar o binário gerado
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 

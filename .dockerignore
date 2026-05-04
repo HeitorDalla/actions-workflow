@@ -1,0 +1,41 @@
+# Build tools / outputs
+target/
+build/
+out/
+
+# IDEs e editores
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Controle de versão
+.git/
+.gitignore
+
+# Logs e temporários
+*.log
+logs/
+tmp/
+*.tmp
+
+# Testes
+src/test/
+
+# Configurações locais / segredos
+.env
+.env.*
+application-local.yml
+application-local.properties
+
+# Documentação e arquivos auxiliares
+*.md
+
+# Dependências baixadas (se usar wrapper Maven/Gradle)
+.mvn/wrapper/maven-wrapper.jar
+.gradle/

@@ -1,36 +1,54 @@
-# Git
-.git
-.gitignore
-.gitattributes
+# Build tools / outputs
+target/
+build/
+out/
 
-# IDEs
-.idea
-.vscode
-
-# Maven/Java
-target
-*.class
-
-# Logs
-*.log
-
-# Terraform
-infra/.terraform
-infra/*.tfstate
-infra/*.tfstate.*
-infra/crash.log
-
-# Credenciais
-infra/credentials
-*.json
+# IDEs e editores
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
 
 # Sistema operacional
 .DS_Store
 Thumbs.db
 
-# Documentação
-docs
+# Logs e temporários
+*.log
+logs/
+tmp/
+temp/
+*.tmp
 
-# Arquivos temporários
-tmp
-temp
+# Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/crash.log
+
+# Credenciais
+infra/credentials/
+*credentials*.json
+
+# Variáveis sensíveis
+*.tfvars
+terraform.tfvars
+
+# Configurações locais
+.env
+.env.*
+application-local.yml
+application-local.properties
+
+# Maven / Gradle
+.gradle/
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Override Terraform
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

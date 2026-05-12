@@ -31,3 +31,23 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Terraform ###
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Variáveis sensíveis
+*.tfvars
+terraform.tfvars
+
+# Credenciais
+credentials/
+*.json
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

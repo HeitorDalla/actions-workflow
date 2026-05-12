@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDEs
+.idea
+.vscode
+
+# Maven/Java
+target
+*.class
+
+# Logs
+*.log
+
+# Terraform
+infra/.terraform
+infra/*.tfstate
+infra/*.tfstate.*
+infra/crash.log
+
+# Credenciais
+infra/credentials
+*.json
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Documentação
+docs
+
+# Arquivos temporários
+tmp
+temp
